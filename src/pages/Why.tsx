@@ -14,7 +14,7 @@ const BREAKS = [
   ['Postgres behind our own API', 'One operator, one server, one blocking order under Section 69A, and the register is gone, along with the evidence it held. The operator can also be pressed to quietly edit or delete a record; nobody outside could prove it changed.'],
   ['IPFS', 'Good for the order’s PDF, useless for the question people ask: “what is in force in Manipur right now?” IPFS has no queries and no expiry. A lapsed order would sit there looking current forever.'],
   ['A subgraph over a smart contract', 'We would write a contract to hold records, run an indexer to query them, and still build expiry ourselves with a keeper bot. Arkiv gives typed, queryable attributes, expiry and per-entity permissions as the storage itself.'],
-  ['A spreadsheet maintained by volunteers', 'This is what exists today. It depends on a few people, can’t take reports from the ground, and nobody can check it wasn’t edited.'],
+  ['One organisation’s tracker website', 'The best record today is SFLC.in’s internetshutdowns.in, which has counted 934 shutdowns. It is careful work, and it still depends on one team, one database and one domain: if any of them goes, so does the record, and readers can’t independently check that an entry was never changed.'],
 ]
 
 const OFF = [

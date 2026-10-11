@@ -22,9 +22,11 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
         <div style={{ fontSize: 15 }}>{o.net === 'drill' ? 'Drill Gazette' : 'Register of Suspension Orders'}</div>
         <small>{o.authority || 'Issuing authority not recorded'}</small>
       </div>
-      <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : 'IN FORCE'}</span>
-      <h3>{o.stateName}</h3>
-      <p className="meta" style={{ margin: '4px 0 8px', paddingRight: 90 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+        <h3>{o.stateName}</h3>
+        <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : 'IN FORCE'}</span>
+      </div>
+      <p className="meta" style={{ margin: '4px 0 8px' }}>
         {o.districts.length > 4 ? `${o.districts.slice(0, 4).join(', ')} and ${o.districts.length - 4} more` : o.districts.join(', ')}
       </p>
       <p style={{ margin: '0 0 8px', fontSize: 15 }}>

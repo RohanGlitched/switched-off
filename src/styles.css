@@ -51,6 +51,8 @@ img, svg, canvas { display: block; max-width: 100%; }
 .mute { color: var(--mute); }
 .faint { color: var(--faint); }
 .wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }
+.mobile-only { display: none; }
+@media (max-width: 960px) { .mobile-only { display: block; } }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -0.01em; }
@@ -111,6 +113,7 @@ label.field { display: grid; gap: 6px; font-size: 14px; color: var(--mute); }
 .panel { background: var(--night-2); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(18px, 2.4vw, 28px); min-width: 0; }
 .section { padding: clamp(56px, 8vw, 104px) 0; border-top: 1px solid var(--line); }
 .section-head { display: grid; gap: 14px; margin-bottom: 32px; max-width: 780px; }
+.section-head > .chip, .hero-copy > .chip { justify-self: start; }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 @media (max-width: 860px) { .grid2, .grid3 { grid-template-columns: minmax(0, 1fr); } }
@@ -144,7 +147,7 @@ label.field { display: grid; gap: 6px; font-size: 14px; color: var(--mute); }
 .gazette h3 { font-family: var(--serif); font-size: 22px; line-height: 1.15; color: var(--ink); }
 .gazette .meta { font-size: 13px; color: var(--ink-mute); }
 .gazette a { color: #6b3b13; }
-.gazette .stamp { position: absolute; right: 18px; top: 56px; transform: rotate(-8deg); border: 2px solid var(--seal); color: var(--seal); font-weight: 700; font-size: 12px; padding: 3px 8px; border-radius: 4px; letter-spacing: .04em; background: color-mix(in srgb, var(--paper) 70%, transparent); }
+.gazette .stamp { flex: none; transform: rotate(-8deg); border: 2px solid var(--seal); color: var(--seal); font-weight: 700; font-size: 12px; padding: 3px 8px; border-radius: 4px; letter-spacing: .04em; background: color-mix(in srgb, var(--paper) 70%, transparent); }
 .gazette .stamp.lapsed { border-color: var(--ink-mute); color: var(--ink-mute); }
 .gazette .lifebar { height: 6px; background: var(--paper-2); border-radius: 3px; overflow: hidden; margin: 10px 0 6px; }
 .gazette .lifebar i { display: block; height: 100%; background: var(--ink); }

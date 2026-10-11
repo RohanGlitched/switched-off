@@ -7,7 +7,7 @@ import { loadGeo, type Geo } from '../lib/geo'
 import { useNow, useRegister } from '../lib/store'
 import { Link, go } from '../lib/router'
 import { useT } from '../lib/i18n'
-import { days, fmtDate } from '../lib/fmt'
+import { fmtDate } from '../lib/fmt'
 import type { Order, Record_ } from '../lib/arkiv'
 
 export function Home() {
@@ -79,6 +79,7 @@ export function Home() {
           </div>
           <div className="hero-map">
             <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? `Map of India on ${fmtDate(at)}: ${map.off.size} districts under a suspension order on file.` : undefined} />
+            <div className="mobile-only" style={{ marginTop: 12 }}><Link to="/report" className="btn primary" style={{ width: '100%' }}>{t('Is your internet off? Report it')}</Link></div>
             {span && (
               <div className="panel" style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>
@@ -101,7 +102,7 @@ export function Home() {
           <div className="section-head">
             <span className="chip">Live wire</span>
             <h2 className="h2">Every change, as Arkiv writes it.</h2>
-            <p className="lede">This feed listens to Arkiv’s entity events over a WebSocket. A new order, a report, a neighbour confirming a report, someone paying to keep a record alive: it shows up here within a block (two seconds), for everyone, from the chain itself, not from our server.</p>
+            <p className="lede">This feed follows Arkiv’s entity events: a new order, a report, a neighbour confirming a report, someone paying to keep a record alive. Each shows up here within seconds of its block, for everyone, read from the chain (over a WebSocket in direct mode).</p>
             <div className="row"><Link to="/report" className="btn small">File a report</Link><Link to="/drill" className="btn small">Start a drill to watch it move</Link></div>
           </div>
           <LiveWire />
@@ -131,7 +132,7 @@ export function Home() {
         <div className="wrap">
           <div className="section-head">
             <span className="chip">The register</span>
-            <h2 className="h2">{archive.length ? `${archive.length} orders on file, ${totals.days.toLocaleString('en-IN')} days of suspended internet.` : 'The register'}</h2>
+            <h2 className="h2">{archive.length ? `${archive.length} orders on file, from ${totals.states} states and territories, ${totals.from} to ${totals.to}.` : 'The register'}</h2>
             <p className="lede">Each one transcribed from a published order or from reporting that cites one, with its sources. Click a state on the map, or open the full register to filter.</p>
           </div>
           {live.loading ? (
@@ -148,9 +149,9 @@ export function Home() {
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <span className="chip">Rewind</span>
-            <h2 className="h2">Where the lights went out, year by year.</h2>
-            <p className="lede">Days of suspended internet per state, from the archive. Because Arkiv keeps queryable history, the register can also be asked what was in force at any past block, after the orders themselves have lapsed.</p>
+            <span className="chip">Year by year</span>
+            <h2 className="h2">Where the lights went out.</h2>
+            <p className="lede">Orders on file per state and year. It undercounts the real thing: many orders were never published, and Access Now counted 116 shutdowns in India in 2023 alone. Every order that does get filed can also be asked about at any past Arkiv block, long after it has lapsed.</p>
           </div>
           <Rewind records={archive} />
         </div>
@@ -180,7 +181,7 @@ export function Home() {
           <div className="section-head">
             <span className="chip">Why it can’t be switched off</span>
             <h2 className="h2">Block this site and the register is still there.</h2>
-            <p className="lede">A shutdown tracker on one server is one blocking order away from disappearing. Switched Off keeps nothing on our server: the register is Arkiv entities that any copy of this page, any script, any newsroom can read straight from the network.</p>
+            <p className="lede">A shutdown tracker on one server is one blocking order away from disappearing. The register isn’t on our server: it is Arkiv entities that any copy of this page, any script, any newsroom can read straight from the network. This site only runs a small cache in front of Arkiv to stay inside its query quota, and the switch in the header turns even that off.</p>
           </div>
           <div className="grid3">
             <Card title="Ask the network directly" body="One JSON-RPC call returns every order in force. No API key, no account, no Switched Off server in the middle." to="/data" cta="See the exact query" />
@@ -208,9 +209,8 @@ export function Home() {
 }
 
 function tally(rs: Record_[]) {
-  let d = 0
-  for (const r of rs) d += days(r.starts * 1000, r.ends * 1000)
-  return { days: d, since: rs.length ? fmtDate(Math.min(...rs.map((r) => r.starts * 1000))) : '' }
+  const years = rs.map((r) => r.starts).filter(Boolean).map((s) => new Date(s * 1000).getUTCFullYear())
+  return { states: new Set(rs.map((r) => r.state)).size, from: years.length ? Math.min(...years) : '', to: years.length ? Math.max(...years) : '' }
 }
 
 function Rule({ n, unit, title, body }: { n: string; unit: string; title: string; body: string }) {
