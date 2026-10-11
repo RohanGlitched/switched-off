@@ -91,7 +91,7 @@ Pinned expiry evidence:   app = str('switched-off') AND order_id = str('drill-ev
 ```bash
 curl -s -X POST https://rpc.tiramisu.db-chain.testnet.arkiv.network \
   -H 'content-type: application/json' \
-  -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"arkiv_query\",\"params\":[\"app = str('switched-off') AND type = str('record') AND state = str('MN')\",{\"select\":{\"key\":true,\"attributes\":true,\"payload\":true,\"expiresAt\":true}}]}"
+  -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"arkiv_query\",\"params\":[\"app = str('switched-off') AND type = str('record') AND net = str('live') AND state = str('MN') AND $creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e)\",{\"select\":{\"key\":true,\"attributes\":true,\"payload\":true,\"expiresAt\":true,\"creator\":true}}]}"
 ```
 
 SDK equivalents are in `src/lib/arkiv.ts` (`activeOrders`, `records`, `liveReports`, all with an optional `atBlock`).

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
 import { Gazette } from '../components/Gazette'
-import { SEALED, allRecords, blockToTime, currentBlock, extenders, orderByKey, syncClock, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
+import { SEALED, allRecords, applyCorrections, blockToTime, currentBlock, extenders, orderByKey, sameDesk, syncClock, trustedCorrection, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
 import { confirmEmergency, confirmReport, keepAlive, withdrawReport } from '../lib/write'
 import { account } from '../lib/wallet'
 import { addrUrl, ago, fmtDate, fmtDateTime, left, short, txUrl } from '../lib/fmt'
@@ -31,14 +31,17 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
     setE(x)
     if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n, x.creator).then(setWitnesses)
     if (x && 'permissionless' in x)
-      void allRecords(x.net).then((rs) =>
+      void allRecords(x.net).then((rs) => {
+        const byKey = new Map(rs.map((r) => [r.key.toLowerCase(), r]))
+        const visible = applyCorrections(rs)
         setRelated({
           corrects: (x.corrects || undefined) as Hex | undefined,
-          correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase())?.key,
-          renews: x.renews ? rs.filter((r) => r.orderId === x.renews && !r.corrects).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDate(r.starts * 1000)})` }))[0] : undefined,
-          renewedBy: rs.filter((r) => r.renews === x.orderId && !r.corrects).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: tf('renewal no. {n}, {date}', { n: Math.max(1, r.seq - 1), date: fmtDate(r.starts * 1000) }) })),
-        }),
-      )
+          // a stranger's "correction" or "renewal" is not shown as one: same rules as the register
+          correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase() && trustedCorrection(r, byKey))?.key,
+          renews: x.renews ? visible.filter((r) => r.orderId === x.renews && sameDesk(r, x)).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDate(r.starts * 1000)})` }))[0] : undefined,
+          renewedBy: visible.filter((r) => r.renews === x.orderId && sameDesk(r, x)).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: tf('renewal no. {n}, {date}', { n: Math.max(1, r.seq - 1), date: fmtDate(r.starts * 1000) }) })),
+        })
+      })
   })
   useEffect(() => void load(), [entityKey])
 
@@ -156,7 +159,7 @@ export function ReportCard({ r }: { r: Report }) {
     <article className="panel" style={{ display: 'grid', gap: 8, borderColor: r.status === 'back' ? 'var(--restored)' : 'color-mix(in srgb, var(--vermilion) 60%, transparent)' }}>
       <span className={`chip ${r.status === 'back' ? 'green' : 'red'}`} style={{ justifySelf: 'start' }}>{t(r.status === 'back' ? 'Internet back' : r.status === 'slow' ? 'Crawling' : 'No internet')}{r.net === 'drill' ? t(' · drill') : ''}</span>
       <h2 className="h2" style={{ fontSize: 30 }}>{r.district}</h2>
-      <p className="mute" style={{ margin: 0 }}>{STATES[r.state] ?? r.state} · {t(r.carrier)} · {tf('seen {ago}', { ago: ago(r.seen * 1000) })}{r.late ? t(' (sent once the signal came back)') : ''}</p>
+      <p className="mute" style={{ margin: 0 }}>{t(STATES[r.state] ?? r.state)} · {t(r.carrier)} · {tf('seen {ago}', { ago: ago(r.seen * 1000) })}{r.late ? t(' (sent once the signal came back)') : ''}</p>
       {r.note && <p className="serif" style={{ fontSize: 19, margin: '6px 0' }}>“{r.note}”</p>}
       <p className="hint num" style={{ margin: 0 }}>{tf('Fades in {time} unless someone confirms it.', { time: left(exp - now) })}</p>
     </article>

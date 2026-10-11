@@ -14,6 +14,9 @@ const HONORIFIC = /(?:^|[\s(,;:])(?:shri|sri|smt|shrimati|kumari|sh|dr|mr|mrs|ms
 const CASE = /\b[\p{Lu}][\p{L}'\-]+(?:\s+(?:[\p{Lu}][\p{L}'\-]+|&|and|Ors\.?|Anr\.?))*\s+(?:[vV]\.?|[vV][sS]\.?|versus)\s+[\p{Lu}]/u
 const ROLE_NAME = /\b(?:petitioner|respondent|complainant|accused|DM|SP|SDM|ADM|collector|magistrate|officer)\s+[\p{Lu}][\p{L}'\-]+\s+[\p{Lu}][\p{L}'\-]+/u
 const JUDGE_STYLE = /\b(?:JJ?\.(?=\s|$|[,;)])|(?:CJ|JJ)(?=\s|$|[,;)])(?!\s+(?:Colony|bench|Bench)))/
+// Names that have already had to be removed from this archive, in text and in link slugs. A bare
+// "Firstname Lastname" can't be told from a place by a regex; this list grows as the register learns.
+const KNOWN = /geelani|amritpal|bhasin|gogoi|biradar|fatehdeep|uday[-\s]?pratap|rajendra[-\s]?krishna|ananda[-\s]?sen|shrivastava|bharadwaj|sandeep[-\s]?singh|saikia|bhuyan|anubha|choudhary/i
 
 const normalise = (t: string) => t.normalize('NFKC').replace(/\p{Nd}/gu, digitValue)
 function digitValue(ch: string): string {
@@ -30,11 +33,13 @@ export function personalData(text: string): string | null {
   if (DIGITS.test(t.replace(/https?:\/\/\S+/gi, ' ').replace(DATE_OR_TIME, ' '))) return 'a long number (a phone, Aadhaar or account number)'
   if (EMAIL.test(t) || EMAIL_SPELLED.test(t) || UPI.test(t)) return 'an email or UPI address'
   if (AADHAAR_WORD.test(t)) return 'an Aadhaar reference'
-  if (HONORIFIC.test(t) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
+  if (HONORIFIC.test(t) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t) || KNOWN.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
   return null
 }
 
 export const looksLikeEmail = (text: string) => EMAIL.test(normalise(text)) || EMAIL_SPELLED.test(normalise(text))
+/** A source link must not carry an email or a person's name in its slug. */
+export const linkProblem = (url: string): string | null => (looksLikeEmail(url) ? 'an email address' : KNOWN.test(url) || HONORIFIC.test(url.replace(/[-_/]/g, ' ')) ? "a person's name in the link" : null)
 
 export function assertNoPersonalData(...texts: (string | undefined | null)[]) {
   for (const t of texts) {

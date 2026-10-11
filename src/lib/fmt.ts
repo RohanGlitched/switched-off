@@ -1,12 +1,12 @@
 import { EXPLORER } from './arkiv'
-import { getLang, locale, tf, tr } from './i18n'
+import { getLang, locale, tf, tp, tr } from './i18n'
 
 const IST = 'Asia/Kolkata'
 export const fmtDate = (ms: number) =>
   ms ? new Date(ms).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric', timeZone: IST }) : '—'
 export const fmtDateTime = (ms: number) =>
-  ms ? new Date(ms).toLocaleString(locale(), { day: 'numeric', month: 'short', ...(new Date(ms).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}), hour: '2-digit', minute: '2-digit', timeZone: IST }) + ' IST' : '—'
-export const fmtTime = (ms: number) => new Date(ms).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit', timeZone: IST })
+  ms ? new Date(ms).toLocaleString(locale(), { day: 'numeric', month: 'short', ...(new Date(ms).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}), hour: '2-digit', minute: '2-digit', ...(getLang() === 'hi' ? { hourCycle: 'h23' as const } : {}), timeZone: IST }) + ' IST' : '—'
+export const fmtTime = (ms: number) => new Date(ms).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit', ...(getLang() === 'hi' ? { hourCycle: 'h23' as const } : {}), timeZone: IST })
 
 /** "3d 4h", "47m 10s", "lapsed" (in Hindi: "3 दिन 4 घंटे") */
 export function left(ms: number): string {
@@ -22,7 +22,7 @@ export const ago = (ms: number) => {
   const s = Math.max(0, Math.floor((Date.now() - ms) / 1000))
   if (s < 60) return tf('{n}s ago', { n: s })
   if (s < 3600) return tf('{n}m ago', { n: Math.floor(s / 60) })
-  if (s < 86400) return tf('{n}h ago', { n: Math.floor(s / 3600) })
+  if (s < 86400) return tp(Math.floor(s / 3600), '1h ago', '{n}h ago')
   return tf('{n}d ago', { n: Math.floor(s / 86400) })
 }
 export const days = (a: number, b: number) => Math.max(0, Math.round((b - a) / 86_400_000))

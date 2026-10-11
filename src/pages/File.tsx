@@ -101,7 +101,7 @@ export function FilePage() {
             <label className="field">{t('State or UT')}
               <select className="input" value={state} onChange={(e) => { setState(e.target.value); setPicked([]) }}>
                 <option value="">{t('Choose…')}</option>
-                {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                {Object.entries(STATES).sort((a, b) => t(a[1]).localeCompare(t(b[1]))).map(([k, v]) => <option key={k} value={k}>{t(v)}</option>)}
               </select>
             </label>
             <label className="field">{t('What was cut')}

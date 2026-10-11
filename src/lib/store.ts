@@ -1,9 +1,9 @@
 // Live view of the register: one load, then Arkiv's entity events keep it current.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { Hex } from 'viem'
-import { activeOrders, blockToTime, currentBlock, eventsClient, liveReports, pollingClient, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
+import { activeOrders, blockToTime, currentBlock, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
-export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] } }
+export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] }; earlier?: boolean }
 export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean }
 
 const empty: Snapshot = { orders: [], records: [], reports: [], loadedAt: 0, error: null, loading: true }
@@ -44,6 +44,10 @@ export async function refresh(net: Net, light = false) {
         if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head + 6n)
           wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, lapsed: { drill: net === 'drill', state: old.stateName, districts: old.districts } }, ...wire].slice(0, 40)
       snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false }
+      if (!backfilled.has(net)) {
+        backfilled.add(net)
+        void backfill(net)
+      }
     } catch (e) {
       snaps[net] = { ...snaps[net], loading: false, error: (e as Error).message || 'Arkiv did not answer.' }
     } finally {
@@ -54,6 +58,20 @@ export async function refresh(net: Net, light = false) {
     }
   })()
   return inflight[net]
+}
+
+// On arrival the wire shows what happened before the page opened: the latest creates and
+// confirmations of this net's entities, read once from the logs and marked "earlier".
+const backfilled = new Set<Net>()
+async function backfill(net: Net) {
+  const s = snaps[net]
+  const keys = [...s.orders, ...s.reports, ...s.records.slice().sort((a, b) => Number(b.createdAt - a.createdAt)).slice(0, 120)].map((x) => x.key)
+  const evs = await recentEvents(keys)
+  if (!evs.length) return
+  const have = new Set(wire.map((w) => w.id))
+  const items: WireItem[] = evs.map((e) => ({ id: `${e.hash}-${e.index}`, at: blockToTime(e.block), kind: e.kind, key: e.key, block: e.block, earlier: true })).filter((w) => !have.has(w.id))
+  wire = [...wire, ...items].sort((a, b) => Number(b.block - a.block)).slice(0, 40)
+  emit()
 }
 
 let expiryTimer: number | undefined

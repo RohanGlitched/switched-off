@@ -16,9 +16,11 @@ const ALLOW = new Set([
 // reads that can be shared between visitors for a moment
 const CACHE_MS: Record<string, number> = { arkiv_query: 4000, eth_blockNumber: 1500, arkiv_getBlockTiming: 1500, arkiv_getEntityCount: 10000, eth_chainId: 3600_000, eth_getLogs: 1500, eth_getFilterChanges: 1500 }
 const cache = new Map<string, { at: number; body: unknown }>()
+const CACHE_MAX_BYTES = 200_000
 const ARKIV = '0x4400000000000000000000000000000000000044'
 const MAX_BATCH = 10
 const MAX_LOG_RANGE = 400_000n
+const APP_CLAUSE = "app = str('switched-off')"
 // the relay's key has a monthly quota: a visitor gets a fair share, not the whole of it
 const PER_IP = 150
 const WINDOW_MS = 60_000
@@ -35,24 +37,56 @@ function paced(ip: string, n: number): boolean {
   if (hits.size > 5000) hits.delete(hits.keys().next().value!)
   return false
 }
+
+/**
+ * The only query shape the relay forwards: a conjunction of simple comparisons, exactly as the SDK
+ * writes them (`name = str('…') AND issued > u64(1)`), plus `$key = key(0x…)`, `$owner`/`$creator =
+ * addr(0x…)`. No brackets, no OR, no NOT, no stray quotes: nothing a caller writes can escape the
+ * app clause that is put in front of it.
+ */
+const TERM = String.raw`\$?[A-Za-z_][A-Za-z0-9_.-]*\s*(?:=|!=|>=|<=|>|<)\s*(?:str\('[^'()\\]*'\)|u64\(\d{1,20}\)|i32\(-?\d{1,10}\)|key\(0x[0-9a-fA-F]{64}\)|addr\(0x[0-9a-fA-F]{40}\)|true|false|-?\d{1,20})`
+const QUERY = new RegExp(String.raw`^\s*(?:${TERM})(?:\s+AND\s+(?:${TERM}))*\s*$`)
+const HEX = /^0x[0-9a-fA-F]{1,16}$/
+const HEX_WORD = /^0x[0-9a-fA-F]{64}$/
+
 /** Why a call is refused, or null. The key is spent only on this app's own reads and on Arkiv's contract. */
 function refused(call: Call): string | null {
   const p = call.params ?? []
+  if (!Array.isArray(p)) return 'Params must be an array.'
   if (call.method === 'arkiv_query') {
-    const q = String(p[0] ?? '')
-    if (typeof p[0] !== 'string' || !q.trim()) return 'Send a query expression.'
-    if (q.length > 2000) return 'That query is too long.'
+    const q = p[0]
+    if (typeof q !== 'string' || !q.trim()) return 'Send a query expression.'
+    if (q.length > 1200) return 'That query is too long.'
+    if (!QUERY.test(q)) return "This relay forwards only simple AND queries (name = str('…'), name > u64(n), $key = key(0x…)). Ask Arkiv directly for anything else."
+    const o = p[1]
+    if (o !== undefined) {
+      if (typeof o !== 'object' || o === null || Array.isArray(o)) return 'Query options must be an object.'
+      const opts = o as Record<string, unknown>
+      for (const k of Object.keys(opts)) if (!['select', 'limit', 'atBlock', 'cursor', 'orderBy'].includes(k)) return `Unknown query option ${k}.`
+      if (opts.limit !== undefined && !(typeof opts.limit === 'string' && HEX.test(opts.limit) && parseInt(opts.limit, 16) <= 200)) return 'Limit must be a hex string up to 0xc8.'
+      if (opts.atBlock !== undefined && !(typeof opts.atBlock === 'string' && HEX.test(opts.atBlock))) return 'atBlock must be a hex block number.'
+      if (opts.cursor !== undefined && !(typeof opts.cursor === 'string' && opts.cursor.length < 400)) return 'Bad cursor.'
+      if (opts.select !== undefined && (typeof opts.select !== 'object' || opts.select === null)) return 'Bad select.'
+    }
   }
-  if (call.method === 'eth_getLogs') {
-    const f = (p[0] ?? {}) as { address?: string | string[]; fromBlock?: string; toBlock?: string }
+  if (call.method === 'eth_getLogs' || call.method === 'eth_newFilter') {
+    const f = (p[0] ?? {}) as { address?: string | string[]; fromBlock?: string; toBlock?: string; blockHash?: string }
+    if (typeof f !== 'object' || f === null) return 'Bad filter.'
     const addrs = Array.isArray(f.address) ? f.address : [f.address ?? '']
     if (addrs.length !== 1 || String(addrs[0]).toLowerCase() !== ARKIV) return 'This relay only reads Arkiv entity logs.'
-    if (typeof f.fromBlock === 'string' && typeof f.toBlock === 'string' && f.fromBlock.startsWith('0x') && f.toBlock.startsWith('0x') && BigInt(f.toBlock) - BigInt(f.fromBlock) > MAX_LOG_RANGE)
-      return 'Ask for a narrower block range.'
+    if (f.blockHash !== undefined) return 'Ask by block numbers, not a block hash.'
+    if (call.method === 'eth_getLogs') {
+      if (typeof f.fromBlock !== 'string' || !HEX.test(f.fromBlock)) return 'fromBlock must be a hex block number.'
+      if (typeof f.toBlock !== 'string' || !(HEX.test(f.toBlock) || f.toBlock === 'latest')) return 'toBlock must be a hex block number or latest.'
+      if (HEX.test(f.toBlock) && BigInt(f.toBlock) - BigInt(f.fromBlock) > MAX_LOG_RANGE) return 'Ask for a narrower block range.'
+    }
   }
   if (call.method === 'eth_call' || call.method === 'eth_estimateGas') {
     const tx = (p[0] ?? {}) as { to?: string }
-    if (String(tx.to ?? '').toLowerCase() !== ARKIV) return 'This relay only calls the Arkiv contract.'
+    if (typeof tx !== 'object' || tx === null || String(tx.to ?? '').toLowerCase() !== ARKIV) return 'This relay only calls the Arkiv contract.'
+  }
+  if (call.method === 'eth_getTransactionByHash' || call.method === 'eth_getTransactionReceipt') {
+    if (typeof p[0] !== 'string' || !HEX_WORD.test(p[0])) return 'Bad transaction hash.'
   }
   return null
 }
@@ -62,33 +96,42 @@ type Req = { method?: string; body?: unknown; headers: Record<string, string | s
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
 
 async function one(call: Call, key: string | undefined): Promise<unknown> {
-  if (!call || typeof call.method !== 'string' || !ALLOW.has(call.method))
-    return { jsonrpc: '2.0', id: call?.id ?? null, error: { code: -32601, message: `Method not relayed: ${call?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
-  const why = refused(call)
-  if (why) return { jsonrpc: '2.0', id: call.id ?? null, error: { code: -32602, message: why } }
-  // the key is spent on this app's data only: every query is wrapped in the app clause on the way out,
-  // which also covers lookups by key ($key = key(0x…)) and attempts like NOT (app = …)
-  if (call.method === 'arkiv_query') {
-    const q = String(call.params![0])
-    const scoped = /^\s*app\s*=\s*str\('switched-off'\)\s*AND\b/.test(q) ? q : `app = str('switched-off') AND (${q})`
-    call = { ...call, params: [scoped, ...(call.params ?? []).slice(1)] }
+  try {
+    if (!call || typeof call !== 'object' || typeof call.method !== 'string' || !ALLOW.has(call.method))
+      return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32601, message: `Method not relayed: ${(call as Call | null)?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
+    const why = refused(call)
+    if (why) return { jsonrpc: '2.0', id: call.id ?? null, error: { code: -32602, message: why } }
+    // the key is spent on this app's data only: every query goes out with the app clause in front
+    if (call.method === 'arkiv_query') {
+      const q = String(call.params![0]).trim()
+      const scoped = q.startsWith(APP_CLAUSE) ? q : `${APP_CLAUSE} AND ${q}`
+      call = { ...call, params: [scoped, ...(call.params ?? []).slice(1)] }
+    }
+    const ttl = CACHE_MS[call.method]
+    const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
+    const hit = ck ? cache.get(ck) : undefined
+    if (hit && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
+    const r = await fetch(UPSTREAM, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...(key ? { 'x-api-key': key } : {}) },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] }),
+    })
+    const text = await r.text()
+    let j: { result?: unknown; error?: unknown }
+    try {
+      j = JSON.parse(text) as { result?: unknown; error?: unknown }
+    } catch {
+      j = { error: { code: -32603, message: `Arkiv answered ${r.status}: ${text.slice(0, 160)}` } }
+    }
+    const body = 'result' in j ? { result: j.result } : { error: j.error ?? { code: -32603, message: `Arkiv answered ${r.status}` } }
+    if (ck && 'result' in body && text.length <= CACHE_MAX_BYTES) {
+      cache.set(ck, { at: Date.now(), body })
+      if (cache.size > 500) cache.delete(cache.keys().next().value!)
+    }
+    return { jsonrpc: '2.0', id: call.id, ...body }
+  } catch (e) {
+    return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32603, message: `Relay error: ${String((e as Error).message).slice(0, 160)}` } }
   }
-  const ttl = CACHE_MS[call.method]
-  const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
-  const hit = ck ? cache.get(ck) : undefined
-  if (hit && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
-  const r = await fetch(UPSTREAM, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', ...(key ? { 'x-api-key': key } : {}) },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] }),
-  })
-  const j = (await r.json().catch(() => ({ error: { code: -32603, message: `Arkiv answered ${r.status}` } }))) as { result?: unknown; error?: unknown }
-  const body = 'result' in j ? { result: j.result } : { error: j.error ?? { code: -32603, message: `Arkiv answered ${r.status}` } }
-  if (ck && 'result' in body) {
-    cache.set(ck, { at: Date.now(), body })
-    if (cache.size > 500) cache.delete(cache.keys().next().value!)
-  }
-  return { jsonrpc: '2.0', id: call.id, ...body }
 }
 
 export default async function handler(req: Req, res: Res) {

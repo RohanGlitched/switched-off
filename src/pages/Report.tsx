@@ -95,7 +95,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
               <label className="field">{t('State or UT')}
                 <select className="input" value={state} onChange={(e) => { setState(e.target.value); setDistrict('') }}>
                   <option value="">{t('Choose…')}</option>
-                  {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  {Object.entries(STATES).sort((a, b) => t(a[1]).localeCompare(t(b[1]))).map(([k, v]) => <option key={k} value={k}>{t(v)}</option>)}
                 </select>
               </label>
               <label className="field">{t('District')}
@@ -112,7 +112,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
             </label>
             <label className="field">{t('What you see (optional, 140 characters)')}
               <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder={t('Mobile data gone since morning; broadband still working')} aria-invalid={!!piiWarn} aria-describedby="note-hint" />
-              {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>{tf('That looks like {what}. Remove it: reports are public and permanent.', { what: t(piiWarn) })}</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
+              {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>{tf('That looks like {what}. Remove it: reports are public and permanent.', { what: t(piiWarn.startsWith("a person's name") ? "a person's name (reports never need a name)" : piiWarn) })}</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
             </label>
             <button className="btn primary" disabled={busy || !district || !!piiWarn || cooling} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : cooling ? t('Filed ✓ (one report per district is enough; neighbours confirm it)') : !district ? t('Choose a district to report') : t('File this report')}</button>
             {pending > 0 && <p className="hint" style={{ margin: 0 }}>{tp(pending, '{n} report saved on this phone, waiting for a connection.', '{n} reports saved on this phone, waiting for a connection.')}</p>}
@@ -129,9 +129,9 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
           <p className="hint">{t('In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.')}</p>
         </div>
         <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-          <h2 className="h3">{state ? tf('Live reports in {state}', { state: STATES[state] }) : t('Live reports across India')}</h2>
+          <h2 className="h3">{state ? tf('Live reports in {state}', { state: t(STATES[state] ?? state) }) : t('Live reports across India')}</h2>
           {reg.loading && <div className="skel" style={{ height: 160 }} />}
-          {!reg.loading && nearby.length === 0 && <div className="empty">{state ? tf('No live reports in {state}. Reports fade unless confirmed, so this list only ever shows what people are seeing now.', { state: STATES[state] }) : t('No live reports. Reports fade unless confirmed, so this list only ever shows what people are seeing now.')}</div>}
+          {!reg.loading && nearby.length === 0 && <div className="empty">{state ? tf('No live reports in {state}. Reports fade unless confirmed, so this list only ever shows what people are seeing now.', { state: t(STATES[state] ?? state) }) : t('No live reports. Reports fade unless confirmed, so this list only ever shows what people are seeing now.')}</div>}
           {nearby.map((r) => (
             <div key={r.key} style={{ display: 'grid', gap: 8 }}>
               <ReportCard r={r} />

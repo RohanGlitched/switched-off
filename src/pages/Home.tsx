@@ -41,9 +41,26 @@ export function Home() {
       const i = stops.findIndex((x) => x > (a ?? -Infinity))
       if (i < 0) { setPlaying(false); return null }
       return stops[i]
-    }), 320)
+    }), Math.max(70, Math.min(320, Math.round(15_000 / Math.max(1, stops.length)))))
     return () => clearInterval(id)
   }, [playing, span, stops])
+  // a person who scrolls or taps while the replay runs wants the live map back
+  useEffect(() => {
+    if (!playing) return
+    const stop = () => {
+      setPlaying(false)
+      setAt(null)
+    }
+    const opts = { passive: true, once: true } as AddEventListenerOptions
+    window.addEventListener('wheel', stop, opts)
+    window.addEventListener('touchmove', stop, opts)
+    window.addEventListener('pointerdown', stop, opts)
+    return () => {
+      window.removeEventListener('wheel', stop)
+      window.removeEventListener('touchmove', stop)
+      window.removeEventListener('pointerdown', stop)
+    }
+  }, [playing])
   // with nothing in force today, play the history once so the first screen shows what the map does
   useEffect(() => {
     if (live.loading || live.orders.length > 0 || !span || !stops.length || at !== null || playing) return
@@ -72,11 +89,13 @@ export function Home() {
     const t = at / 1000
     return spans.filter(({ r, end }) => r.starts <= t && t < end).map(({ r }) => r) as unknown as Order[]
   }, [at, spans])
-  const map = useMapState(geo, at === null ? live.orders : inForceAt, at === null ? live.reports : [])
+  // live reports stay on the map during a replay: they are about now, whatever year the orders show
+  const map = useMapState(geo, at === null ? live.orders : inForceAt, live.reports)
   // the headline numbers always describe right now, whatever date the map is replaying
   const nowMap = useMapState(geo, live.orders, live.reports)
   const down = live.reports.filter((r) => r.status !== 'back')
-  const archive = useMemo(() => [...live.records].sort((a, b) => b.starts - a.starts), [live.records])
+  // the headline archive is the registrar's sourced transcriptions; community filings show in the register, labelled
+  const archive = useMemo(() => live.records.filter((r) => r.official && r.starts <= Date.now() / 1000 + 86_400).sort((a, b) => b.starts - a.starts), [live.records])
   const totals = useMemo(() => tally(archive), [archive])
   const latest = archive[0]
 
@@ -106,13 +125,16 @@ export function Home() {
             {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 80) })}</p>}
             {!live.loading && !live.error && live.orders.length === 0 && latest && (
               <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
-                <span><span className="hint">{t('No order on the register is in force right now. Latest on file:')}</span><br /><b>{latest.stateName}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
+                <span><span className="hint">{t('No order on the register is in force right now. Latest on file:')}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
                 <span className="chip">{t('lapsed')}</span>
               </Link>
             )}
           </div>
           <div className="hero-map">
-            <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? tf('Map of India on {date}: {n} districts under a suspension order on file.', { date: fmtDate(at), n: map.off.size }) : undefined} />
+            <div style={{ position: 'relative' }}>
+              {at !== null && <div className="map-caption num" aria-hidden="true">{tf('Replaying the register: {date}', { date: fmtDate(at) })}<br /><span className="mute">{playing ? t('Scroll or tap to stop') : ''}</span></div>}
+              <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? tf('Map of India on {date}: {n} districts under a suspension order on file.', { date: fmtDate(at), n: map.off.size }) : undefined} />
+            </div>
             <div className="mobile-only" style={{ marginTop: 12 }}><Link to="/report" className="btn primary" style={{ width: '100%' }}>{t('Is your internet off? Report it')}</Link></div>
             {span && (
               <div className="panel" style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>

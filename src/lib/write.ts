@@ -10,7 +10,7 @@ import type { Hex } from 'viem'
 import { APP, BLOCK_SECONDS, SEALED, pub, type Net, type Order, type Report, type Scope, type Source } from './arkiv'
 import { account, ensureGas, wallet } from './wallet'
 import { basisCode } from './basis'
-import { assertNoPersonalData, looksLikeEmail } from './pii'
+import { assertNoPersonalData, linkProblem } from './pii'
 
 /** In a drill the law runs fast: one legal day is one real minute. */
 export const DRILL_DAY_MS = 60_000
@@ -118,7 +118,10 @@ function orderPayload(o: OrderInput) {
  */
 export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {}): Promise<{ orderKey: Hex | null; recordKey: Hex; txHash: Hex; sealed: boolean }> {
   assertNoPersonalData(o.reason, o.authority, ...o.sources.map((s) => s.title))
-  for (const s of o.sources) if (looksLikeEmail(s.url)) throw new Error('A source link must not contain an email address: everything on the register is public and permanent.')
+  for (const s of o.sources) {
+    const why = linkProblem(s.url)
+    if (why) throw new Error(`A source link must not carry ${why}: everything on the register is public and permanent. Cite the court or the outlet's section page instead.`)
+  }
   await ensureGas()
   const day = dayMs(o.net)
   const lapse = o.emergency ? Math.min(o.ends, o.issued + day) : o.ends

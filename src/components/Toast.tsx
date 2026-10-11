@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 let push: ((m: string) => void) | null = null
 export const toast = (m: string) => push?.(m)
 
+/** The live region stays mounted (empty when quiet), so screen readers hear each message. */
 export function ToastHost() {
   const [msg, setMsg] = useState<string | null>(null)
   useEffect(() => {
@@ -14,5 +15,5 @@ export function ToastHost() {
     }
     return () => { push = null }
   }, [])
-  return msg ? <div className="toast" role="status">{msg}</div> : null
+  return <div className={msg ? 'toast' : 'sr'} role="status" aria-live="polite">{msg ?? ''}</div>
 }

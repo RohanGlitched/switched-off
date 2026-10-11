@@ -33,7 +33,7 @@ function line(w: WireItem): string {
   const f = find(w.key) ?? seen.get(w.id)
   if (!f) return tr(w.kind === 'extended' ? 'An entity on the register was kept alive' : 'A register entity changed')
   seen.set(w.id, f)
-  const where = f.t === 'report' ? `${(f.e as Report).district}, ${STATES[(f.e as Report).state] ?? (f.e as Report).state}` : `${(f.e as Order).stateName}`
+  const where = f.t === 'report' ? `${(f.e as Report).district}, ${tr(STATES[(f.e as Report).state] ?? (f.e as Report).state)}` : `${(f.e as Order).stateName}`
   const drill = f.net === 'drill' ? tr('Drill: ') : ''
   if (f.t === 'report') {
     const r = f.e as Report
@@ -64,8 +64,8 @@ export function LiveWire({ limit = 9 }: { limit?: number }) {
         </div>
       )}
       {items.map((w) => (
-        <div key={w.id} className={Date.now() - w.at < 4000 ? 'new' : ''}>
-          <time>{fmtTime(w.at)}</time>
+        <div key={w.id} className={Date.now() - w.at < 4000 && !w.earlier ? 'new' : ''}>
+          <time>{w.earlier ? <span className="faint">{t('earlier')} · </span> : null}{fmtTime(w.at)}</time>
           <Link to={`/e/${w.key}`} style={{ color: 'var(--text)', textDecoration: 'none' }}>{line(w)} <span className="faint num">{tf('· block {n}', { n: w.block.toString() })}</span></Link>
         </div>
       ))}

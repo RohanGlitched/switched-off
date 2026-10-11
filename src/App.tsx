@@ -1,3 +1,5 @@
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { flush } from './lib/queue'
 import { useEffect, useState } from 'react'
 import { Link, usePath } from './lib/router'
 import { currentBlock, syncClock } from './lib/arkiv'
@@ -30,6 +32,18 @@ export function App() {
   const t = useT()
   const lang = useLang()
   useEffect(() => setOpen(false), [path])
+  // one title per page, in the reader's language
+  useEffect(() => {
+    const name = route === '/' ? '' : route === '/register' ? t('Register of orders') : route === '/report' ? t('Report no internet') : route === '/drill' ? t('Run a drill') : route === '/data' ? t('Data and mirrors') : route === '/why' ? t('Why this exists') : route === '/file' ? t('File a published order') : route.startsWith('/e/') ? t('Entity') : t('Page not found')
+    document.title = name ? `${name} · Switched Off` : t("Switched Off: India's internet shutdown register")
+  }, [route, lang, t])
+  // reports saved offline go out from any page, the moment the signal returns
+  useEffect(() => {
+    const on = () => void flush()
+    window.addEventListener('online', on)
+    on()
+    return () => window.removeEventListener('online', on)
+  }, [])
   useEffect(() => {
     document.documentElement.lang = lang
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
@@ -47,7 +61,7 @@ export function App() {
     : <NotFound />
   return (
     <>
-      <a href="#main" className="sr" onFocus={(e) => e.currentTarget.classList.remove('sr')}>{t('Skip to content')}</a>
+      <a href="#main" className="skip">{t('Skip to content')}</a>
       <header className="top">
         <div className="wrap">
           <Link to="/" className="brand" aria-label={t('Switched Off, home')}>
@@ -63,7 +77,7 @@ export function App() {
           <button className="menu-btn" aria-expanded={open} aria-label={t('Menu')} onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
         </div>
       </header>
-      <main id="main">{page}</main>
+      <main id="main"><ErrorBoundary>{page}</ErrorBoundary></main>
       <Footer />
       <ToastHost />
     </>
@@ -82,7 +96,7 @@ function ChainBadge() {
     <span className="chain" title={t("Every read and write on this site goes to Arkiv's Tiramisu testnet")}>
       <span className={`pulse${ok === false ? ' off' : ''}`} aria-hidden="true" />
       {ok === false ? t('Arkiv unreachable') : ok ? tx('Arkiv Tiramisu · block {n}', { n: <span className="num">{currentBlock().toString()}</span> }) : t('Connecting to Arkiv…')}
-      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} title={MODE === 'direct' ? t('Your browser talks to Arkiv directly. Switch back to the shared, cached relay.') : t('Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.')}>{MODE === 'direct' ? t('direct') : t('via relay')}</button>
+      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} role="switch" aria-checked={MODE === 'direct'} aria-label={MODE === 'direct' ? t('Reading Arkiv directly (press to use the relay)') : t('Reading through the relay (press to read Arkiv directly)')} title={MODE === 'direct' ? t('Your browser talks to Arkiv directly. Switch back to the shared, cached relay.') : t('Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.')}>{MODE === 'direct' ? t('direct') : t('via relay')}</button>
     </span>
   )
 }

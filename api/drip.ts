@@ -12,6 +12,13 @@ const HOURLY = 80 // top-ups an hour per server instance, whoever asks
 const seen = new Map<string, number>()
 const byIp = new Map<string, number[]>()
 let hour: number[] = []
+// sends from the tap key go out one at a time per instance, so two judges at once don't collide on a nonce
+let chain: Promise<unknown> = Promise.resolve()
+const serial = <T,>(fn: () => Promise<T>): Promise<T> => {
+  const next = chain.then(fn, fn)
+  chain = next.catch(() => {})
+  return next
+}
 
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
@@ -78,7 +85,7 @@ export default async function handler(req: Req, res: Res) {
   }
   let hash: Hex | null = null
   try {
-    hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as unknown as Parameters<typeof wallet.sendTransaction>[0])
+    hash = await serial(() => wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as unknown as Parameters<typeof wallet.sendTransaction>[0]))
     await pub.waitForTransactionReceipt({ hash, timeout: 30_000 })
     return res.status(200).json({ ok: true, funded: true, txHash: hash, balance: formatEther(have + DRIP) })
   } catch (e) {

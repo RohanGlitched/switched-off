@@ -48,6 +48,7 @@
 // any Arkiv endpoint works: ?rpc=https://your-node.example adds independence from this one
 const RPC = new URLSearchParams(location.search).get('rpc') || 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 const RELAY = 'https://switched-off.vercel.app/api/rpc'
+const REGISTRARS = ['0xa2724ea69ea093677d8426e7fe20644ee90a0e3e']
 let via = RPC
 const $ = (id) => document.getElementById(id)
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
@@ -77,7 +78,6 @@ async function read() {
   }
   // a correction replaces the record it names in `corrects`, but only when it comes from the registrar or
   // from whoever filed the original; a stranger's "correction" can't hide a record. Both stay on Arkiv.
-  const REGISTRARS = ['0xa2724ea69ea093677d8426e7fe20644ee90a0e3e']
   const byKey = new Map(all.map((e) => [String(e.key).toLowerCase(), e]))
   const trusted = (e) => { const c = String(attrs(e).corrects || '').toLowerCase(); if (!c) return false; const cr = String(e.creator || '').toLowerCase(); const o = byKey.get(c); return REGISTRARS.includes(cr) || (o && cr === String(o.creator || '').toLowerCase()) }
   const corrected = new Set(all.filter(trusted).map((e) => String(attrs(e).corrects).toLowerCase()))
@@ -88,7 +88,10 @@ async function read() {
   $('out').innerHTML = all.map((e) => {
     const a = attrs(e), p = payload(e)
     if (type === 'report') return `<div class="rep"><b>${esc(a.district)}</b>, ${esc(a.state)} · ${esc(a.carrier)}<br><span style="color:var(--mute)">${esc(a.status)} · seen ${day(a.seen)}</span>${p.note ? `<p>“${esc(p.note)}”</p>` : ''}</div>`
-    return `<div class="card"><small>${esc(p.authority || 'Issuing authority not recorded')}</small><h3>${esc(p.stateName || a.state)}</h3><small>${esc((p.districts || []).join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(p.reason)}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${(p.sources || []).map((s) => /^https:\/\//i.test(String(s.url || '')) ? `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title)}</a></small>` : `<small>${esc(s.title)}</small>`).join('')}</div>`
+    const districts = Array.isArray(p.districts) ? p.districts.filter((d) => typeof d === 'string') : []
+    const sources = Array.isArray(p.sources) ? p.sources.filter((s) => s && typeof s === 'object') : []
+    const community = String(e.creator || '').toLowerCase() !== REGISTRARS[0]
+    return `<div class="card"><small>${esc(typeof p.authority === 'string' && p.authority ? p.authority : 'Issuing authority not recorded')}</small><h3>${esc(typeof p.stateName === 'string' ? p.stateName : a.state)}${community ? ' <span class="tag">community</span>' : ''}</h3><small>${esc(districts.join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(typeof p.reason === 'string' ? p.reason : '')}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${sources.map((s) => /^https:\/\//i.test(String(s.url || '')) ? `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title || s.url)}</a></small>` : `<small>${esc(s.title || '')}</small>`).join('')}</div>`
   }).join('')
 }
 $('rpc').textContent = RPC.replace('https://', '') + (new URLSearchParams(location.search).get('rpc') ? ' (a custom endpoint you chose: this page can only show what it answers)' : '')

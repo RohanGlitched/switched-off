@@ -18,6 +18,7 @@ Switched Off is an open register on Arkiv that anyone can add to, nobody can qui
   districts off. A district people report as dark with no published order behind it burns red.
 - **The register.** 111 sourced orders from 2019 to 2026 (Manipur, Jammu and Kashmir, Haryana, Punjab, Rajasthan, Delhi and
   more), each printed as a page of the Gazette with its authority, stated reason, renewal chain and sources.
+- **In Hindi or English.** One toggle switches every page, including the Why page and the drill; the orders themselves stay as published.
 - **Reports from the ground.** Anyone can say "no internet here" in one tap: no sign-up, no name, a throwaway key in the
   browser. Reports fade in six hours unless a neighbour confirms them. Made offline, they wait on the phone and go out when
   the signal returns, marked late.
@@ -57,12 +58,20 @@ say so on the Why page:
 - **A report's filer can withdraw it** (delete is the one thing an owner of a readonly entity can still do); nobody can delete a
   sealed record, because nobody owns it.
 - **"Confirmed by N keys" counts keys, not people.** Keys are free, so the count is a signal, not proof.
-- **Nobody is named.** Orders cite courts and dates, not judges or petitioners; a guard refuses names, numbers and emails before
-  any write. An early batch of notes quoted case titles with names; those records carry registrar corrections, and the originals
-  stay readable until they expire, which is what an archive nobody can edit costs.
+- **Nobody is named.** Orders cite courts, dates and outlets, not judges, petitioners or anyone else; a guard refuses honorifics,
+  case titles, judge styles, names the register has already had to remove, numbers, emails, and links whose slug carries a name,
+  before any write (`src/lib/pii.ts`, checked against every archive record by `scripts/pii-check.ts`). An early batch of notes
+  quoted case titles with names and one note named a public figure; those records carry registrar corrections
+  (`scripts/corrections.json`), and the sealed originals stay readable by key until they expire, which is what an archive nobody
+  can edit costs. Personal data of private people never belongs on this register, testnet or not.
 - **Reads survive the relay.** Through the relay by default (Arkiv meters keyless reads per network); if it can't answer, the page
-  reads Arkiv directly, and in direct mode it falls back to the relay. The relay only answers queries for this app, paces each
-  network, and never sees a key of yours.
+  reads Arkiv directly, and in direct mode it falls back to the relay; writes try both paths too. The relay forwards only simple
+  AND queries and puts the app clause in front of each (no brackets, OR or NOT can escape it), paces each network, and never sees
+  a key of yours.
+- **The archive is read by its author.** The registrar's records are read with `$creator`, so no amount of junk written into the
+  namespace can bury them or make a page read thousands of entities; community records are read with a page cap and labelled.
+- **A hostile entity can't take the page down.** Every payload field is typed and capped before it reaches a component, and
+  each page and card sits in its own error boundary.
 What was hard, with versions and reproductions: [`arkiv/friction.md`](arkiv/friction.md).
 
 ## Run it

@@ -146,7 +146,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
         const dimH = f && geo.districts[d].code !== f ? 0.35 : 1
         const pulse = reduce ? 1 : 0.7 + 0.3 * Math.sin(t / 420 + d)
         g.beginPath()
-        g.arc(x, y, Math.max(r * 4, c.r * s + r * 2), 0, Math.PI * 2)
+        g.arc(x, y, Math.max(flag ? r * 6 : r * 4, c.r * s + r * (flag ? 3 : 2)), 0, Math.PI * 2)
         g.fillStyle = flag ? `rgba(255, 98, 80, ${0.16 * pulse * dimH})` : comm ? `rgba(190, 150, 80, ${0.1 * dimH})` : `rgba(120, 128, 200, ${0.1 * dimH})`
         g.fill()
         g.lineWidth = Math.max(1, r * 0.5)
@@ -212,7 +212,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       const o = st.off.get(di)
       const fl = st.flagged.get(di)
       // translated when the pointer moves, so the tooltip follows the current language
-      const place = `${d.name}, ${d.state}`
+      const place = `${d.name}, ${tr(d.state)}`
       const text = o
         ? `${tf(o.official ? '{place}: switched off by order' : '{place}: switched off by a community-filed order (unverified)', { place })}${o.emergency && !o.confirmed ? tr(' (emergency, unconfirmed)') : ''}`
         : fl

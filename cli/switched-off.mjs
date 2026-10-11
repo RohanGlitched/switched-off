@@ -46,6 +46,11 @@ function applyCorrections(list) {
   return list.filter((e) => !corrected.has(String(e.key).toLowerCase()))
 }
 const attrs = (e) => Object.fromEntries(e.attributes.map((a) => [a.name, a.value]))
+// chain strings are untrusted: no control characters reach the terminal, and nothing runs past 200 chars
+const clean = (v) => String(v ?? '').replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, ' ').slice(0, 200)
+const REGISTRAR = '0xa2724ea69ea093677d8426e7fe20644ee90a0e3e'
+// an order from anyone but the registrar counts only if it runs within the law's cap (15 days + a day of slack)
+const withinLaw = (e) => String(e.creator || '').toLowerCase() === REGISTRAR || Number(attrs(e).ends || 0) - Number(attrs(e).starts || 0) <= 16 * 86400
 const payload = (e) => { try { return JSON.parse(Buffer.from(e.payload.slice(2), 'hex').toString('utf8')) } catch { return {} } }
 const day = (s) => (Number(s) ? new Date(Number(s) * 1000).toISOString().slice(0, 10) : 'not stated')
 const base = (type) => `app = str('switched-off') AND type = str('${type}') AND net = str('live')`
@@ -54,18 +59,18 @@ function printOrders(list) {
   list.sort((a, b) => Number(attrs(b).starts) - Number(attrs(a).starts))
   for (const e of list) {
     const a = attrs(e), p = payload(e)
-    console.log(`${day(a.starts)} → ${day(a.ends)}  ${String(p.stateName ?? a.state).padEnd(18)} ${String(a.scope).padEnd(13)} ${(p.districts ?? []).join(', ')}`)
+    console.log(`${day(a.starts)} → ${day(a.ends)}  ${clean(p.stateName ?? a.state).padEnd(18)} ${clean(a.scope).padEnd(13)} ${clean((Array.isArray(p.districts) ? p.districts : []).join(', '))}${String(e.creator || '').toLowerCase() === REGISTRAR ? '' : '  [community]'}`)
   }
   console.log(`\n${list.length} order${list.length === 1 ? '' : 's'}`)
 }
 
 try {
-  if (cmd === 'active') printOrders(await query(base('order')))
+  if (cmd === 'active') printOrders((await query(base('order'))).filter(withinLaw))
   else if (cmd === 'state') printOrders(applyCorrections(await query(`${base('record')} AND state = str('${String(arg ?? '').toUpperCase()}')`)))
   else if (cmd === 'at') printOrders(await query(base('order').replace("str('live')", `str('${process.argv[4] === 'drill' ? 'drill' : 'live'}')`), { atBlock: '0x' + BigInt(arg).toString(16) }))
   else if (cmd === 'reports') {
     const list = await query(base('report') + (arg ? ` AND state = str('${arg.toUpperCase()}')` : ''))
-    for (const e of list) { const a = attrs(e); console.log(`${a.status.padEnd(5)} ${String(a.district).padEnd(22)} ${a.state}  ${a.carrier}`) }
+    for (const e of list) { const a = attrs(e); console.log(`${clean(a.status).padEnd(5)} ${clean(a.district).padEnd(22)} ${clean(a.state)}  ${clean(a.carrier)}`) }
     console.log(`\n${list.length} live report${list.length === 1 ? '' : 's'}`)
   } else console.log('Commands: active | state <CODE> | reports [CODE] | at <block>')
 } catch (e) {

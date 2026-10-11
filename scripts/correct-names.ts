@@ -14,7 +14,7 @@ import { http, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 const SEALED = '0x000000000000000000000000000000000000dEaD' as Hex
-const DEFAULT_IDS = ['jk-2019-08-04', 'jk-2020-01-14', 'as-caa-2019-12-11', 'hr-farmers-2021-01-29', 'wb-madhyamik-2022-03-07', 'pb-statewide-2023-03-18', 'pb-statewide-2023-03-20', 'hr-farmers-2024-02-11', 'jh-jgglcce-2024-09-21']
+const DEFAULT_IDS = ['jk-2021-09-01', 'pb-statewide-2023-03-20', 'as-caa-2019-12-11']
 const args = process.argv.slice(2)
 const dry = args.includes('--dry')
 const ids = args.filter((a) => !a.startsWith('--'))
@@ -37,12 +37,14 @@ for (const id of todo) {
   const src = research.get(id)
   if (!src) throw new Error(`no research entry for ${id}`)
   const found = (await pub.select('*').where(and([eq('app', 'switched-off'), eq('type', 'record'), eq('net', 'live'), eq('order_id', id)])).fetch()).entities as unknown as { key: Hex; attributes: Record<string, unknown>; toJson: () => Record<string, unknown> }[]
-  const orig = found.filter((e) => !un(e.attributes.corrects))
-  if (orig.length !== 1) throw new Error(`${id}: expected one uncorrected record, found ${orig.length}`)
-  const e = orig[0]
+  // the record readers show today: the one no other record corrects (an earlier correction included)
+  const correctedKeys = new Set(found.map((e) => String(un(e.attributes.corrects) ?? '').toLowerCase()).filter(Boolean))
+  const current = found.filter((e) => !correctedKeys.has(e.key.toLowerCase()))
+  if (current.length !== 1) throw new Error(`${id}: expected one current record, found ${current.length}`)
+  const e = current[0]
   const a = e.attributes
   const p = e.toJson()
-  const payload = { ...p, reason: src.reasonStated, notes: `Correction: this record's notes or source titles quoted people's names (parties to a case, a bench, or a person named in reporting). They are rewritten without names; the archive cites courts and dates instead. ${src.notes ?? ''}`.trim(), sources: src.sources }
+  const payload = { ...p, reason: src.reasonStated, notes: `Correction: this record's notes or sources named a person (in the text, or in a link's slug). They are rewritten without names; the archive cites courts, dates and outlets instead. ${src.notes ?? ''}`.trim(), sources: src.sources }
   const str = (k: string) => String(un(a[k]) ?? '')
   const num = (k: string) => BigInt(String(un(a[k]) ?? 0))
   const attributes = {
@@ -65,4 +67,7 @@ creates.forEach((c, i) => ((c as { salt?: bigint }).salt = predicted[i].salt))
 const r = await w.executeBatch({ creates, ownershipChanges: predicted.map((p) => ({ entityKey: p.key, newOwner: SEALED })) })
 console.log('tx', r.txHash)
 r.createdEntities.forEach((k, i) => console.log(`  ${todo[i]}: ${k} corrects ${originals[i]} ${k.toLowerCase() === predicted[i].key.toLowerCase() ? '(sealed in the same transaction)' : '(key differed from prediction: check the seal)'}`))
-fs.writeFileSync('scripts/corrections.json', JSON.stringify({ at: new Date().toISOString(), tx: r.txHash, corrections: r.createdEntities.map((k, i) => ({ id: todo[i], key: k, corrects: originals[i] })) }, null, 2))
+const prev = fs.existsSync('scripts/corrections.json') ? (JSON.parse(fs.readFileSync('scripts/corrections.json', 'utf8')) as { batches?: unknown[]; tx?: string; at?: string; corrections?: unknown[] }) : {}
+const batches = prev.batches ?? (prev.tx ? [{ at: prev.at, tx: prev.tx, corrections: prev.corrections }] : [])
+batches.push({ at: new Date().toISOString(), tx: r.txHash, corrections: r.createdEntities.map((k, i) => ({ id: todo[i], key: k, corrects: originals[i] })) })
+fs.writeFileSync('scripts/corrections.json', JSON.stringify({ batches }, null, 2))

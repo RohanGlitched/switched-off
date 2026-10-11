@@ -5,13 +5,21 @@ import { dayMs } from '../lib/write'
 import { fmtDate, fmtDateTime, left, scopeName } from '../lib/fmt'
 import { useNow } from '../lib/store'
 import { REGISTRARS } from '../lib/registrars'
+import { ErrorBoundary } from './ErrorBoundary'
 import { BASIS_LABEL } from '../lib/basis'
 import { tf, tx, useT } from '../lib/i18n'
 
 /** District names as stored, except the "Statewide" marker, which is translated. */
 const place = (d: string, t: (s: string) => string) => (/^statewide$/i.test(d) ? t('Statewide') : d)
 
-export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boolean; compact?: boolean }) {
+export function Gazette(props: { o: Order | Record_; live?: boolean; compact?: boolean }) {
+  return (
+    <ErrorBoundary>
+      <GazetteInner {...props} />
+    </ErrorBoundary>
+  )
+}
+function GazetteInner({ o, live, compact }: { o: Order | Record_; live?: boolean; compact?: boolean }) {
   const now = useNow()
   const t = useT()
   const isOrder = 'confirmed' in o
@@ -19,7 +27,8 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
   const lapseAt = isOrder ? blockToTime(o.expiresAt) : o.ends * 1000
   const span = Math.max(1, (isOrder ? lapseAt : o.ends * 1000) - o.starts * 1000)
   const used = Math.min(1, Math.max(0, (now - o.starts * 1000) / span))
-  const lapsed = !live || now >= lapseAt
+  // an order lapses with its entity; an archive record is "lapsed" once its stated end has passed
+  const lapsed = isOrder ? !live || now >= lapseAt : o.ends ? now >= o.ends * 1000 : !live
   const emergencyPending = isOrder && o.emergency && lapseAt - o.issued * 1000 <= dayMs(o.net) + 120_000
   const official = REGISTRARS.some((r) => r.address.toLowerCase() === o.creator.toLowerCase())
   const daysLong = Math.max(1, Math.round((o.ends - o.starts) / (o.net === 'drill' ? 60 : 86400)))
@@ -31,8 +40,8 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
         <small style={{ fontStyle: 'italic' }}>{t('Unofficial transcription, not the Gazette of India')}</small>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-        <h3>{o.stateName}</h3>
-        <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{t(lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : 'IN FORCE')}</span>
+        <h3>{t(o.stateName)}{!official && <span className="chip" style={{ marginLeft: 8, fontSize: 11, verticalAlign: 'middle' }}>{t('community')}</span>}</h3>
+        <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{t(lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : isOrder ? 'IN FORCE' : 'ARCHIVED')}</span>
       </div>
       <p className="meta" style={{ margin: '4px 0 8px' }}>
         {compact && ds.length > 4 ? tf('{list} and {n} more', { list: ds.slice(0, 4).join(', '), n: ds.length - 4 }) : ds.join(', ')}

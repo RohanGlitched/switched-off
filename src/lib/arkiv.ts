@@ -4,7 +4,7 @@ import { createPublicClient, createWalletClient } from '@arkiv-network/sdk'
 import { tiramisu } from '@arkiv-network/sdk/chains'
 import { and, eq, gt, type Expression } from '@arkiv-network/sdk/query'
 import { u64 } from '@arkiv-network/sdk/attr'
-import { http, webSocket, parseAbiItem, type Hex, type Account } from 'viem'
+import { fallback, http, webSocket, parseAbiItem, type Hex, type Account } from 'viem'
 import { REGISTRARS } from './registrars'
 
 export const APP = 'switched-off'
@@ -51,7 +51,7 @@ export const ENDPOINT = MODE === 'direct' ? RPC : RELAY
 
 // No transport retries: Arkiv's 429 arrives with retry-after of up to ~1000 s and viem would wait it out
 // in silence. A failed read goes to the other path (below) instead.
-const HTTP = { batch: { wait: 30 }, retryCount: 0, timeout: 9000 } as const
+const HTTP = { batch: { wait: 30, batchSize: 10 }, retryCount: 0, timeout: 9000 } as const
 export const pub = createPublicClient({ chain: tiramisu, transport: http(ENDPOINT, HTTP) })
 let direct: typeof pub | null = null
 /** Arkiv's public endpoint, straight from the browser: the fallback when the relay can't answer. */
@@ -99,7 +99,8 @@ export function eventsClient() {
   return evClient
 }
 export const pollingClient = () => pub
-export const walletFor = (account: Account) => createWalletClient({ chain: tiramisu, transport: http(ENDPOINT, { retryCount: 3 }), account })
+/** Writes: the page's own path first, then the other one, so a paced relay or a spent keyless budget doesn't lose a report. */
+export const walletFor = (account: Account) => createWalletClient({ chain: tiramisu, transport: fallback([http(ENDPOINT, { retryCount: 1, timeout: 20_000 }), http(ENDPOINT === RPC ? RELAY : RPC, { retryCount: 1, timeout: 20_000 })]), account })
 
 // ─── entity shapes ───────────────────────────────────────────────────────────
 
@@ -186,40 +187,54 @@ const bool = (v0: unknown) => {
   const v = un(v0)
   return v === true || v === 'true'
 }
-const json = <T,>(e: Raw, fallback: T): T => {
+const json = <T,>(e: Raw, fallbackValue: T): T => {
   try {
-    return (e.toJson?.() as T) ?? fallback
+    const v = e.toJson?.() as T
+    return v && typeof v === 'object' && !Array.isArray(v) ? v : fallbackValue
   } catch {
-    return fallback
+    return fallbackValue
   }
 }
+// Anyone can write an entity tagged like ours, with any payload. Nothing reaches a component unless
+// it has the type and size the schema says, so a hostile record can't crash a page.
+const text = (v: unknown, max = 600): string => (typeof v === 'string' ? v.slice(0, max) : '')
+const textList = (v: unknown, max = 60): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && x.length > 0).slice(0, max).map((x) => x.slice(0, 80)) : [])
+const sourceList = (v: unknown): Source[] =>
+  Array.isArray(v)
+    ? v
+        .filter((s): s is Source => !!s && typeof s === 'object' && typeof (s as Source).url === 'string')
+        .slice(0, 12)
+        .map((s) => ({ title: text(s.title, 200) || text(s.url, 200), url: /^https?:\/\//i.test(s.url) ? s.url.slice(0, 500) : '' }))
+    : []
 
 function toOrder(e: Raw): Order {
   const a = e.attributes ?? {}
   const p = json<{ authority?: string; reason?: string; districts?: string[]; sources?: Source[]; stateName?: string; published?: boolean | null; basis?: string; notes?: string; endStated?: boolean }>(e, {})
+  const scope = str(a.scope)
+  const districts = textList(p.districts)
   return {
     key: e.key,
-    net: (str(a.net) as Net) || 'live',
-    orderId: str(a.order_id),
-    state: str(a.state),
-    stateName: p.stateName ?? str(a.state),
-    districts: p.districts ?? (str(a.district) ? [str(a.district)] : []),
-    scope: (str(a.scope) as Scope) || 'unknown',
+    net: str(a.net) === 'drill' ? 'drill' : 'live',
+    orderId: str(a.order_id).slice(0, 80),
+    state: str(a.state).slice(0, 4),
+    stateName: text(p.stateName, 60) || str(a.state).slice(0, 4),
+    districts: districts.length ? districts : str(a.district) ? [str(a.district).slice(0, 80)] : [],
+    scope: (['mobile-data', 'broadband', 'all-internet', 'voice-sms-too'].includes(scope) ? scope : 'unknown') as Scope,
     issued: num(a.issued),
     starts: num(a.starts),
     ends: num(a.ends),
     emergency: bool(a.emergency),
     confirmed: bool(a.confirmed),
-    basis: p.basis || str(a.basis),
-    basisCode: str(a.basis),
-    notes: p.notes ?? '',
-    endStated: p.endStated ?? num(a.ends) > 0,
-    authority: p.authority ?? '',
-    reason: p.reason ?? '',
-    renews: str(a.renews) || null,
+    basis: text(p.basis, 200) || str(a.basis).slice(0, 40),
+    basisCode: str(a.basis).slice(0, 40),
+    notes: text(p.notes, 1200),
+    endStated: typeof p.endStated === 'boolean' ? p.endStated : num(a.ends) > 0,
+    authority: text(p.authority, 200),
+    reason: text(p.reason, 600),
+    renews: str(a.renews).slice(0, 80) || null,
     seq: num(a.seq),
-    published: p.published ?? null,
-    sources: p.sources ?? [],
+    published: typeof p.published === 'boolean' ? p.published : null,
+    sources: sourceList(p.sources),
     owner: e.owner ?? '0x',
     creator: e.creator ?? '0x',
     createdAt: e.createdAt ?? 0n,
@@ -239,14 +254,14 @@ function toReport(e: Raw): Report {
   const p = json<{ note?: string }>(e, {})
   return {
     key: e.key,
-    net: (str(a.net) as Net) || 'live',
-    state: str(a.state),
-    district: str(a.district),
-    carrier: str(a.carrier),
-    status: (str(a.status) as Report['status']) || 'down',
+    net: str(a.net) === 'drill' ? 'drill' : 'live',
+    state: str(a.state).slice(0, 4),
+    district: str(a.district).slice(0, 80),
+    carrier: str(a.carrier).slice(0, 40),
+    status: (['down', 'slow', 'back'].includes(str(a.status)) ? str(a.status) : 'down') as Report['status'],
     seen: num(a.seen),
     late: bool(a.late),
-    note: p.note ?? '',
+    note: text(p.note, 140),
     owner: e.owner ?? '0x',
     creator: e.creator ?? '0x',
     createdAt: e.createdAt ?? 0n,
@@ -255,21 +270,33 @@ function toReport(e: Raw): Report {
 }
 
 /** Arkiv returns at most 200 per page: walk every page. */
-async function pages(client: typeof pub, where: Expression[], atBlock?: bigint): Promise<Raw[]> {
+async function pages(client: typeof pub, where: Expression[], atBlock?: bigint, opts: { creator?: Hex; maxPages?: number } = {}): Promise<Raw[]> {
   const out: Raw[] = []
   let q = client.select('*').where(and(where)).limit(200)
+  if (opts.creator) q = q.createdBy(opts.creator)
   if (atBlock) q = q.atBlock(atBlock)
   let page = await q.fetch()
   out.push(...(page.entities as unknown as Raw[]))
   let guard = 0
-  while (page.hasNextPage() && guard++ < 25) {
+  while (page.hasNextPage() && guard++ < (opts.maxPages ?? 25)) {
     page = await page.next()
     out.push(...(page.entities as unknown as Raw[]))
   }
   return out
 }
 /** A paged query on whichever path answers. */
-const all = (where: Expression[], atBlock?: bigint): Promise<Raw[]> => viaFallback((c) => pages(c, where, atBlock))
+const all = (where: Expression[], atBlock?: bigint, opts: { creator?: Hex; maxPages?: number } = {}): Promise<Raw[]> => viaFallback((c) => pages(c, where, atBlock, opts))
+const REGISTRAR = REGISTRARS[0].address as Hex
+/**
+ * The archive is read in two parts: the registrar's records by `$creator` (so no amount of junk in
+ * the namespace can bury them or make the page read thousands of entities), and community records
+ * with a page cap, labelled as such wherever they show.
+ */
+async function recordsOfficialAndCommunity(where: Expression[], atBlock?: bigint): Promise<Raw[]> {
+  const [official, everyone] = await Promise.all([all(where, atBlock, { creator: REGISTRAR }), all(where, atBlock, { maxPages: 3 })])
+  const seen = new Set(official.map((e) => e.key.toLowerCase()))
+  return [...official, ...everyone.filter((e) => !seen.has(e.key.toLowerCase()))]
+}
 
 const base = (type: string, net: Net) => [eq('app', APP), eq('type', type), eq('net', net)]
 
@@ -290,19 +317,15 @@ export async function activeOrders(net: Net, atBlock?: bigint): Promise<Order[]>
  * original: a stranger's "correction" can't hide a record.
  */
 export async function records(net: Net, atBlock?: bigint): Promise<Record_[]> {
-  return applyCorrections((await all(base('record', net), atBlock)).map(toRecord))
+  return applyCorrections((await recordsOfficialAndCommunity(base('record', net), atBlock)).map(toRecord))
 }
 export function applyCorrections(rs: Record_[]): Record_[] {
   const byKey = new Map(rs.map((r) => [r.key.toLowerCase(), r]))
-  const trusted = (c: Record_) => {
-    const orig = byKey.get(c.corrects.toLowerCase())
-    return c.official || (!!orig && orig.creator.toLowerCase() === c.creator.toLowerCase())
-  }
-  const corrected = new Map(rs.filter((r) => r.corrects && trusted(r)).map((r) => [r.corrects.toLowerCase(), r.key]))
+  const corrected = new Map(rs.filter((r) => trustedCorrection(r, byKey)).map((r) => [r.corrects.toLowerCase(), r.key]))
   return rs.filter((r) => !corrected.has(r.key.toLowerCase())).map((r) => (r.corrects ? { ...r, correctedBy: undefined } : r))
 }
 /** Records narrowed on Arkiv itself (typed equality on `state`, a u64 range on `issued`), not in the browser. */
-export async function recordsWhere(net: Net, f: { state?: string; since?: number }): Promise<{ list: Record_[]; query: string }> {
+export async function recordsWhere(net: Net, f: { state?: string; since?: number }): Promise<{ list: Record_[]; query: string; hidden: number }> {
   const where = [...base('record', net)]
   const extra: string[] = []
   if (f.state) {
@@ -310,14 +333,46 @@ export async function recordsWhere(net: Net, f: { state?: string; since?: number
     extra.push(`state = str('${f.state}')`)
   }
   if (f.since) {
-    where.push(gt('issued', u64(BigInt(f.since))))
-    extra.push(`issued > u64(${f.since})`)
+    // "issued since" is inclusive: strictly greater than the second before
+    where.push(gt('issued', u64(BigInt(f.since - 1))))
+    extra.push(`issued > u64(${f.since - 1})`)
   }
-  return { list: applyCorrections((await all(where)).map(toRecord)), query: queryText('record', net, extra) }
+  const raw = (await recordsOfficialAndCommunity(where)).map(toRecord)
+  const list = applyCorrections(raw)
+  return { list, query: queryText('record', net, extra), hidden: raw.length - list.length }
 }
 /** Every record including the ones a correction replaced (for the entity page). */
 export async function allRecords(net: Net): Promise<Record_[]> {
-  return (await all(base('record', net))).map(toRecord)
+  return (await recordsOfficialAndCommunity(base('record', net))).map(toRecord)
+}
+/** Which corrections readers trust: from the registrar, or from whoever filed the record they correct. */
+export function trustedCorrection(c: Record_, byKey: Map<string, Record_>): boolean {
+  if (!c.corrects) return false
+  const orig = byKey.get(c.corrects.toLowerCase())
+  return c.official || (!!orig && orig.creator.toLowerCase() === c.creator.toLowerCase())
+}
+/** Records that may stand in a renewal chain with `r`: the registrar's, or the same filer's. */
+export const sameDesk = (a: Record_, b: Record_) => (a.official && b.official) || a.creator.toLowerCase() === b.creator.toLowerCase()
+
+/** The recent EntityCreated / ExpiryExtended events for a set of keys, newest first, so the wire has history on arrival. */
+export async function recentEvents(keys: Hex[], lookBack = 99_000n): Promise<{ kind: 'created' | 'extended'; key: Hex; block: bigint; hash: Hex; index: number }[]> {
+  if (!keys.length) return []
+  try {
+    const head = await viaFallback((c) => c.getBlockNumber())
+    const from = head > lookBack ? head - lookBack : 0n
+    const ks = keys.slice(0, 300)
+    const [created, extended] = await Promise.all([
+      viaFallback((c) => c.getLogs({ address: ARKIV_ADDRESS, event: parseAbiItem('event EntityCreated(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt, uint8 creationFlags)'), args: { entityKey: ks }, fromBlock: from, toBlock: head })),
+      viaFallback((c) => c.getLogs({ address: ARKIV_ADDRESS, event: parseAbiItem('event ExpiryExtended(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt)'), args: { entityKey: ks }, fromBlock: from, toBlock: head })),
+    ])
+    const out = [
+      ...created.map((l) => ({ kind: 'created' as const, key: (l.args as { entityKey: Hex }).entityKey, block: l.blockNumber!, hash: l.transactionHash!, index: l.logIndex! })),
+      ...extended.map((l) => ({ kind: 'extended' as const, key: (l.args as { entityKey: Hex }).entityKey, block: l.blockNumber!, hash: l.transactionHash!, index: l.logIndex! })),
+    ]
+    return out.sort((a, b) => (a.block === b.block ? b.index - a.index : Number(b.block - a.block))).slice(0, 30)
+  } catch {
+    return []
+  }
 }
 
 /**
@@ -333,7 +388,8 @@ export async function extenders(key: Hex, fromBlock: bigint, creator?: string): 
     const windows: [bigint, bigint][] = []
     for (let from = fromBlock > 0n ? fromBlock : 0n; from <= head && windows.length < 40; from += WINDOW + 1n) windows.push([from, from + WINDOW < head ? from + WINDOW : head])
     const logs = (await Promise.all(windows.map(([a, b]) => viaFallback((c) => c.getLogs({ address: ARKIV_ADDRESS, event, args: { entityKey: key }, fromBlock: a, toBlock: b }))))).flat()
-    const froms = await Promise.all(logs.map((l) => viaFallback((c) => c.getTransaction({ hash: l.transactionHash! })).then((t) => t.from.toLowerCase() as Hex)))
+    const hashes = [...new Set(logs.map((l) => l.transactionHash!))].slice(0, 40)
+    const froms = await Promise.all(hashes.map((hash) => viaFallback((c) => c.getTransaction({ hash })).then((t) => t.from.toLowerCase() as Hex)))
     return [...new Set(froms)].filter((f) => f !== (creator ?? '').toLowerCase())
   } catch {
     return []

@@ -28,7 +28,7 @@ export function DrillPage() {
   const [lastTx, setLastTx] = useState<string | null>(null)
   const [rewind, setRewind] = useState(0) // minutes back
   const [target, setTarget] = useState<number | null>(null) // a district picked on the map, waiting to be reported
-  const [past, setPast] = useState<{ orders: Order[]; reports: Report[] } | null>(null)
+  const [past, setPast] = useState<{ orders: Order[]; reports: Report[]; block: bigint } | null>(null)
   const t = useT()
   useNow()
 
@@ -36,7 +36,7 @@ export function DrillPage() {
     if (!rewind) return setPast(null)
     const block = currentBlock() - BigInt(Math.round((rewind * 60) / 2))
     let alive = true
-    Promise.all([activeOrders('drill', block), liveReports('drill', block)]).then(([o, r]) => alive && setPast({ orders: o, reports: r }), () => alive && setPast({ orders: [], reports: [] }))
+    Promise.all([activeOrders('drill', block), liveReports('drill', block)]).then(([o, r]) => alive && setPast({ orders: o, reports: r, block }), () => alive && setPast({ orders: [], reports: [], block }))
     return () => { alive = false }
   }, [rewind])
 
@@ -102,7 +102,7 @@ export function DrillPage() {
             <div className="grid2" style={{ gap: 12 }}>
               <label className="field">{t('State')}
                 <select className="input" value={state} onChange={(e) => { setState(e.target.value); setPicked([]) }}>
-                  {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  {Object.entries(STATES).sort((a, b) => t(a[1]).localeCompare(t(b[1]))).map(([k, v]) => <option key={k} value={k}>{t(v)}</option>)}
                 </select>
               </label>
               <label className="field">{t('What is cut')}
@@ -167,7 +167,7 @@ export function DrillPage() {
               <button className="btn small" onClick={() => setTarget(null)}>{t('Cancel')}</button>
             </div>
           )}
-          <label className="field">{t('Rewind the drill:')} {rewind ? tp(rewind, '{n} minute ago (querying Arkiv at block {block})', '{n} minutes ago (querying Arkiv at block {block})', { block: (currentBlock() - BigInt(rewind * 30)).toString() }) : t('now')}
+          <label className="field">{t('Rewind the drill:')} {rewind ? tp(rewind, '{n} minute ago (querying Arkiv at block {block})', '{n} minutes ago (querying Arkiv at block {block})', { block: (past?.block ?? currentBlock() - BigInt(rewind * 30)).toString() }) : t('now')}
             <input type="range" min={-30} max={0} value={-rewind} onChange={(e) => setRewind(-e.target.value)} aria-valuetext={rewind ? tf('{n} minutes ago', { n: rewind }) : t('now')} />
             <span className="hint">{t('Arkiv answers queries as of any past block, so lapsed orders and faded reports reappear exactly as they were.')}</span>
           </label>
@@ -178,9 +178,9 @@ export function DrillPage() {
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-            <h2 className="h3">{tf('Drill orders in force ({n})', { n: drill.orders.length })}</h2>
-            {drill.orders.length === 0 && <div className="empty">{t('No drill order is in force. Issue one above and it appears here as a gazette page, counting down.')}</div>}
-            <div className="grid2">{[...drill.orders].sort((a, b) => b.issued - a.issued).slice(0, 6).map((o) => <Link key={o.key} to={`/e/${o.key}`} style={{ textDecoration: 'none' }}><Gazette o={o} live compact /></Link>)}</div>
+            <h2 className="h3">{tf('Drill orders in force ({n})', { n: shown.orders.length })}{past ? <span className="mute" style={{ fontWeight: 400 }}> · {tf('at block {block}', { block: past.block.toString() })}</span> : null}</h2>
+            {shown.orders.length === 0 && <div className="empty">{t('No drill order is in force. Issue one above and it appears here as a gazette page, counting down.')}</div>}
+            <div className="grid2">{[...shown.orders].sort((a, b) => b.issued - a.issued).slice(0, 6).map((o) => <Link key={o.key} to={`/e/${o.key}`} style={{ textDecoration: 'none' }}><Gazette o={o} live compact /></Link>)}</div>
           </div>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
             <h2 className="h3">{t('Live wire')}</h2>
