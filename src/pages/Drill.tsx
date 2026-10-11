@@ -157,7 +157,7 @@ export function DrillPage() {
         </div>
 
         <div style={{ display: 'grid', gap: 14, minWidth: 0 }}>
-          <NightMap state={map} focus={null} onPick={(i) => { if (geo && !rewind) setTarget(i) }} label="Drill map: pick a district to report it dark" />
+          <NightMap state={map} focus={state} zoom onPick={(i) => { if (geo && !rewind) setTarget(i) }} label="Drill map: pick a district to report it dark" />
           {target !== null && geo && (
             <div className="panel" style={{ padding: 14, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
               <span style={{ flex: '1 1 200px' }}>Report <b>{geo.districts[target].name}</b>, {geo.districts[target].state} as dark (drill)?{map.off.has(target) ? ' An order is already in force here.' : ' No order is in force here, so it will burn red.'}</span>

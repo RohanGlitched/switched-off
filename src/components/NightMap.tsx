@@ -27,11 +27,13 @@ export function useMapState(geo: Geo | null, orders: Order[], reports: Report[])
 type Props = {
   state: MapState
   focus?: string | null
+  /** zoom the map onto the focused state */
+  zoom?: boolean
   onPick?: (districtIndex: number) => void
   label?: string
 }
 
-export function NightMap({ state, focus, onPick, label }: Props) {
+export function NightMap({ state, focus, onPick, label, zoom }: Props) {
   const [geo, setGeo] = useState<Geo | null>(null)
   const ref = useRef<HTMLCanvasElement>(null)
   const wrap = useRef<HTMLDivElement>(null)
@@ -43,6 +45,20 @@ export function NightMap({ state, focus, onPick, label }: Props) {
   focusRef.current = focus
   const pickRef = useRef(onPick)
   pickRef.current = onPick
+  // what part of India to frame: the whole country, or (zoomed) the focused state with a margin
+  const bounds = useMemo((): [number, number, number, number] | null => {
+    if (!geo) return null
+    if (!zoom || !focus) return geo.bounds
+    const pts = geo.dots.filter(([, , d]) => d >= 0 && geo.districts[d].code === focus)
+    if (!pts.length) return geo.bounds
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1])
+    const pad = 1.4
+    return [Math.min(...xs) - pad, Math.min(...ys) - pad, Math.max(...xs) + pad, Math.max(...ys) + pad]
+  }, [geo, focus, zoom])
+  const boundsRef = useRef(bounds)
+  boundsRef.current = bounds
+  const reframe = useRef<() => void>(() => {})
+  useEffect(() => reframe.current(), [bounds])
 
   useEffect(() => {
     void loadGeo().then(setGeo)
@@ -53,13 +69,14 @@ export function NightMap({ state, focus, onPick, label }: Props) {
     if (!geo || !ref.current || !wrap.current) return
     const c = ref.current
     const g = c.getContext('2d')!
-    const [minx, miny, maxx, maxy] = geo.bounds
+    let [minx, miny, maxx, maxy] = boundsRef.current ?? geo.bounds
     const n = geo.dots.length
     // start lit (the first frame is already right); only changes animate
     const light = (lightRef.current = lightRef.current && lightRef.current.length === n ? lightRef.current : Float32Array.from(geo.dots, (d) => (d[2] < 0 ? 0.35 : 1)))
     const seed = new Float32Array(n).map((_, i) => ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 1)
     let w = 0, h = 0, s = 0, ox = 0, oy = 0, dpr = 1
     const resize = () => {
+      ;[minx, miny, maxx, maxy] = boundsRef.current ?? geo.bounds
       const r = wrap.current!.getBoundingClientRect()
       dpr = Math.min(2, window.devicePixelRatio || 1)
       w = r.width
@@ -73,6 +90,10 @@ export function NightMap({ state, focus, onPick, label }: Props) {
       oy = (h - (maxy - miny) * 1.07 * s) / 2
     }
     resize()
+    reframe.current = () => {
+      resize()
+      draw(performance.now())
+    }
     // a resize clears the canvas: repaint at once, even if animation frames are paused (hidden tab)
     const ro = new ResizeObserver(() => {
       resize()
@@ -89,7 +110,7 @@ export function NightMap({ state, focus, onPick, label }: Props) {
       const f = focusRef.current
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
       g.clearRect(0, 0, w, h)
-      const r = Math.max(1.1, s * 0.085)
+      const r = Math.min(14, Math.max(1.1, s * 0.085))
       for (let i = 0; i < n; i++) {
         const [lon, lat, d] = geo.dots[i]
         const x = ox + (lon - minx) * s
