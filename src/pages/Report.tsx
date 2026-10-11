@@ -78,7 +78,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0 }}>
           <div className="section-head" style={{ marginBottom: 0 }}>
-            <span className="chip red">Report</span>
+            <span className="chip red">{net === 'drill' ? 'Report · drill (sandbox, not the live register)' : 'Report'}</span>
             <h1 className="h2">{t('Is your internet off?')}</h1>
             <p className="lede">{t('Say where and on which network. No sign-up and no name: this browser holds a throwaway key, and the report is owned by it.')} {t('It fades unless someone nearby confirms it.') === 'It fades unless someone nearby confirms it.' ? `It fades in ${net === 'drill' ? 'six minutes' : `${REPORT_LIFE.live / 3600} hours`} unless someone nearby confirms it.` : t('It fades unless someone nearby confirms it.')}</p>
           </div>
@@ -117,6 +117,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
               <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>
             )}
           </div>
+          {net === 'live' && <p className="hint">Just trying it out? <Link to="/report?drill=1">Use the drill version of this form</Link>: same entities, kept off the live map.</p>}
           <p className="hint">{t('In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.')}</p>
         </div>
         <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>

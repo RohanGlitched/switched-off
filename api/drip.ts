@@ -35,7 +35,7 @@ export default async function handler(req: Req, res: Res) {
 
   const wallet = createWalletClient({ chain: tiramisu, transport: http(RPC, opts), account: privateKeyToAccount(key) })
   try {
-    const hash = await wallet.sendTransaction({ to: address, value: DRIP })
+    const hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as Parameters<typeof wallet.sendTransaction>[0])
     await pub.waitForTransactionReceipt({ hash, timeout: 30_000 })
     seen.set(ip, now)
     seen.set(address.toLowerCase(), now)

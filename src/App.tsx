@@ -32,7 +32,7 @@ export function App() {
   const page = route === '/' ? <Home />
     : route === '/register' ? <RegisterPage />
     : route.startsWith('/e/') ? <EntityPage entityKey={route.slice(3) as `0x${string}`} />
-    : route === '/report' ? <ReportPage />
+    : route === '/report' ? <ReportPage net={new URLSearchParams(path.split('?')[1] ?? '').get('drill') ? 'drill' : 'live'} />
     : route === '/drill' ? <DrillPage />
     : route === '/data' ? <DataPage />
     : route === '/why' ? <WhyPage />
