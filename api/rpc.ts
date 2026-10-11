@@ -44,6 +44,11 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
 
 export default async function handler(req: Req, res: Res) {
   res.setHeader('Cache-Control', 'no-store')
+  // mirrors on other hosts (GitHub Pages, a saved file) may fall back to this relay
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'content-type')
+  if (req.method === 'OPTIONS') return res.status(204).json(null)
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST JSON-RPC here, or use the Arkiv RPC directly: ' + UPSTREAM })
   let body: Call | Call[]
   try {
