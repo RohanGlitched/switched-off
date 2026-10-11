@@ -6,7 +6,7 @@ import { Gazette } from '../components/Gazette'
 import { SEALED, allRecords, blockToTime, currentBlock, extenders, orderByKey, syncClock, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
 import { confirmEmergency, confirmReport, keepAlive, withdrawReport } from '../lib/write'
 import { account } from '../lib/wallet'
-import { addrUrl, ago, fmtDateTime, left, short, txUrl } from '../lib/fmt'
+import { addrUrl, ago, fmtDate, fmtDateTime, left, short, txUrl } from '../lib/fmt'
 import { refresh, useNow } from '../lib/store'
 import { Link } from '../lib/router'
 import { STATES } from '../lib/geo'
@@ -33,8 +33,8 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
         setRelated({
           corrects: (x.corrects || undefined) as Hex | undefined,
           correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase())?.key,
-          renews: x.renews ? rs.filter((r) => r.orderId === x.renews && !r.corrects).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDateTime(r.starts * 1000).slice(0, 11)})` }))[0] : undefined,
-          renewedBy: rs.filter((r) => r.renews === x.orderId && !r.corrects).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: `renewal no. ${Math.max(1, r.seq - 1)}, ${fmtDateTime(r.starts * 1000).slice(0, 11)}` })),
+          renews: x.renews ? rs.filter((r) => r.orderId === x.renews && !r.corrects).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDate(r.starts * 1000)})` }))[0] : undefined,
+          renewedBy: rs.filter((r) => r.renews === x.orderId && !r.corrects).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: `renewal no. ${Math.max(1, r.seq - 1)}, ${fmtDate(r.starts * 1000)}` })),
         }),
       )
   })
