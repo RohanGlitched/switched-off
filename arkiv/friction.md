@@ -113,4 +113,4 @@ What went smoothly is documented with the same care at the end, because a lot of
 
 - `createEntity` round trip (send + receipt) from India over the public RPC: 7.3–9.8 s.
 - Block time 2 s (`getBlockTiming`).
-- Typed `arkiv_query` through our relay: 0.3–0.9 s (cached: under 50 ms).
+- The full archive (`arkiv_query`, 111 entities with attributes and payloads, one page): 0.54–0.65 s direct with a key, 0.42–1.0 s through our Vercel relay, measured from India on 11 Oct 2026.
