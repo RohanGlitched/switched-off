@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { districtsOf, loadGeo, STATES, type Geo } from '../lib/geo'
 import { fileOrder } from '../lib/write'
 import { refresh } from '../lib/store'
-import { scopeLabel, short, txUrl } from '../lib/fmt'
+import { scopeLabel, scopeName, short, txUrl } from '../lib/fmt'
+import { tf, tr, tx, useT } from '../lib/i18n'
 import { Link } from '../lib/router'
 import { toast } from '../components/Toast'
 import { humanError } from './Entity'
@@ -16,6 +17,7 @@ const day = 86_400_000
 const toMs = (d: string) => (d ? new Date(`${d}T00:00:00+05:30`).getTime() : 0)
 
 export function FilePage() {
+  const t = useT()
   const [geo, setGeo] = useState<Geo | null>(null)
   useEffect(() => void loadGeo().then(setGeo), [])
   const [state, setState] = useState('')
@@ -34,18 +36,18 @@ export function FilePage() {
   const districts = useMemo(() => (geo && state ? districtsOf(geo, state) : []), [geo, state])
   const len = starts && ends ? Math.round((toMs(ends) - toMs(starts)) / day) : null
   const problems = [
-    !state && 'Pick the state or UT.',
-    !starts && 'Give the start date stated in the order.',
-    ends && starts && toMs(ends) < toMs(starts) && 'The end date is before the start date.',
-    !/^https:\/\/\S+\.\S+/.test(srcUrl) && 'Link the published order or reporting that cites it (https://…).',
-    reason.trim().length < 10 && 'Paraphrase the reason the order gives.',
-    personalData(`${reason} ${authority} ${srcTitle}`) && `Remove ${personalData(`${reason} ${authority} ${srcTitle}`)}: the register is public.`,
+    !state && t('Pick the state or UT.'),
+    !starts && t('Give the start date stated in the order.'),
+    ends && starts && toMs(ends) < toMs(starts) && t('The end date is before the start date.'),
+    !/^https:\/\/\S+\.\S+/.test(srcUrl) && t('Link the published order or reporting that cites it (https://…).'),
+    reason.trim().length < 10 && t('Paraphrase the reason the order gives.'),
+    personalData(`${reason} ${authority} ${srcTitle}`) && tf('Remove {what}: the register is public.', { what: t(personalData(`${reason} ${authority} ${srcTitle}`)!) }),
   ].filter(Boolean) as string[]
   const nameWarn = /\b(shri|smt|sh\.|dr\.|mr\.|mrs\.|ms\.)\s+[A-Z]/i.test(authority)
 
   const submit = async () => {
     if (problems.length) return toast(problems[0])
-    if (nameWarn) return toast('Use the designation (e.g. "Home Secretary, Government of Manipur"), not an official’s name.')
+    if (nameWarn) return toast(tr('Use the designation (e.g. "Home Secretary, Government of Manipur"), not an official’s name.'))
     setBusy(true)
     try {
       const now = Date.now()
@@ -71,7 +73,7 @@ export function FilePage() {
       })
       setDone({ order: r.orderKey, record: r.recordKey, tx: r.txHash })
       void refresh('live')
-      toast(r.sealed ? (r.orderKey ? 'Filed and sealed in one transaction: the order is in force on the map until it lapses.' : 'Filed to the archive and sealed.') : 'Filed. The seal did not land: this browser still owns the record. Open it and try again, or leave it; it is readonly either way.')
+      toast(tr(r.sealed ? (r.orderKey ? 'Filed and sealed in one transaction: the order is in force on the map until it lapses.' : 'Filed to the archive and sealed.') : 'Filed. The seal did not land: this browser still owns the record. Open it and try again, or leave it; it is readonly either way.'))
     } catch (e) {
       toast(humanError(e))
     } finally {
@@ -83,34 +85,34 @@ export function FilePage() {
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div className="section-head" style={{ marginBottom: 0 }}>
-          <span className="chip sodium">File an order</span>
-          <h1 className="h2">Transcribe a published order.</h1>
-          <p className="lede">Saw a suspension order in a gazette, a district’s website or the news? Put it on the register. It is signed by this browser’s key, labelled as a community transcription, and its archive copy is sealed straight away, so nobody can delete it afterwards, you included.</p>
+          <span className="chip sodium">{t('File an order')}</span>
+          <h1 className="h2">{t('Transcribe a published order.')}</h1>
+          <p className="lede">{t('Saw a suspension order in a gazette, a district’s website or the news? Put it on the register. It is signed by this browser’s key, labelled as a community transcription, and its archive copy is sealed straight away, so nobody can delete it afterwards, you included.')}</p>
           <ul className="mute" style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 6 }}>
-            <li>An order whose end date is still ahead goes on the live map and lapses on its own.</li>
-            <li>Use the issuing authority’s designation, never an official’s name.</li>
-            <li>Paraphrase the stated reason; link the source.</li>
-            <li>Got something wrong? File again: a correction is a new entity, and both are kept.</li>
+            <li>{t('An order whose end date is still ahead goes on the live map and lapses on its own.')}</li>
+            <li>{t('Use the issuing authority’s designation, never an official’s name.')}</li>
+            <li>{t('Paraphrase the stated reason; link the source.')}</li>
+            <li>{t('Got something wrong? File again: a correction is a new entity, and both are kept.')}</li>
           </ul>
-          <p className="hint">Practising? The <Link to="/drill">drill</Link> uses the same entities without touching the live register.</p>
+          <p className="hint">{tx('Practising? The {link} uses the same entities without touching the live register.', { link: <Link to="/drill">{t('drill')}</Link> })}</p>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 14 }}>
           <div className="grid2" style={{ gap: 12 }}>
-            <label className="field">State or UT
+            <label className="field">{t('State or UT')}
               <select className="input" value={state} onChange={(e) => { setState(e.target.value); setPicked([]) }}>
-                <option value="">Choose…</option>
+                <option value="">{t('Choose…')}</option>
                 {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </label>
-            <label className="field">What was cut
+            <label className="field">{t('What was cut')}
               <select className="input" value={scope} onChange={(e) => setScope(e.target.value as Scope)}>
-                {Object.entries(scopeLabel).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                {Object.keys(scopeLabel).map((k) => <option key={k} value={k}>{scopeName(k)}</option>)}
               </select>
             </label>
           </div>
           {state && (
             <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-              <legend className="mute" style={{ fontSize: 14, marginBottom: 6 }}>Districts named in the order ({picked.length || 'whole state'})</legend>
+              <legend className="mute" style={{ fontSize: 14, marginBottom: 6 }}>{tf('Districts named in the order ({n})', { n: picked.length || t('whole state') })}</legend>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 150, overflowY: 'auto' }}>
                 {districts.map((d) => {
                   const on = picked.includes(d.name)
@@ -120,34 +122,34 @@ export function FilePage() {
             </fieldset>
           )}
           <div className="grid2" style={{ gap: 12 }}>
-            <label className="field">Starts<input className="input" type="date" value={starts} onChange={(e) => setStarts(e.target.value)} /></label>
-            <label className="field">Ends (as stated)<input className="input" type="date" value={ends} onChange={(e) => setEnds(e.target.value)} /></label>
+            <label className="field">{t('Starts')}<input className="input" type="date" value={starts} onChange={(e) => setStarts(e.target.value)} /></label>
+            <label className="field">{t('Ends (as stated)')}<input className="input" type="date" value={ends} onChange={(e) => setEnds(e.target.value)} /></label>
           </div>
-          {len !== null && len > 15 && <p className="hint" style={{ margin: 0, color: 'var(--vermilion)' }}>{len} days: longer than the fifteen days one order may run (since November 2020). If that is what the order says, file it as written; the register will show it.</p>}
-          <label className="field">Issuing authority (designation)
-            <input className="input" value={authority} onChange={(e) => setAuthority(e.target.value)} placeholder="Home Department, Government of Manipur" />
-            {nameWarn && <span className="hint" style={{ color: 'var(--vermilion)' }}>That looks like a person’s name. Use the designation.</span>}
+          {len !== null && len > 15 && <p className="hint" style={{ margin: 0, color: 'var(--vermilion)' }}>{tf('{n} days: longer than the fifteen days one order may run (since November 2020). If that is what the order says, file it as written; the register will show it.', { n: len })}</p>}
+          <label className="field">{t('Issuing authority (designation)')}
+            <input className="input" value={authority} onChange={(e) => setAuthority(e.target.value)} placeholder={t('Home Department, Government of Manipur')} />
+            {nameWarn && <span className="hint" style={{ color: 'var(--vermilion)' }}>{t('That looks like a person’s name. Use the designation.')}</span>}
           </label>
-          <label className="field">Legal basis
+          <label className="field">{t('Legal basis')}
             <select className="input" value={basis} onChange={(e) => setBasis(e.target.value)}>
-              {Object.entries(BASIS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              {Object.entries(BASIS_LABEL).map(([k, v]) => <option key={k} value={k}>{t(v)}</option>)}
             </select>
           </label>
-          <label className="field">Reason the order gives (paraphrase)
-            <textarea className="input" rows={2} maxLength={280} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="To prevent the spread of rumours on social media during unrest" />
+          <label className="field">{t('Reason the order gives (paraphrase)')}
+            <textarea className="input" rows={2} maxLength={280} value={reason} onChange={(e) => setReason(e.target.value)} placeholder={t('To prevent the spread of rumours on social media during unrest')} />
           </label>
           <div className="grid2" style={{ gap: 12 }}>
-            <label className="field">Source link<input className="input" value={srcUrl} onChange={(e) => setSrcUrl(e.target.value)} placeholder="https://…" inputMode="url" /></label>
-            <label className="field">Source title<input className="input" value={srcTitle} onChange={(e) => setSrcTitle(e.target.value)} placeholder="Home Department order no. …" /></label>
+            <label className="field">{t('Source link')}<input className="input" value={srcUrl} onChange={(e) => setSrcUrl(e.target.value)} placeholder="https://…" inputMode="url" /></label>
+            <label className="field">{t('Source title')}<input className="input" value={srcTitle} onChange={(e) => setSrcTitle(e.target.value)} placeholder={t('Home Department order no. …')} /></label>
           </div>
-          <div className="seg" role="group" aria-label="Was the order text published">
-            {(['yes', 'no', 'unknown'] as const).map((p) => <button key={p} aria-pressed={published === p} onClick={() => setPublished(p)}>{p === 'yes' ? 'Text published' : p === 'no' ? 'Not published' : 'Don’t know'}</button>)}
+          <div className="seg" role="group" aria-label={t('Was the order text published')}>
+            {(['yes', 'no', 'unknown'] as const).map((p) => <button key={p} aria-pressed={published === p} onClick={() => setPublished(p)}>{t(p === 'yes' ? 'Text published' : p === 'no' ? 'Not published' : 'Don’t know')}</button>)}
           </div>
-          <button className="btn primary" disabled={busy} onClick={submit}>{busy ? 'Writing order and record to Arkiv…' : problems.length ? problems[0] : 'File this order'}</button>
+          <button className="btn primary" disabled={busy} onClick={submit}>{busy ? t('Writing order and record to Arkiv…') : problems.length ? problems[0] : t('File this order')}</button>
           {done && (
             <p className="hint" style={{ margin: 0 }}>
-              Filed in <a href={txUrl(done.tx)}>{short(done.tx)}</a>. Record <Link to={`/e/${done.record}`}>{short(done.record)}</Link>
-              {done.order ? <> · in force as <Link to={`/e/${done.order}`}>{short(done.order)}</Link></> : null}.
+              {tx('Filed in {tx}. Record {record}', { tx: <a href={txUrl(done.tx)}>{short(done.tx)}</a>, record: <Link to={`/e/${done.record}`}>{short(done.record)}</Link> })}
+              {done.order ? <> · {tx('in force as {order}', { order: <Link to={`/e/${done.order}`}>{short(done.order)}</Link> })}</> : null}{t('.')}
             </p>
           )}
         </div>

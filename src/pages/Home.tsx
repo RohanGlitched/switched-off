@@ -6,7 +6,7 @@ import { Rewind } from '../components/Rewind'
 import { loadGeo, type Geo } from '../lib/geo'
 import { useNow, useRegister } from '../lib/store'
 import { Link, go } from '../lib/router'
-import { useT } from '../lib/i18n'
+import { tf, tp, tx, useT } from '../lib/i18n'
 import { fmtDate } from '../lib/fmt'
 import type { Order, Record_ } from '../lib/arkiv'
 
@@ -85,14 +85,12 @@ export function Home() {
       <section className="hero">
         <div className="wrap hero-grid">
           <div className="hero-copy">
-            <span className="chip sodium" style={{ justifySelf: 'start' }}>Register of telecom suspension orders · India</span>
+            <span className="chip sodium" style={{ justifySelf: 'start' }}>{t('Register of telecom suspension orders · India')}</span>
             <h1 className="h1">{t('The record of a shutdown can’t be switched off.')}</h1>
             <p className="lede">
-              India’s internet shutdown orders, filed on Arkiv the way the law says they work: each lives until it lapses, nobody can quietly edit or
-              delete the record, and anyone can keep it alive. When the lights go out without a published order, people on the ground can say so, and their
-              neighbours can confirm it.
+              {t('India’s internet shutdown orders, filed on Arkiv the way the law says they work: each lives until it lapses, nobody can quietly edit or delete the record, and anyone can keep it alive. When the lights go out without a published order, people on the ground can say so, and their neighbours can confirm it.')}
             </p>
-            <div className="stats" role="group" aria-label="Right now">
+            <div className="stats" role="group" aria-label={t('Right now')}>
               <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
               {live.loading || live.orders.length > 0 ? (
                 <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
@@ -105,28 +103,28 @@ export function Home() {
               <Link to="/report" className="btn primary">{t('Is your internet off? Report it')}</Link>
               <Link to="/register" className="btn">{t('Open the register')}</Link>
             </div>
-            {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>Arkiv didn’t answer just now ({live.error.slice(0, 80)}). The map will retry on its own.</p>}
+            {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 80) })}</p>}
             {!live.loading && !live.error && live.orders.length === 0 && latest && (
               <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
-                <span><span className="hint">No order on the register is in force right now. Latest on file:</span><br /><b>{latest.stateName}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
-                <span className="chip">lapsed</span>
+                <span><span className="hint">{t('No order on the register is in force right now. Latest on file:')}</span><br /><b>{latest.stateName}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
+                <span className="chip">{t('lapsed')}</span>
               </Link>
             )}
           </div>
           <div className="hero-map">
-            <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? `Map of India on ${fmtDate(at)}: ${map.off.size} districts under a suspension order on file.` : undefined} />
+            <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? tf('Map of India on {date}: {n} districts under a suspension order on file.', { date: fmtDate(at), n: map.off.size }) : undefined} />
             <div className="mobile-only" style={{ marginTop: 12 }}><Link to="/report" className="btn primary" style={{ width: '100%' }}>{t('Is your internet off? Report it')}</Link></div>
             {span && (
               <div className="panel" style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>
-                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : 'Now'} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${inForceAt.length} order${inForceAt.length === 1 ? '' : 's'} in force, ${map.off.size} district${map.off.size === 1 ? '' : 's'} dark` : `${live.orders.length} order${live.orders.length === 1 ? '' : 's'} in force`}</span></span>
+                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : t('Now')} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${tp(inForceAt.length, '{n} order in force', '{n} orders in force')}, ${tp(map.off.size, '{n} district dark', '{n} districts dark')}` : tp(live.orders.length, '{n} order in force', '{n} orders in force')}</span></span>
                   <span className="row" style={{ gap: 6 }}>
-                    <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? 'Pause' : t('Play the history')}</button>
+                    <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? t('Pause') : t('Play the history')}</button>
                     {at !== null && <button className="btn small" onClick={() => { setPlaying(false); setAt(null) }}>{t('Back to now')}</button>}
                   </span>
                 </div>
-                <input type="range" aria-label="Day to show" aria-valuetext={at ? fmtDate(at) : 'today'} min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
-                <span className="hint">Every order on the register, replayed from its stated start to its stated end. Orders without a published end date are shown until the next order on file for that state, at most fifteen days.</span>
+                <input type="range" aria-label={t('Day to show')} aria-valuetext={at ? fmtDate(at) : t('today')} min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
+                <span className="hint">{t('Every order on the register, replayed from its stated start to its stated end. Orders without a published end date are shown until the next order on file for that state, at most fifteen days.')}</span>
               </div>
             )}
           </div>
@@ -136,10 +134,10 @@ export function Home() {
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'start' }}>
           <div className="section-head">
-            <span className="chip">Live wire</span>
-            <h2 className="h2">Every change, as Arkiv writes it.</h2>
-            <p className="lede">This feed follows Arkiv’s entity events: a new order, a report, a neighbour confirming a report, someone paying to keep a record alive. Each shows up here within seconds of its block, for everyone, over Arkiv’s WebSocket (a node-side filter polled through the relay if the socket can’t open).</p>
-            <div className="row"><Link to="/report" className="btn small">File a report</Link><Link to="/drill" className="btn small">Start a drill to watch it move</Link></div>
+            <span className="chip">{t('Live wire')}</span>
+            <h2 className="h2">{t('Every change, as Arkiv writes it.')}</h2>
+            <p className="lede">{t('This feed follows Arkiv’s entity events: a new order, a report, a neighbour confirming a report, someone paying to keep a record alive. Each shows up here within seconds of its block, for everyone, over Arkiv’s WebSocket (a node-side filter polled through the relay if the socket can’t open).')}</p>
+            <div className="row"><Link to="/report" className="btn small">{t('File a report')}</Link><Link to="/drill" className="btn small">{t('Start a drill to watch it move')}</Link></div>
           </div>
           <LiveWire />
         </div>
@@ -148,9 +146,9 @@ export function Home() {
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <span className="chip">How the register works</span>
-            <h2 className="h2">The law’s clock is the database’s clock.</h2>
-            <p className="lede">India’s Telecommunications (Temporary Suspension of Services) Rules, 2024 put deadlines on every shutdown. Switched Off doesn’t enforce those deadlines with a cron job on someone’s server. Each one is how long the Arkiv entity is allowed to exist.</p>
+            <span className="chip">{t('How the register works')}</span>
+            <h2 className="h2">{t('The law’s clock is the database’s clock.')}</h2>
+            <p className="lede">{t('India’s Telecommunications (Temporary Suspension of Services) Rules, 2024 put deadlines on every shutdown. Switched Off doesn’t enforce those deadlines with a cron job on someone’s server. Each one is how long the Arkiv entity is allowed to exist.')}</p>
           </div>
           <div className="grid3">
             <Rule n="15" unit="days, at most" title="An order can’t run longer than fifteen days." body="Each order is filed with its Arkiv expiry set to the day it lapses. When that block comes, the order entity is gone, its districts light up again, and nothing anyone does can stretch it: a longer shutdown needs a new order, so every renewal shows." />
@@ -167,27 +165,27 @@ export function Home() {
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <span className="chip">The register</span>
-            <h2 className="h2">{archive.length ? `${archive.length} orders on file, from ${totals.states} states and territories, ${totals.from} to ${totals.to}.` : 'The register'}</h2>
-            <p className="lede">Each one transcribed from a published order or from reporting that cites one, with its sources. Click a state on the map, or open the full register to filter.</p>
+            <span className="chip">{t('The register')}</span>
+            <h2 className="h2">{archive.length ? tf('{n} orders on file, from {states} states and territories, {from} to {to}.', { n: archive.length, states: totals.states, from: totals.from, to: totals.to }) : t('The register')}</h2>
+            <p className="lede">{t('Each one transcribed from a published order or from reporting that cites one, with its sources. Click a state on the map, or open the full register to filter.')}</p>
           </div>
           {live.loading ? (
             <div className="grid3">{[0, 1, 2].map((i) => <div key={i} className="skel" style={{ height: 300 }} />)}</div>
           ) : archive.length ? (
             <div className="grid3">{archive.slice(0, 6).map((r) => <Gazette key={r.key} o={r} compact />)}</div>
           ) : (
-            <div className="empty">The archive is being written to Arkiv. <Link to="/drill">Try the drill</Link> meanwhile.</div>
+            <div className="empty">{tx('The archive is being written to Arkiv. {link} meanwhile.', { link: <Link to="/drill">{t('Try the drill')}</Link> })}</div>
           )}
-          <div className="row" style={{ marginTop: 20 }}><Link to="/register" className="btn">See all {archive.length || ''} orders</Link></div>
+          <div className="row" style={{ marginTop: 20 }}><Link to="/register" className="btn">{tf('See all {n} orders', { n: archive.length || '' })}</Link></div>
         </div>
       </section>
 
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <span className="chip">Year by year</span>
-            <h2 className="h2">Where the lights went out.</h2>
-            <p className="lede">Orders on file per state and year. It undercounts the real thing: many orders were never published, and Access Now counted 116 shutdowns in India in 2023 alone. Every order that does get filed can also be asked about at any past Arkiv block, long after it has lapsed.</p>
+            <span className="chip">{t('Year by year')}</span>
+            <h2 className="h2">{t('Where the lights went out.')}</h2>
+            <p className="lede">{t('Orders on file per state and year. It undercounts the real thing: many orders were never published, and Access Now counted 116 shutdowns in India in 2023 alone. Every order that does get filed can also be asked about at any past Arkiv block, long after it has lapsed.')}</p>
           </div>
           <Rewind records={archive} />
         </div>
@@ -196,18 +194,18 @@ export function Home() {
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'start' }}>
           <div className="section-head">
-            <span className="chip red">Dark without an order</span>
-            <h2 className="h2">The shutdowns nobody published.</h2>
-            <p className="lede">The Supreme Court held in <i>Anuradha Bhasin v. Union of India</i> (2020) that suspension orders must be published. When people report no internet in a district and no order is on the register, that district burns red on the map. Each red light is a question the state should answer.</p>
+            <span className="chip red">{t('Dark without an order')}</span>
+            <h2 className="h2">{t('The shutdowns nobody published.')}</h2>
+            <p className="lede">{tx('The Supreme Court held in {case} (2020) that suspension orders must be published. When people report no internet in a district and no order is on the register, that district burns red on the map. Each red light is a question the state should answer.', { case: <i>Anuradha Bhasin v. Union of India</i> })}</p>
           </div>
           <div className="list">
             {[...nowMap.flagged.entries()].slice(0, 6).map(([di, rs]) => (
               <Link key={di} to={`/report?d=${geo?.districts[di].id ?? ''}`} className="item">
-                <span><b>{geo?.districts[di].name}</b>, {geo?.districts[di].state}<br /><span className="hint">{rs.length} live report{rs.length > 1 ? 's' : ''} · {rs.map((r) => r.carrier).filter((v, i, a) => a.indexOf(v) === i).join(', ')}</span></span>
-                <span className="chip red">no order</span>
+                <span><b>{geo?.districts[di].name}</b>, {geo?.districts[di].state}<br /><span className="hint">{tp(rs.length, '{n} live report', '{n} live reports')} · {rs.map((r) => t(r.carrier)).filter((v, i, a) => a.indexOf(v) === i).join(', ')}</span></span>
+                <span className="chip red">{t('no order')}</span>
               </Link>
             ))}
-            {nowMap.flagged.size === 0 && <div className="empty">No district is reported dark without an order right now. If yours is, <Link to="/report">say so</Link>: it takes one tap and no sign-up.</div>}
+            {nowMap.flagged.size === 0 && <div className="empty">{tx('No district is reported dark without an order right now. If yours is, {link}: it takes one tap and no sign-up.', { link: <Link to="/report">{t('say so')}</Link> })}</div>}
           </div>
         </div>
       </section>
@@ -215,9 +213,9 @@ export function Home() {
       <section className="section">
         <div className="wrap">
           <div className="section-head">
-            <span className="chip">Why it can’t be switched off</span>
-            <h2 className="h2">Block this site and the register is still there.</h2>
-            <p className="lede">A shutdown tracker on one server is one blocking order away from disappearing. The register isn’t on our server: it is Arkiv entities that any copy of this page, any script, any newsroom can read straight from the network. This site only runs a small cache in front of Arkiv to stay inside its query quota, and the switch in the header turns even that off.</p>
+            <span className="chip">{t('Why it can’t be switched off')}</span>
+            <h2 className="h2">{t('Block this site and the register is still there.')}</h2>
+            <p className="lede">{t('A shutdown tracker on one server is one blocking order away from disappearing. The register isn’t on our server: it is Arkiv entities that any copy of this page, any script, any newsroom can read straight from the network. This site only runs a small cache in front of Arkiv to stay inside its query quota, and the switch in the header turns even that off.')}</p>
           </div>
           <div className="grid3">
             <Card title="Ask the network directly" body="One JSON-RPC call returns every order in force. No account and no Switched Off server in the middle (Arkiv meters keyless reads, so heavy users want their own free key)." to="/data" cta="See the exact query" />
@@ -230,12 +228,12 @@ export function Home() {
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'center' }}>
           <div className="section-head" style={{ marginBottom: 0 }}>
-            <h2 className="h2">India led the world in internet shutdowns six years running. Parliament asked for a register in 2021. There still isn’t an official one.</h2>
-            <p className="lede">The people it happens to are the last to be able to say so, and the government told Parliament it doesn’t count them. <Link to="/why">Read why this register exists</Link>, and what we deliberately keep off-chain to protect the people who use it.</p>
+            <h2 className="h2">{t('India led the world in internet shutdowns six years running. Parliament asked for a register in 2021. There still isn’t an official one.')}</h2>
+            <p className="lede">{tx('The people it happens to are the last to be able to say so, and the government told Parliament it doesn’t count them. {link}, and what we deliberately keep off-chain to protect the people who use it.', { link: <Link to="/why">{t('Read why this register exists')}</Link> })}</p>
           </div>
           <div className="row" style={{ justifyContent: 'flex-end' }}>
-            <Link to="/report" className="btn primary">Report no internet</Link>
-            <Link to="/drill" className="btn">Run a drill</Link>
+            <Link to="/report" className="btn primary">{t('Report no internet')}</Link>
+            <Link to="/drill" className="btn">{t('Run a drill')}</Link>
           </div>
         </div>
       </section>
@@ -249,22 +247,25 @@ function tally(rs: Record_[]) {
   return { states: new Set(rs.map((r) => r.state)).size, from: years.length ? Math.min(...years) : '', to: years.length ? Math.max(...years) : '' }
 }
 
+// the props are English; each is translated as it renders
 function Rule({ n, unit, title, body }: { n: string; unit: string; title: string; body: string }) {
+  const t = useT()
   return (
     <div className="panel" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
-      <div><span className="serif" style={{ fontSize: 56, lineHeight: 1, color: 'var(--sodium)' }}>{n}</span> <span className="mute">{unit}</span></div>
-      <h3 className="h3">{title}</h3>
-      <p className="mute" style={{ margin: 0 }}>{body}</p>
+      <div><span className="serif" style={{ fontSize: 56, lineHeight: 1, color: 'var(--sodium)' }}>{n}</span> <span className="mute">{t(unit)}</span></div>
+      <h3 className="h3">{t(title)}</h3>
+      <p className="mute" style={{ margin: 0 }}>{t(body)}</p>
     </div>
   )
 }
 
 function Card({ title, body, to, cta }: { title: string; body: string; to: string; cta: string }) {
+  const t = useT()
   return (
     <div className="panel" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
-      <h3 className="h3">{title}</h3>
-      <p className="mute" style={{ margin: 0 }}>{body}</p>
-      <Link to={to} className="btn small" style={{ justifySelf: 'start', marginTop: 6 }}>{cta}</Link>
+      <h3 className="h3">{t(title)}</h3>
+      <p className="mute" style={{ margin: 0 }}>{t(body)}</p>
+      <Link to={to} className="btn small" style={{ justifySelf: 'start', marginTop: 6 }}>{t(cta)}</Link>
     </div>
   )
 }

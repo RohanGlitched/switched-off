@@ -11,7 +11,7 @@ import { DataPage } from './pages/Data'
 import { WhyPage } from './pages/Why'
 import { FilePage } from './pages/File'
 import { ToastHost } from './components/Toast'
-import { setLang, useLang, useT } from './lib/i18n'
+import { setLang, tx, useLang, useT } from './lib/i18n'
 import { MODE, setMode } from './lib/arkiv'
 
 const NAV = [
@@ -47,20 +47,20 @@ export function App() {
     : <NotFound />
   return (
     <>
-      <a href="#main" className="sr" onFocus={(e) => e.currentTarget.classList.remove('sr')}>Skip to content</a>
+      <a href="#main" className="sr" onFocus={(e) => e.currentTarget.classList.remove('sr')}>{t('Skip to content')}</a>
       <header className="top">
         <div className="wrap">
-          <Link to="/" className="brand" aria-label="Switched Off, home">
+          <Link to="/" className="brand" aria-label={t('Switched Off, home')}>
             <span className="switch" aria-hidden="true" />
             Switched Off
           </Link>
           <ChainBadge />
-          <nav className={`nav${open ? ' open' : ''}`} aria-label="Main">
+          <nav className={`nav${open ? ' open' : ''}`} aria-label={t('Main')}>
             {NAV.map(([to, label]) => <Link key={to} to={to}>{t(label)}</Link>)}
-            <button className="lang mobile-only" style={{ textAlign: 'left', marginTop: 8 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')}>{MODE === 'direct' ? 'Reading Arkiv directly · switch to the relay' : 'Reading through the relay · read Arkiv directly'}</button>
+            <button className="lang mobile-only" style={{ textAlign: 'left', marginTop: 8 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')}>{MODE === 'direct' ? t('Reading Arkiv directly · switch to the relay') : t('Reading through the relay · read Arkiv directly')}</button>
           </nav>
-          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें (आंशिक अनुवाद)'} title={lang === 'hi' ? 'English' : 'Hindi: the headline, map and report form so far'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
-          <button className="menu-btn" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
+          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें'} title={lang === 'hi' ? 'English' : 'हिंदी'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
+          <button className="menu-btn" aria-expanded={open} aria-label={t('Menu')} onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
         </div>
       </header>
       <main id="main">{page}</main>
@@ -71,6 +71,7 @@ export function App() {
 }
 
 function ChainBadge() {
+  const t = useT()
   const now = useNow(2000)
   const [ok, setOk] = useState<boolean | null>(null)
   useEffect(() => {
@@ -78,65 +79,67 @@ function ChainBadge() {
   }, [])
   void now
   return (
-    <span className="chain" title="Every read and write on this site goes to Arkiv's Tiramisu testnet">
+    <span className="chain" title={t("Every read and write on this site goes to Arkiv's Tiramisu testnet")}>
       <span className={`pulse${ok === false ? ' off' : ''}`} aria-hidden="true" />
-      {ok === false ? 'Arkiv unreachable' : ok ? <>Arkiv Tiramisu · block <span className="num">{currentBlock().toString()}</span></> : 'Connecting to Arkiv…'}
-      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} title={MODE === 'direct' ? 'Your browser talks to Arkiv directly. Switch back to the shared, cached relay.' : 'Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.'}>{MODE === 'direct' ? 'direct' : 'via relay'}</button>
+      {ok === false ? t('Arkiv unreachable') : ok ? tx('Arkiv Tiramisu · block {n}', { n: <span className="num">{currentBlock().toString()}</span> }) : t('Connecting to Arkiv…')}
+      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} title={MODE === 'direct' ? t('Your browser talks to Arkiv directly. Switch back to the shared, cached relay.') : t('Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.')}>{MODE === 'direct' ? t('direct') : t('via relay')}</button>
     </span>
   )
 }
 
 function NotFound() {
+  const t = useT()
   return (
     <section className="wrap section" style={{ borderTop: 0 }}>
-      <h1 className="h2">No page here.</h1>
-      <p className="lede">The register is on the <Link to="/">map</Link> and in the <Link to="/register">list of orders</Link>.</p>
+      <h1 className="h2">{t('No page here.')}</h1>
+      <p className="lede">{tx('The register is on the {map} and in the {list}.', { map: <Link to="/">{t('map')}</Link>, list: <Link to="/register">{t('list of orders')}</Link> })}</p>
     </section>
   )
 }
 
 function Footer() {
+  const t = useT()
   return (
     <footer className="foot">
       <div className="wrap foot-grid">
         <div style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
           <div className="brand"><span className="switch" aria-hidden="true" />Switched Off</div>
-          <p style={{ maxWidth: 380 }}>India’s register of internet shutdowns, kept on Arkiv so that the record of a shutdown can’t itself be switched off. Built for the Arkiv Global Tour Stop (Best Indian Use Case), October 2026.</p>
-          <p className="faint">Testnet: Arkiv Tiramisu (chain 7738577). Reports are anonymous; never include names or phone numbers.</p>
+          <p style={{ maxWidth: 380 }}>{t('India’s register of internet shutdowns, kept on Arkiv so that the record of a shutdown can’t itself be switched off. Built for the Arkiv Global Tour Stop (Best Indian Use Case), October 2026.')}</p>
+          <p className="faint">{t('Testnet: Arkiv Tiramisu (chain 7738577). Reports are anonymous; never include names or phone numbers.')}</p>
         </div>
         <div>
-          <h4>Use it</h4>
+          <h4>{t('Use it')}</h4>
           <ul>
-            <li><Link to="/">Live map</Link></li>
-            <li><Link to="/register">Register of orders</Link></li>
-            <li><Link to="/report">Report no internet</Link></li>
-            <li><Link to="/drill">Run a drill</Link></li>
-            <li><Link to="/file">File a published order</Link></li>
+            <li><Link to="/">{t('Live map')}</Link></li>
+            <li><Link to="/register">{t('Register of orders')}</Link></li>
+            <li><Link to="/report">{t('Report no internet')}</Link></li>
+            <li><Link to="/drill">{t('Run a drill')}</Link></li>
+            <li><Link to="/file">{t('File a published order')}</Link></li>
           </ul>
         </div>
         <div>
-          <h4>Check it</h4>
+          <h4>{t('Check it')}</h4>
           <ul>
-            <li><Link to="/data">Exact queries</Link></li>
-            <li><Link to="/data#mirrors">Mirrors and CLI</Link></li>
-            <li><a href="https://rohanglitched.github.io/switched-off/">Independent mirror (GitHub Pages)</a></li>
-            <li><a href="https://github.com/RohanGlitched/switched-off">Source on GitHub (MIT)</a></li>
-            <li><Link to="/why">Why Arkiv, and the honest limits</Link></li>
+            <li><Link to="/data">{t('Exact queries')}</Link></li>
+            <li><Link to="/data#mirrors">{t('Mirrors and CLI')}</Link></li>
+            <li><a href="https://rohanglitched.github.io/switched-off/">{t('Independent mirror (GitHub Pages)')}</a></li>
+            <li><a href="https://github.com/RohanGlitched/switched-off">{t('Source on GitHub (MIT)')}</a></li>
+            <li><Link to="/why">{t('Why Arkiv, and the honest limits')}</Link></li>
             <li><a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/schema.md">schema.md</a></li>
             <li><a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/friction.md">friction.md</a></li>
           </ul>
         </div>
         <div>
-          <h4>Credits</h4>
+          <h4>{t('Credits')}</h4>
           <ul>
-            <li><a href="https://github.com/datameet/maps">District map: Datameet (CC BY 2.5 IN)</a></li>
-            <li><a href="https://github.com/datameet/maps/tree/master/Country">India outline: Datameet (CC0)</a></li>
-            <li><a href="https://arkiv.network">Data layer: Arkiv</a></li>
-            <li><Link to="/why#sources">Sources for every order</Link></li>
+            <li><a href="https://github.com/datameet/maps">{t('District map: Datameet (CC BY 2.5 IN)')}</a></li>
+            <li><a href="https://github.com/datameet/maps/tree/master/Country">{t('India outline: Datameet (CC0)')}</a></li>
+            <li><a href="https://arkiv.network">{t('Data layer: Arkiv')}</a></li>
+            <li><Link to="/why#sources">{t('Sources for every order')}</Link></li>
           </ul>
         </div>
       </div>
-      <div className="wrap faint" style={{ marginTop: 28, fontSize: 13 }}>MIT licensed · Changelog: Oct 11 first register, map and drill.</div>
+      <div className="wrap faint" style={{ marginTop: 28, fontSize: 13 }}>{t('MIT licensed · Changelog: Oct 11 first register, map and drill.')}</div>
     </footer>
   )
 }

@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react'
 import type { Record_ } from '../lib/arkiv'
 import { Link } from '../lib/router'
+import { tp, useT } from '../lib/i18n'
 
 export function Rewind({ records }: { records: Record_[] }) {
   const { years, states, cell, max } = useMemo(() => {
@@ -22,14 +23,15 @@ export function Rewind({ records }: { records: Record_[] }) {
     return { years, states, cell, max: Math.max(1, ...cell.values()) }
   }, [records])
   const [hover, setHover] = useState<string | null>(null)
+  const t = useT()
   if (!records.length) return <div className="skel" style={{ height: 260 }} />
   return (
     <div className="panel" style={{ overflowX: 'auto' }}>
       <table style={{ borderCollapse: 'separate', borderSpacing: 4, minWidth: 520, width: '100%' }}>
-        <caption className="sr">Suspension orders on file, by state and year</caption>
+        <caption className="sr">{t('Suspension orders on file, by state and year')}</caption>
         <thead>
           <tr>
-            <th style={{ textAlign: 'left', fontWeight: 500, color: 'var(--mute)', fontSize: 13 }}>State</th>
+            <th style={{ textAlign: 'left', fontWeight: 500, color: 'var(--mute)', fontSize: 13 }}>{t('State')}</th>
             {years.map((y) => <th key={y} className="num" style={{ fontWeight: 500, color: 'var(--mute)', fontSize: 13 }}>{y}</th>)}
           </tr>
         </thead>
@@ -42,7 +44,7 @@ export function Rewind({ records }: { records: Record_[] }) {
                 const k = `${s}|${y}`
                 const a = v ? 0.18 + 0.82 * Math.sqrt(v / max) : 0
                 return (
-                  <td key={y} onMouseEnter={() => setHover(k)} onMouseLeave={() => setHover(null)} title={`${s}, ${y}: ${v} order${v === 1 ? '' : 's'} on file`}
+                  <td key={y} onMouseEnter={() => setHover(k)} onMouseLeave={() => setHover(null)} title={tp(v, '{state}, {year}: {n} order on file', '{state}, {year}: {n} orders on file', { state: s, year: y })}
                     style={{ height: 34, minWidth: 44, borderRadius: 6, textAlign: 'center', fontSize: 12, background: v ? `rgba(255, 181, 71, ${a})` : 'var(--night)', color: a > 0.55 ? 'var(--ink)' : 'var(--mute)', outline: hover === k ? '1px solid var(--sodium)' : undefined }}
                     className="num">
                     {v || ''}
@@ -53,7 +55,7 @@ export function Rewind({ records }: { records: Record_[] }) {
           ))}
         </tbody>
       </table>
-      <p className="hint" style={{ margin: '10px 0 0' }}>Each order counted in the year it began; every renewal is its own order. Brighter is more. Click a state to open its orders.</p>
+      <p className="hint" style={{ margin: '10px 0 0' }}>{t('Each order counted in the year it began; every renewal is its own order. Brighter is more. Click a state to open its orders.')}</p>
     </div>
   )
 }

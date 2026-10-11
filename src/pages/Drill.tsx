@@ -10,7 +10,8 @@ import { activeOrders, currentBlock, liveReports, blockToTime, type Order, type 
 import { DRILL_DAY_MS, fileOrder, fileReport, confirmEmergency } from '../lib/write'
 import { refresh, useNow, useRegister } from '../lib/store'
 import { account } from '../lib/wallet'
-import { fmtTime, scopeLabel, short, txUrl, where } from '../lib/fmt'
+import { fmtTime, scopeLabel, scopeName, short, txUrl, where } from '../lib/fmt'
+import { tf, tp, tr, tx, useT } from '../lib/i18n'
 import { Link } from '../lib/router'
 import { humanError } from './Entity'
 
@@ -28,6 +29,7 @@ export function DrillPage() {
   const [rewind, setRewind] = useState(0) // minutes back
   const [target, setTarget] = useState<number | null>(null) // a district picked on the map, waiting to be reported
   const [past, setPast] = useState<{ orders: Order[]; reports: Report[] } | null>(null)
+  const t = useT()
   useNow()
 
   useEffect(() => {
@@ -81,36 +83,36 @@ export function DrillPage() {
       seq: renews ? renews.seq + 1 : 1,
       published: true,
       sources: [],
-    }), renews ? 'Renewal filed: a new order that takes over when the current one lapses.' : emergency ? 'Emergency order filed. It dies in one drill day unless you confirm it.' : 'Order filed. Watch its districts go dark.').then(() => { setEmergency(false); setPicked([]) })
+    }), tr(renews ? 'Renewal filed: a new order that takes over when the current one lapses.' : emergency ? 'Emergency order filed. It dies in one drill day unless you confirm it.' : 'Order filed. Watch its districts go dark.')).then(() => { setEmergency(false); setPicked([]) })
   }
 
   return (
     <>
       <section className="wrap" style={{ padding: '40px var(--gutter) 10px' }}>
         <div className="section-head">
-          <span className="chip sodium">Drill · one legal day = one real minute</span>
-          <h1 className="h2">Run the register at the speed of a demo.</h1>
-          <p className="lede">Everything here is real Arkiv entities on Tiramisu, tagged <code>net = drill</code> and kept apart from the live register. Issue an order and its districts go dark; it lapses on its own when its last drill day ends. Make it an emergency order and it dies in one drill day unless you confirm it. Nothing to install: this browser has its own testnet key.</p>
+          <span className="chip sodium">{t('Drill · one legal day = one real minute')}</span>
+          <h1 className="h2">{t('Run the register at the speed of a demo.')}</h1>
+          <p className="lede">{tx('Everything here is real Arkiv entities on Tiramisu, tagged {tag} and kept apart from the live register. Issue an order and its districts go dark; it lapses on its own when its last drill day ends. Make it an emergency order and it dies in one drill day unless you confirm it. Nothing to install: this browser has its own testnet key.', { tag: <code>net = drill</code> })}</p>
         </div>
       </section>
       <section className="wrap hero-grid" style={{ alignItems: 'start', paddingBottom: 40 }}>
         <div style={{ display: 'grid', gap: 16, minWidth: 0 }}>
           <div className="panel" style={{ display: 'grid', gap: 14 }}>
-            <h2 className="h3">1 · Issue a suspension order</h2>
+            <h2 className="h3">{t('1 · Issue a suspension order')}</h2>
             <div className="grid2" style={{ gap: 12 }}>
-              <label className="field">State
+              <label className="field">{t('State')}
                 <select className="input" value={state} onChange={(e) => { setState(e.target.value); setPicked([]) }}>
                   {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </label>
-              <label className="field">What is cut
+              <label className="field">{t('What is cut')}
                 <select className="input" value={scope} onChange={(e) => setScope(e.target.value)}>
-                  {Object.entries(scopeLabel).filter(([k]) => k !== 'unknown').map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  {Object.keys(scopeLabel).filter((k) => k !== 'unknown').map((k) => <option key={k} value={k}>{scopeName(k)}</option>)}
                 </select>
               </label>
             </div>
             <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
-              <legend className="mute" style={{ fontSize: 14, marginBottom: 6 }}>Districts ({picked.length ? picked.length : 'whole state'})</legend>
+              <legend className="mute" style={{ fontSize: 14, marginBottom: 6 }}>{tf('Districts ({n})', { n: picked.length ? picked.length : t('whole state') })}</legend>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
                 {districts.map((d) => {
                   const on = picked.includes(d.name)
@@ -118,70 +120,70 @@ export function DrillPage() {
                 })}
               </div>
             </fieldset>
-            <label className="field">Length: {daysN} drill day{daysN > 1 ? 's' : ''} ({daysN} minute{daysN > 1 ? 's' : ''})
+            <label className="field">{tp(daysN, 'Length: {n} drill day ({n} minute)', 'Length: {n} drill days ({n} minutes)')}
               <input type="range" min={1} max={15} value={daysN} onChange={(e) => setDaysN(+e.target.value)} />
-              <span className="hint">The rules cap an order at fifteen days, so the slider stops at fifteen.</span>
+              <span className="hint">{t('The rules cap an order at fifteen days, so the slider stops at fifteen.')}</span>
             </label>
             <label className="row" style={{ gap: 10, cursor: 'pointer', flexWrap: 'nowrap', alignItems: 'flex-start' }}>
               <input type="checkbox" checked={emergency} onChange={(e) => setEmergency(e.target.checked)} style={{ width: 20, height: 20 }} />
-              <span>Issued in an emergency (lapses after one drill day unless confirmed)</span>
+              <span>{t('Issued in an emergency (lapses after one drill day unless confirmed)')}</span>
             </label>
-            <button className="btn primary" disabled={!!busy} onClick={() => issue()}>{busy === 'issue' ? 'Writing order + record in one batch…' : 'Issue the order'}</button>
+            <button className="btn primary" disabled={!!busy} onClick={() => issue()}>{busy === 'issue' ? t('Writing order + record in one batch…') : t('Issue the order')}</button>
           </div>
 
           <div className="panel" style={{ display: 'grid', gap: 12 }}>
-            <h2 className="h3">2 · Report from the ground</h2>
-            <p className="mute" style={{ margin: 0 }}>Click any district on the map to report it dark. A report in a district with no order in force turns it red: a shutdown nobody published. Drill reports fade in six minutes unless confirmed.</p>
-            <p className="hint" style={{ margin: 0 }}>Or use the <Link to="/report">report form</Link> (that one files to the live register).</p>
+            <h2 className="h3">{t('2 · Report from the ground')}</h2>
+            <p className="mute" style={{ margin: 0 }}>{t('Click any district on the map to report it dark. A report in a district with no order in force turns it red: a shutdown nobody published. Drill reports fade in six minutes unless confirmed.')}</p>
+            <p className="hint" style={{ margin: 0 }}>{tx('Or use the {link} (that one files to the live register).', { link: <Link to="/report">{t('report form')}</Link> })}</p>
           </div>
 
           {mine.length > 0 && (
             <div className="panel" style={{ display: 'grid', gap: 12 }}>
-              <h2 className="h3">3 · Your orders</h2>
+              <h2 className="h3">{t('3 · Your orders')}</h2>
               {mine.map((o) => {
                 const exp = blockToTime(o.expiresAt)
                 const pendingEmergency = o.emergency && exp - o.issued * 1000 <= DRILL_DAY_MS + 60_000
                 return (
                   <div key={o.key} className="item">
-                    <span>{o.stateName} · {where(o.districts)}{o.seq > 1 ? ` · renewal ${o.seq - 1}` : ''} · lapses {fmtTime(exp)}{pendingEmergency ? ' (unconfirmed)' : ''}</span>
+                    <span>{o.stateName} · {where(o.districts)}{o.seq > 1 ? tf(' · renewal {n}', { n: o.seq - 1 }) : ''} · {tf('lapses {time}', { time: fmtTime(exp) })}{pendingEmergency ? t(' (unconfirmed)') : ''}</span>
                     <span className="row" style={{ gap: 6 }}>
-                      {pendingEmergency && <button className="btn small primary" disabled={!!busy} onClick={() => run('confirm', () => confirmEmergency(o), 'Confirmed: the order now runs its full length.')}>Confirm</button>}
-                      <button className="btn small" disabled={!!busy} onClick={() => issue(o)}>Renew</button>
+                      {pendingEmergency && <button className="btn small primary" disabled={!!busy} onClick={() => run('confirm', () => confirmEmergency(o), tr('Confirmed: the order now runs its full length.'))}>{t('Confirm')}</button>}
+                      <button className="btn small" disabled={!!busy} onClick={() => issue(o)}>{t('Renew')}</button>
                     </span>
                   </div>
                 )
               })}
             </div>
           )}
-          {lastTx && <p className="hint">Last write: <a href={txUrl(lastTx)}>{short(lastTx)}</a></p>}
+          {lastTx && <p className="hint">{tx('Last write: {tx}', { tx: <a href={txUrl(lastTx)}>{short(lastTx)}</a> })}</p>}
         </div>
 
         <div style={{ display: 'grid', gap: 14, minWidth: 0 }}>
-          <NightMap state={map} focus={state} zoom onPick={(i) => { if (geo && !rewind) setTarget(i) }} label="Drill map: pick a district to report it dark" />
+          <NightMap state={map} focus={state} zoom onPick={(i) => { if (geo && !rewind) setTarget(i) }} label={t('Drill map: pick a district to report it dark')} />
           {target !== null && geo && (
             <div className="panel" style={{ padding: 14, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ flex: '1 1 200px' }}>Report <b>{geo.districts[target].name}</b>, {geo.districts[target].state} as dark (drill)?{map.off.has(target) ? ' An order is already in force here.' : ' No order is in force here, so it will burn red.'}</span>
-              <button className="btn small primary" disabled={!!busy} onClick={() => { const d = geo.districts[target]; setTarget(null); void run('report', () => fileReport({ net: 'drill', state: d.code, district: d.name, carrier: 'All networks', status: 'down', note: 'Drill report' }), `Drill report filed for ${d.name}.`) }}>Report it</button>
-              <button className="btn small" onClick={() => setTarget(null)}>Cancel</button>
+              <span style={{ flex: '1 1 200px' }}>{tx('Report {district}, {state} as dark (drill)?', { district: <b>{geo.districts[target].name}</b>, state: geo.districts[target].state })}{map.off.has(target) ? t(' An order is already in force here.') : t(' No order is in force here, so it will burn red.')}</span>
+              <button className="btn small primary" disabled={!!busy} onClick={() => { const d = geo.districts[target]; setTarget(null); void run('report', () => fileReport({ net: 'drill', state: d.code, district: d.name, carrier: 'All networks', status: 'down', note: 'Drill report' }), tf('Drill report filed for {district}.', { district: d.name })) }}>{t('Report it')}</button>
+              <button className="btn small" onClick={() => setTarget(null)}>{t('Cancel')}</button>
             </div>
           )}
-          <label className="field">Rewind the drill: {rewind ? `${rewind} minute${rewind > 1 ? 's' : ''} ago (querying Arkiv at block ${(currentBlock() - BigInt(rewind * 30)).toString()})` : 'now'}
-            <input type="range" min={-30} max={0} value={-rewind} onChange={(e) => setRewind(-e.target.value)} aria-valuetext={rewind ? `${rewind} minutes ago` : 'now'} />
-            <span className="hint">Arkiv answers queries as of any past block, so lapsed orders and faded reports reappear exactly as they were.</span>
+          <label className="field">{t('Rewind the drill:')} {rewind ? tp(rewind, '{n} minute ago (querying Arkiv at block {block})', '{n} minutes ago (querying Arkiv at block {block})', { block: (currentBlock() - BigInt(rewind * 30)).toString() }) : t('now')}
+            <input type="range" min={-30} max={0} value={-rewind} onChange={(e) => setRewind(-e.target.value)} aria-valuetext={rewind ? tf('{n} minutes ago', { n: rewind }) : t('now')} />
+            <span className="hint">{t('Arkiv answers queries as of any past block, so lapsed orders and faded reports reappear exactly as they were.')}</span>
           </label>
-          {busy === 'report' && <p className="hint">Writing the report to Arkiv…</p>}
+          {busy === 'report' && <p className="hint">{t('Writing the report to Arkiv…')}</p>}
         </div>
       </section>
 
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'start' }}>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-            <h2 className="h3">Drill orders in force ({drill.orders.length})</h2>
-            {drill.orders.length === 0 && <div className="empty">No drill order is in force. Issue one above and it appears here as a gazette page, counting down.</div>}
+            <h2 className="h3">{tf('Drill orders in force ({n})', { n: drill.orders.length })}</h2>
+            {drill.orders.length === 0 && <div className="empty">{t('No drill order is in force. Issue one above and it appears here as a gazette page, counting down.')}</div>}
             <div className="grid2">{[...drill.orders].sort((a, b) => b.issued - a.issued).slice(0, 6).map((o) => <Link key={o.key} to={`/e/${o.key}`} style={{ textDecoration: 'none' }}><Gazette o={o} live compact /></Link>)}</div>
           </div>
           <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-            <h2 className="h3">Live wire</h2>
+            <h2 className="h3">{t('Live wire')}</h2>
             <LiveWire />
           </div>
         </div>

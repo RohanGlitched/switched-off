@@ -1,6 +1,9 @@
 import { FACTS } from '../data/facts'
 import { Link } from '../lib/router'
 import { useRegister } from '../lib/store'
+import { tf, useT } from '../lib/i18n'
+
+// The arrays below are English; every string is translated as it renders.
 
 const USERS = [
   ['People in a district that goes dark', 'Today they find out a shutdown is “official” from a forwarded photo of a letter, if at all. On Switched Off they see whether an order exists, what it covers, and the minute it lapses. When there is no order, they can say so, and the report outlives the rumour mill only if neighbours confirm it.'],
@@ -49,75 +52,77 @@ const LIMITS = [
 
 export function WhyPage() {
   const live = useRegister('live')
+  const t = useT()
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px', display: 'grid', gap: 56 }}>
       <div className="section-head" style={{ marginBottom: 0 }}>
-        <span className="chip sodium">Why this exists</span>
-        <h1 className="h2">When the internet goes off, the people it happens to are the last to be able to say so.</h1>
-        <p className="lede">Switched Off is built for India, where internet shutdowns are an administrative routine: exams, protests, unrest, festivals. These are the numbers, each with its source.</p>
+        <span className="chip sodium">{t('Why this exists')}</span>
+        <h1 className="h2">{t('When the internet goes off, the people it happens to are the last to be able to say so.')}</h1>
+        <p className="lede">{t('Switched Off is built for India, where internet shutdowns are an administrative routine: exams, protests, unrest, festivals. These are the numbers, each with its source.')}</p>
       </div>
 
       <div className="grid3">
         {FACTS.map((f) => (
           <div key={f.text} className="panel" style={{ display: 'grid', gap: 8, alignContent: 'start' }}>
-            <span className="serif" style={{ fontSize: 44, lineHeight: 1, color: 'var(--sodium)' }}>{f.big}</span>
-            <p style={{ margin: 0 }}>{f.text}</p>
-            <a className="hint" href={f.url} target="_blank" rel="noreferrer">{f.source}</a>
+            <span className="serif" style={{ fontSize: 44, lineHeight: 1, color: 'var(--sodium)' }}>{t(f.big)}</span>
+            <p style={{ margin: 0 }}>{t(f.text)}</p>
+            <a className="hint" href={f.url} target="_blank" rel="noreferrer">{t(f.source)}</a>
           </div>
         ))}
       </div>
 
       <div>
-        <div className="section-head"><h2 className="h2">Who uses it, and what changes for them on day one</h2></div>
-        <div className="grid2">{USERS.map(([t, b]) => <Block key={t} t={t} b={b} />)}</div>
+        <div className="section-head"><h2 className="h2">{t('Who uses it, and what changes for them on day one')}</h2></div>
+        <div className="grid2">{USERS.map(([h, b]) => <Block key={h} t={h} b={b} />)}</div>
       </div>
 
       <div>
         <div className="section-head">
-          <h2 className="h2">Why Arkiv: what would break without it</h2>
-          <p className="lede">The register’s whole job is to be the one record of a shutdown that can’t be switched off, while obeying the law’s own clocks. Take Arkiv away and one of those two breaks.</p>
+          <h2 className="h2">{t('Why Arkiv: what would break without it')}</h2>
+          <p className="lede">{t('The register’s whole job is to be the one record of a shutdown that can’t be switched off, while obeying the law’s own clocks. Take Arkiv away and one of those two breaks.')}</p>
         </div>
-        <div className="grid2">{BREAKS.map(([t, b]) => <Block key={t} t={t} b={b} />)}</div>
+        <div className="grid2">{BREAKS.map(([h, b]) => <Block key={h} t={h} b={b} />)}</div>
       </div>
 
       <div>
         <div className="section-head">
-          <h2 className="h2">What we keep off Arkiv, on purpose</h2>
-          <p className="lede">A permanent public dataset about shutdowns is also a dataset about the people living through them. These stay off-chain by design.</p>
+          <h2 className="h2">{t('What we keep off Arkiv, on purpose')}</h2>
+          <p className="lede">{t('A permanent public dataset about shutdowns is also a dataset about the people living through them. These stay off-chain by design.')}</p>
         </div>
-        <div className="grid2">{OFF.map(([t, b]) => <Block key={t} t={t} b={b} />)}</div>
+        <div className="grid2">{OFF.map(([h, b]) => <Block key={h} t={h} b={b} />)}</div>
       </div>
 
       <div>
-        <div className="section-head"><h2 className="h2">Each Arkiv feature, and what it changes on screen</h2></div>
+        <div className="section-head"><h2 className="h2">{t('Each Arkiv feature, and what it changes on screen')}</h2></div>
         <div className="panel" style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 560 }}>
-            <thead><tr>{['Feature', 'How Switched Off uses it', 'Where you see it'].map((h) => <th key={h} style={{ textAlign: 'left', padding: '8px 10px', color: 'var(--mute)', fontWeight: 500, fontSize: 13, borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
+            <thead><tr>{['Feature', 'How Switched Off uses it', 'Where you see it'].map((h) => <th key={h} style={{ textAlign: 'left', padding: '8px 10px', color: 'var(--mute)', fontWeight: 500, fontSize: 13, borderBottom: '1px solid var(--line)' }}>{t(h)}</th>)}</tr></thead>
             <tbody>{FEATURES.map(([a, b, c]) => (
-              <tr key={a}><td style={{ padding: '12px 10px', verticalAlign: 'top', fontWeight: 600, borderBottom: '1px solid var(--line)', whiteSpace: 'nowrap' }}>{a}</td><td style={{ padding: '12px 10px', borderBottom: '1px solid var(--line)' }} className="mute">{b}</td><td style={{ padding: '12px 10px', borderBottom: '1px solid var(--line)', fontSize: 14 }}>{c}</td></tr>
+              <tr key={a}><td style={{ padding: '12px 10px', verticalAlign: 'top', fontWeight: 600, borderBottom: '1px solid var(--line)', whiteSpace: 'nowrap' }}>{t(a)}</td><td style={{ padding: '12px 10px', borderBottom: '1px solid var(--line)' }} className="mute">{t(b)}</td><td style={{ padding: '12px 10px', borderBottom: '1px solid var(--line)', fontSize: 14 }}>{t(c)}</td></tr>
             ))}</tbody>
           </table>
         </div>
       </div>
 
       <div>
-        <div className="section-head"><h2 className="h2">Honest limits</h2><p className="lede">What this is not, yet.</p></div>
-        <div className="grid2">{LIMITS.map(([t, b]) => <Block key={t} t={t} b={b} />)}</div>
+        <div className="section-head"><h2 className="h2">{t('Honest limits')}</h2><p className="lede">{t('What this is not, yet.')}</p></div>
+        <div className="grid2">{LIMITS.map(([h, b]) => <Block key={h} t={h} b={b} />)}</div>
       </div>
 
       <div id="sources">
-        <div className="section-head"><h2 className="h2">Sources</h2><p className="lede">Every order on the register carries its own source links. The archive was transcribed from published orders, court records and reporting that cites them; {live.loadedAt ? live.records.length : '…'} orders are on file.</p></div>
-        <div className="row"><Link to="/register" className="btn">Open the register</Link><Link to="/data" className="btn">Check the queries</Link></div>
+        <div className="section-head"><h2 className="h2">{t('Sources')}</h2><p className="lede">{tf('Every order on the register carries its own source links. The archive was transcribed from published orders, court records and reporting that cites them; {n} orders are on file.', { n: live.loadedAt ? live.records.length : '…' })}</p></div>
+        <div className="row"><Link to="/register" className="btn">{t('Open the register')}</Link><Link to="/data" className="btn">{t('Check the queries')}</Link></div>
       </div>
     </section>
   )
 }
 
-function Block({ t, b }: { t: string; b: string }) {
+function Block({ t: title, b }: { t: string; b: string }) {
+  const t = useT()
   return (
     <div className="panel" style={{ display: 'grid', gap: 8, alignContent: 'start' }}>
-      <h3 className="h3">{t}</h3>
-      <p className="mute" style={{ margin: 0 }}>{b}</p>
+      <h3 className="h3">{t(title)}</h3>
+      <p className="mute" style={{ margin: 0 }}>{t(b)}</p>
     </div>
   )
 }

@@ -3,13 +3,13 @@ import { districtsOf, loadGeo, STATES, type Geo } from '../lib/geo'
 import { fileReport, REPORT_LIFE } from '../lib/write'
 import { enqueue, flush, queued } from '../lib/queue'
 import { refresh, useRegister } from '../lib/store'
-import { carriers, short, txUrl } from '../lib/fmt'
+import { carrierName, carriers, short, txUrl } from '../lib/fmt'
 import { Link, go, param } from '../lib/router'
-import { ReportCard, humanError } from './Entity'
+import { ReportCard, humanError, humanErrorEn } from './Entity'
 import { toast } from '../components/Toast'
 import type { Net, Report } from '../lib/arkiv'
 import { witnessName, account, forgetKey } from '../lib/wallet'
-import { useT } from '../lib/i18n'
+import { tf, tp, tr, tx, useT } from '../lib/i18n'
 
 import { personalData } from '../lib/pii'
 
@@ -34,7 +34,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
     }
   }), [pre])
   useEffect(() => {
-    const on = () => void flush((n) => { toast(`Signal’s back: sent ${n} report${n > 1 ? 's' : ''} you made while offline.`); setPending(queued().length); void refresh(net) })
+    const on = () => void flush((n) => { toast(tp(n, 'Signal’s back: sent {n} report you made while offline.', 'Signal’s back: sent {n} reports you made while offline.')); setPending(queued().length); void refresh(net) })
     window.addEventListener('online', on)
     on()
     return () => window.removeEventListener('online', on)
@@ -46,13 +46,13 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const [cooling, setCooling] = useState(false)
 
   const submit = async () => {
-    if (!state || !district) return toast('Pick your state and district first.')
-    if (piiWarn) return toast('Take out the phone number or ID: reports are public and permanent until they fade.')
+    if (!state || !district) return toast(tr('Pick your state and district first.'))
+    if (piiWarn) return toast(tr('Take out the phone number or ID: reports are public and permanent until they fade.'))
     const input = { net, state, district, carrier, status, note: note.trim() }
     if (!navigator.onLine) {
       enqueue(input)
       setPending(queued().length)
-      toast('No connection. Your report is saved on this phone with the time you saw it, and goes out the moment the signal returns.')
+      toast(tr('No connection. Your report is saved on this phone with the time you saw it, and goes out the moment the signal returns.'))
       return
     }
     setBusy(true)
@@ -63,13 +63,13 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
       window.setTimeout(() => setCooling(false), 30_000)
       setNote('')
       void refresh(net)
-      toast('Filed on Arkiv. Neighbours can now confirm it.')
+      toast(tr('Filed on Arkiv. Neighbours can now confirm it.'))
     } catch (e) {
       const m = humanError(e)
-      if (/didn’t answer|fetch|network/i.test(m)) {
+      if (/didn’t answer|fetch|network/i.test(humanErrorEn(e))) {
         enqueue(input)
         setPending(queued().length)
-        toast('Arkiv could not be reached, so the report is saved here and will be sent when the connection is back.')
+        toast(tr('Arkiv could not be reached, so the report is saved here and will be sent when the connection is back.'))
       } else toast(m)
     } finally {
       setBusy(false)
@@ -81,12 +81,12 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0 }}>
           <div className="section-head" style={{ marginBottom: 0 }}>
-            <span className="chip red">{net === 'drill' ? 'Report · drill (sandbox, not the live register)' : 'Report'}</span>
+            <span className="chip red">{net === 'drill' ? t('Report · drill (sandbox, not the live register)') : t('Report')}</span>
             <h1 className="h2">{t('Is your internet off?')}</h1>
-            <p className="lede">{t('Say where and on which network. No sign-up and no name: this browser holds a throwaway key, and the report is owned by it.')} {t('It fades unless someone nearby confirms it.') === 'It fades unless someone nearby confirms it.' ? `It fades in ${net === 'drill' ? 'six minutes' : `${REPORT_LIFE.live / 3600} hours`} unless someone nearby confirms it.` : t('It fades unless someone nearby confirms it.')}</p>
+            <p className="lede">{t('Say where and on which network. No sign-up and no name: this browser holds a throwaway key, and the report is owned by it.')} {tf('It fades in {time} unless someone nearby confirms it.', { time: net === 'drill' ? t('six minutes') : tf('{n} hours', { n: REPORT_LIFE.live / 3600 }) })}</p>
           </div>
           <div className="panel" style={{ display: 'grid', gap: 14 }}>
-            <div className="seg" role="group" aria-label="What are you seeing">
+            <div className="seg" role="group" aria-label={t('What are you seeing')}>
               {([['down', 'No internet'], ['slow', 'Barely working'], ['back', 'It’s back']] as const).map(([k, v]) => (
                 <button key={k} aria-pressed={status === k} onClick={() => setStatus(k)}>{t(v)}</button>
               ))}
@@ -106,36 +106,36 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
               </label>
             </div>
             <label className="field">{t('Network')}
-              <div className="seg" role="group" aria-label="Network">
-                {carriers.map((c) => <button key={c} aria-pressed={carrier === c} onClick={() => setCarrier(c)}>{c}</button>)}
+              <div className="seg" role="group" aria-label={t('Network')}>
+                {carriers.map((c) => <button key={c} aria-pressed={carrier === c} onClick={() => setCarrier(c)}>{carrierName(c)}</button>)}
               </div>
             </label>
             <label className="field">{t('What you see (optional, 140 characters)')}
-              <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mobile data gone since morning; broadband still working" aria-invalid={!!piiWarn} aria-describedby="note-hint" />
-              {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>That looks like {piiWarn}. Remove it: reports are public and permanent.</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
+              <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder={t('Mobile data gone since morning; broadband still working')} aria-invalid={!!piiWarn} aria-describedby="note-hint" />
+              {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>{tf('That looks like {what}. Remove it: reports are public and permanent.', { what: t(piiWarn) })}</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
             </label>
-            <button className="btn primary" disabled={busy || !district || !!piiWarn || cooling} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : cooling ? 'Filed ✓ (one report per district is enough; neighbours confirm it)' : !district ? t('Choose a district to report') : t('File this report')}</button>
-            {pending > 0 && <p className="hint" style={{ margin: 0 }}>{pending} report{pending > 1 ? 's' : ''} saved on this phone, waiting for a connection.</p>}
+            <button className="btn primary" disabled={busy || !district || !!piiWarn || cooling} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : cooling ? t('Filed ✓ (one report per district is enough; neighbours confirm it)') : !district ? t('Choose a district to report') : t('File this report')}</button>
+            {pending > 0 && <p className="hint" style={{ margin: 0 }}>{tp(pending, '{n} report saved on this phone, waiting for a connection.', '{n} reports saved on this phone, waiting for a connection.')}</p>}
             {done && (
-              <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>
+              <p className="hint" style={{ margin: 0 }}>{tx('Filed as {key} in transaction {tx}, signed by {witness}.', { key: <Link to={`/e/${done.key}`}>{short(done.key)}</Link>, tx: <a href={txUrl(done.tx)}>{short(done.tx)}</a>, witness: witnessName(account.address) })}</p>
             )}
           </div>
           <div className="panel" style={{ padding: 16, display: 'grid', gap: 8 }}>
-            <b style={{ fontSize: 15 }}>Your safety</b>
-            <p className="hint" style={{ margin: 0 }}>Reports carry no name, number or location finer than a district. The only link between this phone and what it filed is the throwaway key in this browser ({witnessName(account.address)}). Forget it before handing your phone to anyone; your reports stay on the register, but nothing on the phone points to them.</p>
-            <button className="btn small danger" style={{ justifySelf: 'start' }} onClick={() => { if (confirm('Forget this browser’s key? Reports you filed stay public, but you can no longer withdraw them from this phone.')) forgetKey() }}>Forget this browser’s key</button>
+            <b style={{ fontSize: 15 }}>{t('Your safety')}</b>
+            <p className="hint" style={{ margin: 0 }}>{tf('Reports carry no name, number or location finer than a district. The only link between this phone and what it filed is the throwaway key in this browser ({witness}). Forget it before handing your phone to anyone; your reports stay on the register, but nothing on the phone points to them.', { witness: witnessName(account.address) })}</p>
+            <button className="btn small danger" style={{ justifySelf: 'start' }} onClick={() => { if (confirm(tr('Forget this browser’s key? Reports you filed stay public, but you can no longer withdraw them from this phone.'))) forgetKey() }}>{t('Forget this browser’s key')}</button>
           </div>
-          {net === 'live' && <p className="hint">Just trying it out? <Link to="/report?drill=1">Use the drill version of this form</Link>: same entities, kept off the live map.</p>}
+          {net === 'live' && <p className="hint">{tx('Just trying it out? {link}: same entities, kept off the live map.', { link: <Link to="/report?drill=1">{t('Use the drill version of this form')}</Link> })}</p>}
           <p className="hint">{t('In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.')}</p>
         </div>
         <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-          <h2 className="h3">{state ? `Live reports in ${STATES[state]}` : t('Live reports across India')}</h2>
+          <h2 className="h3">{state ? tf('Live reports in {state}', { state: STATES[state] }) : t('Live reports across India')}</h2>
           {reg.loading && <div className="skel" style={{ height: 160 }} />}
-          {!reg.loading && nearby.length === 0 && <div className="empty">No live reports{state ? ` in ${STATES[state]}` : ''}. Reports fade unless confirmed, so this list only ever shows what people are seeing now.</div>}
+          {!reg.loading && nearby.length === 0 && <div className="empty">{state ? tf('No live reports in {state}. Reports fade unless confirmed, so this list only ever shows what people are seeing now.', { state: STATES[state] }) : t('No live reports. Reports fade unless confirmed, so this list only ever shows what people are seeing now.')}</div>}
           {nearby.map((r) => (
             <div key={r.key} style={{ display: 'grid', gap: 8 }}>
               <ReportCard r={r} />
-              <button className="btn small" style={{ justifySelf: 'start' }} onClick={() => go(`/e/${r.key}`)}>Confirm or inspect</button>
+              <button className="btn small" style={{ justifySelf: 'start' }} onClick={() => go(`/e/${r.key}`)}>{t('Confirm or inspect')}</button>
             </div>
           ))}
         </div>

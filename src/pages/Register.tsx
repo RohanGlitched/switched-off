@@ -4,10 +4,12 @@ import { MODE, recordsWhere, setMode, type Record_ } from '../lib/arkiv'
 import { useRegister } from '../lib/store'
 import { Link, param } from '../lib/router'
 import { STATES } from '../lib/geo'
-import { scopeLabel } from '../lib/fmt'
+import { scopeLabel, scopeName } from '../lib/fmt'
+import { tf, tx, useT } from '../lib/i18n'
 
 export function RegisterPage() {
   const live = useRegister('live')
+  const t = useT()
   const [state, setState] = useState((param('state') ?? '').toUpperCase())
   const [q, setQ] = useState(param('q') ?? '')
   const [scope, setScope] = useState(param('scope') ?? '')
@@ -55,44 +57,44 @@ export function RegisterPage() {
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="section-head">
-        <span className="chip sodium">Register</span>
-        <h1 className="h2">Every suspension order on file.</h1>
-        <p className="lede">Read straight from Arkiv: each card is a readonly, sealed <code>record</code> entity. Orders still in force also exist as a short-lived <code>order</code> entity that disappears the moment the order lapses.</p>
-        <div className="row"><Link to="/file" className="btn small primary">File a published order</Link><span className="hint">Seen one that isn’t here? Anyone can add it.</span></div>
+        <span className="chip sodium">{t('Register')}</span>
+        <h1 className="h2">{t('Every suspension order on file.')}</h1>
+        <p className="lede">{tx('Read straight from Arkiv: each card is a readonly, sealed {record} entity. Orders still in force also exist as a short-lived {order} entity that disappears the moment the order lapses.', { record: <code>record</code>, order: <code>order</code> })}</p>
+        <div className="row"><Link to="/file" className="btn small primary">{t('File a published order')}</Link><span className="hint">{t('Seen one that isn’t here? Anyone can add it.')}</span></div>
       </div>
       <div className="row" style={{ marginBottom: 18, alignItems: 'end' }}>
-        <label className="field" style={{ minWidth: 200, flex: '1 1 200px' }}>State
+        <label className="field" style={{ minWidth: 200, flex: '1 1 200px' }}>{t('State')}
           <select className="input" value={state} onChange={(e) => setState(e.target.value)}>
-            <option value="">All states and UTs</option>
+            <option value="">{t('All states and UTs')}</option>
             {statesOnFile.map((s) => <option key={s} value={s}>{STATES[s] ?? s}</option>)}
           </select>
-          <select className="input" value={since} onChange={(e) => setSince(e.target.value)} aria-label="Issued since">
+          <select className="input" value={since} onChange={(e) => setSince(e.target.value)} aria-label={t('Issued since')}>
 
-            <option value="">Any year</option>
+            <option value="">{t('Any year')}</option>
 
-            {['2025', '2024', '2023', '2022', '2021', '2020', '2019'].map((y) => <option key={y} value={y}>Issued {y} or later</option>)}
+            {['2025', '2024', '2023', '2022', '2021', '2020', '2019'].map((y) => <option key={y} value={y}>{tf('Issued {y} or later', { y })}</option>)}
 
           </select>
         </label>
-        <label className="field" style={{ minWidth: 180, flex: '1 1 180px' }}>What was cut
+        <label className="field" style={{ minWidth: 180, flex: '1 1 180px' }}>{t('What was cut')}
           <select className="input" value={scope} onChange={(e) => setScope(e.target.value)}>
-            <option value="">Anything</option>
-            {Object.entries(scopeLabel).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            <option value="">{t('Anything')}</option>
+            {Object.keys(scopeLabel).map((k) => <option key={k} value={k}>{scopeName(k)}</option>)}
           </select>
         </label>
-        <label className="field" style={{ minWidth: 220, flex: '2 1 220px' }}>Search
-          <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="District, reason, authority" />
+        <label className="field" style={{ minWidth: 220, flex: '2 1 220px' }}>{t('Search')}
+          <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('District, reason, authority')} />
         </label>
-        <div className="seg" role="group" aria-label="Which orders">
-          <button aria-pressed={show === 'all'} onClick={() => setShow('all')}>All on file</button>
-          <button aria-pressed={show === 'force'} onClick={() => setShow('force')}>In force now</button>
+        <div className="seg" role="group" aria-label={t('Which orders')}>
+          <button aria-pressed={show === 'all'} onClick={() => setShow('all')}>{t('All on file')}</button>
+          <button aria-pressed={show === 'force'} onClick={() => setShow('force')}>{t('In force now')}</button>
         </div>
       </div>
-      <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? 'Reading the register from Arkiv…' : `${list.length} of ${live.records.length} orders`}{remote && remote.for === `${state}|${since}` ? <> · query sent to Arkiv: <code className="num">{remote.query}</code></> : null}</p>
+      <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? t('Reading the register from Arkiv…') : tf('{n} of {total} orders', { n: list.length, total: live.records.length })}{remote && remote.for === `${state}|${since}` ? <> · {t('query sent to Arkiv:')} <code className="num">{remote.query}</code></> : null}</p>
       {live.error && !live.loading && (
         <p className="hint" style={{ color: 'var(--vermilion)', marginBottom: 16 }}>
-          {MODE === 'direct' ? 'Arkiv didn’t answer your browser directly' : 'Arkiv didn’t answer through this site’s relay'} ({live.error.slice(0, 90)}).{' '}
-          {MODE === 'direct' ? <button className="btn small" onClick={() => setMode('relay')}>Read through the relay instead</button> : <button className="btn small" onClick={() => setMode('direct')}>Read Arkiv directly from your browser</button>}
+          {tf(MODE === 'direct' ? 'Arkiv didn’t answer your browser directly ({error}).' : 'Arkiv didn’t answer through this site’s relay ({error}).', { error: live.error.slice(0, 90) })}{' '}
+          {MODE === 'direct' ? <button className="btn small" onClick={() => setMode('relay')}>{t('Read through the relay instead')}</button> : <button className="btn small" onClick={() => setMode('direct')}>{t('Read Arkiv directly from your browser')}</button>}
         </p>
       )}
       {live.loading ? (
@@ -100,13 +102,13 @@ export function RegisterPage() {
       ) : list.length ? (
         <div className="grid3">
           {list.map((r) => (
-            <Link key={r.key} to={`/e/${r.key}`} style={{ textDecoration: 'none' }} aria-label={`Open the record for ${r.stateName}`}>
+            <Link key={r.key} to={`/e/${r.key}`} style={{ textDecoration: 'none' }} aria-label={tf('Open the record for {state}', { state: r.stateName })}>
               <Gazette o={r} live={forceKeys.has(r.orderId)} compact />
             </Link>
           ))}
         </div>
       ) : (
-        <div className="empty">{show === 'force' && live.orders.length === 0 ? <>No order on the register is in force right now. Know of one? <Link to="/file">File it</Link>.</> : <>No order on file matches. Clear a filter, or <Link to="/file">file one that’s missing</Link>.</>}</div>
+        <div className="empty">{show === 'force' && live.orders.length === 0 ? tx('No order on the register is in force right now. Know of one? {link}.', { link: <Link to="/file">{t('File it')}</Link> }) : tx('No order on file matches. Clear a filter, or {link}.', { link: <Link to="/file">{t('file one that’s missing')}</Link> })}</div>
       )}
     </section>
   )

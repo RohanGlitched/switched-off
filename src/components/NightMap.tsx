@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { districtIndexes, loadGeo, type Geo } from '../lib/geo'
 import type { Order, Report } from '../lib/arkiv'
-import { useT } from '../lib/i18n'
+import { tf, tp, tr, useT } from '../lib/i18n'
 
 export type MapState = { off: Map<number, Order>; flagged: Map<number, Report[]>; restored: Set<number> }
 
@@ -211,13 +211,13 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       const st = stateRef.current
       const o = st.off.get(di)
       const fl = st.flagged.get(di)
+      // translated when the pointer moves, so the tooltip follows the current language
+      const place = `${d.name}, ${d.state}`
       const text = o
-        ? `${d.name}, ${d.state}: switched off by ${o.official ? 'order' : 'a community-filed order (unverified)'}${o.emergency && !o.confirmed ? ' (emergency, unconfirmed)' : ''}`
+        ? `${tf(o.official ? '{place}: switched off by order' : '{place}: switched off by a community-filed order (unverified)', { place })}${o.emergency && !o.confirmed ? tr(' (emergency, unconfirmed)') : ''}`
         : fl
-          ? `${d.name}, ${d.state}: ${fl.length} report${fl.length > 1 ? 's' : ''} of no internet, and no published order`
-          : o === undefined && false
-            ? ''
-          : `${d.name}, ${d.state}: lights on`
+          ? tp(fl.length, '{place}: {n} report of no internet, and no published order', '{place}: {n} reports of no internet, and no published order', { place })
+          : tf('{place}: lights on', { place })
       setTip({ x: px, y: py, text })
     }
     const click = (ev: PointerEvent) => {
@@ -242,7 +242,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
     <figure style={{ margin: 0 }}>
       <div className="map-wrap" ref={wrap}>
         {!geo && <div className="skel" style={{ position: 'absolute', inset: '8%' }} aria-hidden="true" />}
-        <canvas ref={ref} role="img" aria-label={label ?? `Map of India's districts at night. ${offCount} district${offCount === 1 ? '' : 's'} switched off by an order in force; ${flagCount} district${flagCount === 1 ? '' : 's'} with reports of no internet but no published order.`} />
+        <canvas ref={ref} role="img" aria-label={label ?? `${t("Map of India's districts at night.")} ${tp(offCount, '{n} district switched off by an order in force;', '{n} districts switched off by an order in force;')} ${tp(flagCount, '{n} district with reports of no internet but no published order.', '{n} districts with reports of no internet but no published order.')}`} />
         {tip && <div className="map-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>}
       </div>
       <figcaption className="legend">

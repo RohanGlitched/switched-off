@@ -3,6 +3,7 @@ import { RPC, WS, EXPLORER } from '../lib/arkiv'
 import { REGISTRARS } from '../lib/registrars'
 import { useRegister } from '../lib/store'
 import { Link } from '../lib/router'
+import { tf, tx, useT } from '../lib/i18n'
 
 const q = (expr: string, extra = '') =>
   `curl -s -X POST ${RPC} \\
@@ -44,70 +45,71 @@ const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?
 
 export function DataPage() {
   const live = useRegister('live')
+  const t = useT()
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px', display: 'grid', gap: 40 }}>
       <div className="section-head" style={{ marginBottom: 0 }}>
-        <span className="chip sodium">Data & mirrors</span>
-        <h1 className="h2">Don’t trust this site. Ask the network.</h1>
-        <p className="lede">Every number on Switched Off comes from one of the queries below. Run them yourself against Arkiv’s Tiramisu testnet: no key, no account, no Switched Off server in between.</p>
+        <span className="chip sodium">{t('Data & mirrors')}</span>
+        <h1 className="h2">{t('Don’t trust this site. Ask the network.')}</h1>
+        <p className="lede">{t('Every number on Switched Off comes from one of the queries below. Run them yourself against Arkiv’s Tiramisu testnet: no key, no account, no Switched Off server in between.')}</p>
         <div className="row">
           <span className="chip">RPC {RPC.replace('https://', '')}</span>
           <span className="chip">WebSocket {WS.replace('wss://', '')}</span>
-          <a className="chip" href={EXPLORER}>Explorer</a>
-          <span className="chip num">{live.loadedAt ? `${live.records.length} records · ${live.orders.length} in force · ${live.reports.length} live reports` : 'reading Arkiv…'}</span>
+          <a className="chip" href={EXPLORER}>{t('Explorer')}</a>
+          <span className="chip num">{live.loadedAt ? tf('{records} records · {orders} in force · {reports} live reports', { records: live.records.length, orders: live.orders.length, reports: live.reports.length }) : t('reading Arkiv…')}</span>
         </div>
       </div>
 
       <div style={{ display: 'grid', gap: 22 }}>
         {QUERIES.map((x) => (
           <div key={x.title} className="panel" style={{ display: 'grid', gap: 10 }}>
-            <h2 className="h3">{x.title}</h2>
-            <p className="mute" style={{ margin: 0 }}>{x.claim}</p>
+            <h2 className="h3">{t(x.title)}</h2>
+            <p className="mute" style={{ margin: 0 }}>{t(x.claim)}</p>
             <pre className="code">{q(x.expr, x.extra)}</pre>
             <pre className="code" style={{ opacity: 0.85 }}>{`// @arkiv-network/sdk 0.8.1\n${x.sdk}`}</pre>
           </div>
         ))}
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
-          <h2 className="h3">Evidence that survives expiry</h2>
-          <p className="mute" style={{ margin: 0 }}>Lapsed orders vanish from the present, not from history. On 11 Oct we filed a drill order that lived 30 blocks: entity <code>0x0bd2969f…b57302c</code>, created at block 437,835. Run the first query and it is gone; run the second, the same query at block 437,835, and it is there. The drill’s rewind slider and the CLI’s <code>at</code> command do exactly this.</p>
+          <h2 className="h3">{t('Evidence that survives expiry')}</h2>
+          <p className="mute" style={{ margin: 0 }}>{tx('Lapsed orders vanish from the present, not from history. On 11 Oct we filed a drill order that lived 30 blocks: entity {key}, created at block 437,835. Run the first query and it is gone; run the second, the same query at block 437,835, and it is there. The drill’s rewind slider and the CLI’s {at} command do exactly this.', { key: <code>0x0bd2969f…b57302c</code>, at: <code>at</code> })}</p>
           <pre className="code">{q("app = str('switched-off') AND order_id = str('drill-evidence-lapse')")}</pre>
           <pre className="code">{q("app = str('switched-off') AND order_id = str('drill-evidence-lapse')", `,\\"atBlock\\":\\"0x6ae4b\\"`)}</pre>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
-          <h2 className="h3">Nobody can delete the archive</h2>
-          <p className="mute" style={{ margin: 0 }}>Every live record is owned by <code>0x…dEaD</code>, an address nobody holds a key for, while its <code>$creator</code> still shows who filed it. Only an owner can delete an entity, so these can only expire, and anyone can extend them. This query should return all of them:</p>
+          <h2 className="h3">{t('Nobody can delete the archive')}</h2>
+          <p className="mute" style={{ margin: 0 }}>{tx('Every live record is owned by {dead}, an address nobody holds a key for, while its {creator} still shows who filed it. Only an owner can delete an entity, so these can only expire, and anyone can extend them. This query should return all of them:', { dead: <code>0x…dEaD</code>, creator: <code>$creator</code> })}</p>
           <pre className="code">{q("\\$owner = addr(0x000000000000000000000000000000000000dEaD) AND app = str('switched-off') AND type = str('record') AND net = str('live')")}</pre>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
-          <h2 className="h3">Who filed it</h2>
-          <p className="mute" style={{ margin: 0 }}>Every entity carries its <code>$creator</code> and <code>$owner</code>. Orders from the Switched Off registrar come from these addresses; anything else is a community transcription, labelled as such.</p>
+          <h2 className="h3">{t('Who filed it')}</h2>
+          <p className="mute" style={{ margin: 0 }}>{tx('Every entity carries its {creator} and {owner}. Orders from the Switched Off registrar come from these addresses; anything else is a community transcription, labelled as such.', { creator: <code>$creator</code>, owner: <code>$owner</code> })}</p>
           <pre className="code">{REGISTRARS.map((r) => `${r.name}: ${r.address}`).join('\n')}{`\n\ncreatedBy: pub.select('*').where(eq('app','switched-off')).createdBy('${REGISTRARS[0].address}').fetch()\n(ownedBy would find almost nothing: the records are sealed, so their $owner is 0x…dEaD)`}</pre>
         </div>
       </div>
 
       <div id="mirrors" className="section-head" style={{ marginBottom: 0 }}>
-        <h2 className="h2">Mirrors and the command line</h2>
-        <p className="lede">If this site is blocked, the register isn’t. Three ways to read it without us:</p>
+        <h2 className="h2">{t('Mirrors and the command line')}</h2>
+        <p className="lede">{t('If this site is blocked, the register isn’t. Three ways to read it without us:')}</p>
       </div>
       <div className="grid3">
         <div className="panel" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
-          <h3 className="h3">One-file mirror</h3>
-          <p className="mute" style={{ margin: 0 }}>A single HTML file, about 10 KB, that reads orders and reports straight from Arkiv in the browser. Save it, put it on any host, send it on WhatsApp.</p>
-          <a className="btn small" href="/mirror.html" download style={{ justifySelf: 'start' }}>Download mirror.html</a>
-          <a href="/mirror.html">Open it here</a>
+          <h3 className="h3">{t('One-file mirror')}</h3>
+          <p className="mute" style={{ margin: 0 }}>{t('A single HTML file, about 10 KB, that reads orders and reports straight from Arkiv in the browser. Save it, put it on any host, send it on WhatsApp.')}</p>
+          <a className="btn small" href="/mirror.html" download style={{ justifySelf: 'start' }}>{t('Download mirror.html')}</a>
+          <a href="/mirror.html">{t('Open it here')}</a>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
-          <h3 className="h3">Independent copy</h3>
-          <p className="mute" style={{ margin: 0 }}>The same mirror, served by GitHub Pages from the repository, on a different company’s servers and domain.</p>
-          <a className="btn small" href="https://rohanglitched.github.io/switched-off/" style={{ justifySelf: 'start' }}>Open the GitHub Pages mirror</a>
+          <h3 className="h3">{t('Independent copy')}</h3>
+          <p className="mute" style={{ margin: 0 }}>{t('The same mirror, served by GitHub Pages from the repository, on a different company’s servers and domain.')}</p>
+          <a className="btn small" href="https://rohanglitched.github.io/switched-off/" style={{ justifySelf: 'start' }}>{t('Open the GitHub Pages mirror')}</a>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
-          <h3 className="h3">Command line</h3>
-          <p className="mute" style={{ margin: 0 }}>A zero-dependency Node script in the repo.</p>
+          <h3 className="h3">{t('Command line')}</h3>
+          <p className="mute" style={{ margin: 0 }}>{t('A zero-dependency Node script in the repo.')}</p>
           <pre className="code">{`node cli/switched-off.mjs active\nnode cli/switched-off.mjs state MN\nnode cli/switched-off.mjs reports`}</pre>
         </div>
       </div>
-      <p className="hint">Full entity schema: <a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/schema.md">arkiv/schema.md</a>. What was hard: <a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/friction.md">arkiv/friction.md</a>. <Link to="/why">Why Arkiv, and what we keep off it.</Link></p>
+      <p className="hint">{tx('Full entity schema: {schema}. What was hard: {friction}. {why}', { schema: <a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/schema.md">arkiv/schema.md</a>, friction: <a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/friction.md">arkiv/friction.md</a>, why: <Link to="/why">{t('Why Arkiv, and what we keep off it.')}</Link> })}</p>
     </section>
   )
 }

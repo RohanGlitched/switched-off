@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { Hex } from 'viem'
 import { activeOrders, blockToTime, currentBlock, eventsClient, liveReports, pollingClient, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
-export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; text?: string }
+export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] } }
 export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean }
 
 const empty: Snapshot = { orders: [], records: [], reports: [], loadedAt: 0, error: null, loading: true }
@@ -42,7 +42,7 @@ export async function refresh(net: Net, light = false) {
       const still = new Set(o.map((x) => x.key.toLowerCase()))
       for (const old of before.orders)
         if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head + 6n)
-          wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, text: `${net === 'drill' ? 'Drill: ' : ''}Order lapsed on Arkiv's clock: ${old.stateName}, ${old.districts.length === 1 ? old.districts[0] : `${old.districts.length} districts`} relit. Nobody deleted it; its expiry block arrived.` }, ...wire].slice(0, 40)
+          wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, lapsed: { drill: net === 'drill', state: old.stateName, districts: old.districts } }, ...wire].slice(0, 40)
       snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false }
     } catch (e) {
       snaps[net] = { ...snaps[net], loading: false, error: (e as Error).message || 'Arkiv did not answer.' }

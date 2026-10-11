@@ -3,6 +3,7 @@
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { formatEther, parseEther, type Hex } from 'viem'
 import { pub, walletFor } from './arkiv'
+import { tf } from './i18n'
 
 const KEY = 'switched-off:key'
 
@@ -24,7 +25,7 @@ export const wallet = walletFor(account)
 
 /** A short, stable name for an address: what a person sees instead of 0x… */
 export function witnessName(addr: string): string {
-  return `Witness ${addr.slice(2, 6).toUpperCase()}`
+  return tf('Witness {id}', { id: addr.slice(2, 6).toUpperCase() })
 }
 
 export async function balance(): Promise<bigint> {
