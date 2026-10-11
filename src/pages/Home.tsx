@@ -32,11 +32,20 @@ export function Home() {
     }, ), 60)
     return () => clearInterval(id)
   }, [playing, span])
+  // an order with no published end is shown until the next order on file for its state, at most
+  // fifteen days (the per-order cap since November 2020); the note under the map says so
+  const spans = useMemo(() => {
+    return live.records.filter((r) => r.starts).map((r) => {
+      if (r.ends) return { r, end: r.ends }
+      const next = live.records.filter((x) => x.state === r.state && x.starts > r.starts).reduce((m, x) => Math.min(m, x.starts), Infinity)
+      return { r, end: Math.min(next, r.starts + 15 * 86400) }
+    })
+  }, [live.records])
   const inForceAt = useMemo(() => {
     if (at === null) return []
     const t = at / 1000
-    return live.records.filter((r) => r.starts <= t && (r.ends ? t < r.ends : t < r.starts + 86400)) as unknown as Order[]
-  }, [at, live.records])
+    return spans.filter(({ r, end }) => r.starts <= t && t < end).map(({ r }) => r) as unknown as Order[]
+  }, [at, spans])
   const map = useMapState(geo, at === null ? live.orders : inForceAt, at === null ? live.reports : [])
   const down = live.reports.filter((r) => r.status !== 'back')
   const archive = useMemo(() => [...live.records].sort((a, b) => b.starts - a.starts), [live.records])
@@ -80,7 +89,7 @@ export function Home() {
                   </span>
                 </div>
                 <input type="range" aria-label="Day to show" min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
-                <span className="hint">Every order on the register, replayed from its stated start to its stated end. Orders without a published end date show for their first day only.</span>
+                <span className="hint">Every order on the register, replayed from its stated start to its stated end. Orders without a published end date are shown until the next order on file for that state, at most fifteen days.</span>
               </div>
             )}
           </div>

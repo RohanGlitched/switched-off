@@ -40,6 +40,8 @@ export function NightMap({ state, focus, onPick, label }: Props) {
   stateRef.current = state
   const focusRef = useRef(focus)
   focusRef.current = focus
+  const pickRef = useRef(onPick)
+  pickRef.current = onPick
 
   useEffect(() => {
     void loadGeo().then(setGeo)
@@ -52,7 +54,8 @@ export function NightMap({ state, focus, onPick, label }: Props) {
     const g = c.getContext('2d')!
     const [minx, miny, maxx, maxy] = geo.bounds
     const n = geo.dots.length
-    const light = (lightRef.current = lightRef.current && lightRef.current.length === n ? lightRef.current : new Float32Array(n).fill(0))
+    // start lit (the first frame is already right); only changes animate
+    const light = (lightRef.current = lightRef.current && lightRef.current.length === n ? lightRef.current : Float32Array.from(geo.dots, (d) => (d[2] < 0 ? 0.35 : 1)))
     const seed = new Float32Array(n).map((_, i) => ((Math.sin(i * 12.9898) * 43758.5453) % 1 + 1) % 1)
     let w = 0, h = 0, s = 0, ox = 0, oy = 0, dpr = 1
     const resize = () => {
@@ -69,7 +72,11 @@ export function NightMap({ state, focus, onPick, label }: Props) {
       oy = (h - (maxy - miny) * 1.07 * s) / 2
     }
     resize()
-    const ro = new ResizeObserver(resize)
+    // a resize clears the canvas: repaint at once, even if animation frames are paused (hidden tab)
+    const ro = new ResizeObserver(() => {
+      resize()
+      draw(performance.now())
+    })
     ro.observe(wrap.current)
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     let raf = 0
@@ -108,9 +115,11 @@ export function NightMap({ state, focus, onPick, label }: Props) {
         g.arc(x, y, r, 0, Math.PI * 2)
         g.fill()
       }
+      cancelAnimationFrame(raf)
       raf = requestAnimationFrame(draw)
     }
     raf = requestAnimationFrame(draw)
+    draw(performance.now())
 
     const pick = (ev: PointerEvent) => {
       const b = c.getBoundingClientRect()
@@ -144,7 +153,7 @@ export function NightMap({ state, focus, onPick, label }: Props) {
     }
     const click = (ev: PointerEvent) => {
       const { di } = pick(ev)
-      if (di >= 0) onPick?.(di)
+      if (di >= 0) pickRef.current?.(di)
     }
     c.addEventListener('pointermove', move)
     c.addEventListener('pointerleave', () => setTip(null))
@@ -155,7 +164,7 @@ export function NightMap({ state, focus, onPick, label }: Props) {
       c.removeEventListener('pointermove', move)
       c.removeEventListener('pointerup', click)
     }
-  }, [geo, onPick])
+  }, [geo])
 
   const offCount = state.off.size
   const flagCount = state.flagged.size

@@ -124,8 +124,20 @@ type Raw = {
   toJson?: () => unknown
 }
 
-const num = (v: unknown) => (typeof v === 'bigint' ? Number(v) : typeof v === 'number' ? v : Number(v ?? 0))
-const str = (v: unknown) => (v == null ? '' : String(v))
+/** Attributes come back tagged, { type: 'u64', value: 123n }: take the value. */
+const un = (v: unknown): unknown => (v && typeof v === 'object' && 'value' in (v as object) ? (v as { value: unknown }).value : v)
+const num = (v0: unknown) => {
+  const v = un(v0)
+  return typeof v === 'bigint' ? Number(v) : typeof v === 'number' ? v : Number(v ?? 0) || 0
+}
+const str = (v0: unknown) => {
+  const v = un(v0)
+  return v == null ? '' : String(v)
+}
+const bool = (v0: unknown) => {
+  const v = un(v0)
+  return v === true || v === 'true'
+}
 const json = <T,>(e: Raw, fallback: T): T => {
   try {
     return (e.toJson?.() as T) ?? fallback
@@ -148,8 +160,8 @@ function toOrder(e: Raw): Order {
     issued: num(a.issued),
     starts: num(a.starts),
     ends: num(a.ends),
-    emergency: a.emergency === true || a.emergency === 'true',
-    confirmed: a.confirmed === true || a.confirmed === 'true',
+    emergency: bool(a.emergency),
+    confirmed: bool(a.confirmed),
     basis: p.basis || str(a.basis),
     basisCode: str(a.basis),
     notes: p.notes ?? '',
@@ -184,7 +196,7 @@ function toReport(e: Raw): Report {
     carrier: str(a.carrier),
     status: (str(a.status) as Report['status']) || 'down',
     seen: num(a.seen),
-    late: a.late === true || a.late === 'true',
+    late: bool(a.late),
     note: p.note ?? '',
     owner: e.owner ?? '0x',
     creator: e.creator ?? '0x',
