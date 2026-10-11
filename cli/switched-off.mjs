@@ -5,7 +5,8 @@
 //   node cli/switched-off.mjs reports [MN]      live citizen reports
 //   node cli/switched-off.mjs at <block> [drill] orders in force at a past block
 // Set ARKIV_KEY to use your own Arkiv access key (otherwise the anonymous budget applies).
-const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
+// any Arkiv endpoint works: ARKIV_RPC=https://your-node.example node cli/switched-off.mjs active
+const RPC = process.env.ARKIV_RPC || 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 const [cmd = 'active', arg] = process.argv.slice(2)
 
 async function query(q, extra = {}) {

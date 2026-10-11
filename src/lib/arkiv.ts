@@ -3,13 +3,16 @@
 import { createPublicClient, createWalletClient } from '@arkiv-network/sdk'
 import { tiramisu } from '@arkiv-network/sdk/chains'
 import { and, eq, gt, type Expression } from '@arkiv-network/sdk/query'
-import { http, webSocket, type Hex, type Account } from 'viem'
+import { http, webSocket, parseAbiItem, type Hex, type Account } from 'viem'
 
 export const APP = 'switched-off'
 export const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 export const WS = 'wss://rpc.tiramisu.db-chain.testnet.arkiv.network'
 export const EXPLORER = 'https://tiramisu.explorer.arkiv.network'
 export const BLOCK_SECONDS = 2
+/** Sealed records are owned by this address. Nobody holds its key, so nobody can delete them. */
+export const SEALED = '0x000000000000000000000000000000000000dEaD'
+const ARKIV_ADDRESS = '0x4400000000000000000000000000000000000044'
 
 /** "live" is the real register; "drill" is the sandbox where the law runs at one day per minute. */
 export type Net = 'live' | 'drill'
@@ -92,7 +95,7 @@ export type Order = {
 }
 
 /** The permanent copy of an order: readonly, and anyone may pay to keep it alive. */
-export type Record_ = Omit<Order, 'emergency' | 'confirmed'> & { permissionless: boolean }
+export type Record_ = Omit<Order, 'emergency' | 'confirmed'> & { permissionless: boolean; sealed: boolean; corrects: string; correctedBy?: Hex }
 
 /** A citizen's connectivity report. Gone in hours unless other people confirm it by extending it. */
 export type Report = {
@@ -182,7 +185,7 @@ function toOrder(e: Raw): Order {
 
 function toRecord(e: Raw): Record_ {
   const o = toOrder(e)
-  return { ...o, permissionless: !!e.creationFlags?.permissionlessExtension }
+  return { ...o, permissionless: !!e.creationFlags?.permissionlessExtension, sealed: (e.owner ?? '').toLowerCase() === SEALED.toLowerCase(), corrects: str(e.attributes?.corrects) }
 }
 
 function toReport(e: Raw): Report {
@@ -226,9 +229,26 @@ const base = (type: string, net: Net) => [eq('app', APP), eq('type', type), eq('
 export async function activeOrders(net: Net, atBlock?: bigint): Promise<Order[]> {
   return (await all(base('order', net), atBlock)).map(toOrder)
 }
-/** The permanent register, every order ever transcribed. */
+/** The permanent register, every order ever transcribed. A correction replaces the record it names in `corrects`. */
 export async function records(net: Net, atBlock?: bigint): Promise<Record_[]> {
-  return (await all(base('record', net), atBlock)).map(toRecord)
+  const rs = (await all(base('record', net), atBlock)).map(toRecord)
+  const corrected = new Map(rs.filter((r) => r.corrects).map((r) => [r.corrects.toLowerCase(), r.key]))
+  return rs.filter((r) => !corrected.has(r.key.toLowerCase())).map((r) => (r.corrects ? { ...r, correctedBy: undefined } : r))
+}
+/** Every record including the ones a correction replaced (for the entity page). */
+export async function allRecords(net: Net): Promise<Record_[]> {
+  return (await all(base('record', net))).map(toRecord)
+}
+
+/** Who kept an entity alive: the senders of its ExpiryExtended events (the event itself only names the owner). */
+export async function extenders(key: Hex, fromBlock: bigint): Promise<Hex[]> {
+  try {
+    const logs = await pub.getLogs({ address: ARKIV_ADDRESS, event: parseAbiItem('event ExpiryExtended(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt)'), args: { entityKey: key }, fromBlock, toBlock: 'latest' })
+    const froms = await Promise.all(logs.map((l) => pub.getTransaction({ hash: l.transactionHash! }).then((t) => t.from.toLowerCase() as Hex)))
+    return [...new Set(froms)]
+  } catch {
+    return []
+  }
 }
 /** Reports still alive: each one is gone within hours unless someone confirms it. */
 export async function liveReports(net: Net, atBlock?: bigint): Promise<Report[]> {

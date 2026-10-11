@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
 import { Gazette } from '../components/Gazette'
-import { blockToTime, currentBlock, orderByKey, syncClock, type Order, type Record_, type Report } from '../lib/arkiv'
+import { SEALED, allRecords, blockToTime, currentBlock, extenders, orderByKey, syncClock, type Order, type Record_, type Report } from '../lib/arkiv'
 import { confirmEmergency, confirmReport, keepAlive } from '../lib/write'
 import { account } from '../lib/wallet'
 import { addrUrl, ago, fmtDateTime, left, short, txUrl } from '../lib/fmt'
@@ -21,7 +21,13 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const [busy, setBusy] = useState(false)
   const [tx, setTx] = useState<Hex | null>(null)
   const now = useNow()
-  const load = () => syncClock().then(() => orderByKey(entityKey)).then(setE)
+  const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
+  const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex }>({})
+  const load = () => syncClock().then(() => orderByKey(entityKey)).then((x) => {
+    setE(x)
+    if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n).then(setWitnesses)
+    if (x && 'permissionless' in x) void allRecords(x.net).then((rs) => setRelated({ corrects: (x.corrects || undefined) as Hex | undefined, correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase())?.key }))
+  })
   useEffect(() => void load(), [entityKey])
 
   const act = async (fn: () => Promise<Hex>, done: string) => {
@@ -53,6 +59,10 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
 
   const expMs = blockToTime(e.expiresAt)
   const mine = e.owner.toLowerCase() === account.address.toLowerCase()
+  const me = account.address.toLowerCase()
+  const iFiled = e.creator.toLowerCase() === me
+  const iConfirmed = !!witnesses?.includes(me as Hex)
+  const sealed = e.owner.toLowerCase() === SEALED.toLowerCase()
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="grid2" style={{ alignItems: 'start' }}>
@@ -63,16 +73,19 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           <h1 className="h3">{isReport(e) ? 'Citizen report' : isRecord(e) ? 'Permanent record' : 'Order in force'} on Arkiv</h1>
           <dl style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', gap: '8px 14px', margin: 0, fontSize: 14 }}>
             <dt className="mute">Entity key</dt><dd className="num" style={{ margin: 0, overflowWrap: 'anywhere' }}>{e.key}</dd>
-            <dt className="mute">Owner</dt><dd style={{ margin: 0 }}><a href={addrUrl(e.owner)}>{short(e.owner)}</a>{mine ? ' (you)' : ''}</dd>
+            <dt className="mute">Owner</dt><dd style={{ margin: 0 }}><a href={addrUrl(e.owner)}>{short(e.owner)}</a>{mine ? ' (you)' : ''}{sealed ? ' · sealed: nobody holds this key, so nobody can delete it' : ''}</dd>
             <dt className="mute">Creator</dt><dd style={{ margin: 0 }}><a href={addrUrl(e.creator)}>{short(e.creator)}</a></dd>
             <dt className="mute">Expires</dt><dd className="num" style={{ margin: 0 }}>block {e.expiresAt.toLocaleString()} · {fmtDateTime(expMs)} · <b>{left(expMs - now)}</b></dd>
             <dt className="mute">Flags</dt><dd style={{ margin: 0 }}>{flagText(e)}</dd>
+            {witnesses && (isReport(e) || isRecord(e)) && <><dt className="mute">{isReport(e) ? 'Confirmed by' : 'Kept alive by'}</dt><dd style={{ margin: 0 }}>{witnesses.length ? `${witnesses.length} other key${witnesses.length === 1 ? '' : 's'} (${witnesses.slice(0, 3).map((w) => short(w)).join(', ')}${witnesses.length > 3 ? '…' : ''})` : 'nobody yet'}</dd></>}
+            {related.corrects && <><dt className="mute">Corrects</dt><dd style={{ margin: 0 }}><Link to={`/e/${related.corrects}`}>{short(related.corrects)}</Link> (the original stays on Arkiv, unchanged)</dd></>}
+            {related.correctedBy && <><dt className="mute">Corrected by</dt><dd style={{ margin: 0 }}><Link to={`/e/${related.correctedBy}`}>{short(related.correctedBy)}</Link></dd></>}
             <dt className="mute">Head</dt><dd className="num" style={{ margin: 0 }}>block {currentBlock().toLocaleString()}</dd>
           </dl>
           {isReport(e) && (
             <div style={{ display: 'grid', gap: 8 }}>
-              <p className="mute" style={{ margin: 0 }}>Seeing the same thing? Confirming pushes this report’s expiry six {e.net === 'drill' ? 'minutes' : 'hours'} from now. You can’t change what it says, and neither can its author.</p>
-              <button className="btn primary" disabled={busy} onClick={() => act(() => confirmReport(e.key, e.net), 'Confirmed. The report stays up for another window.')}>{busy ? 'Writing to Arkiv…' : 'Still down here: confirm'}</button>
+              <p className="mute" style={{ margin: 0 }}>Seeing the same thing? Confirming pushes this report’s expiry six {e.net === 'drill' ? 'minutes' : 'hours'} from now. You can’t change what it says, and neither can its author. Each browser key counts once; it counts keys, not people.</p>
+              <button className="btn primary" disabled={busy || iFiled || iConfirmed} onClick={() => act(() => confirmReport(e.key, e.net), 'Confirmed. The report stays up for another window.')}>{busy ? 'Writing to Arkiv…' : iFiled ? 'You filed this: a neighbour has to confirm it' : iConfirmed ? 'You already confirmed this' : 'Still down here: confirm'}</button>
             </div>
           )}
           {isRecord(e) && (

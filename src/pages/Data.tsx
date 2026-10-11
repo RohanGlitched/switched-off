@@ -1,6 +1,5 @@
 // Reproducible: the exact queries behind every claim on this site, a one-file mirror, and a CLI.
-import { useState } from 'react'
-import { RPC, WS, EXPLORER, currentBlock } from '../lib/arkiv'
+import { RPC, WS, EXPLORER } from '../lib/arkiv'
 import { REGISTRARS } from '../lib/registrars'
 import { useRegister } from '../lib/store'
 import { Link } from '../lib/router'
@@ -45,7 +44,6 @@ const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?
 
 export function DataPage() {
   const live = useRegister('live')
-  const [block] = useState(() => currentBlock())
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px', display: 'grid', gap: 40 }}>
       <div className="section-head" style={{ marginBottom: 0 }}>
@@ -70,9 +68,15 @@ export function DataPage() {
           </div>
         ))}
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
-          <h2 className="h3">What was in force at a past block</h2>
-          <p className="mute" style={{ margin: 0 }}>Lapsed orders vanish from the present, not from history. Add <code>atBlock</code> to any query and Arkiv answers as of that block, including entities that have since expired. The drill’s rewind slider runs exactly this.</p>
-          <pre className="code">{q("app = str('switched-off') AND type = str('order') AND net = str('drill')", `,\\"atBlock\\":\\"0x${(block - 900n > 0n ? block - 900n : 1n).toString(16)}\\"`)}</pre>
+          <h2 className="h3">Evidence that survives expiry</h2>
+          <p className="mute" style={{ margin: 0 }}>Lapsed orders vanish from the present, not from history. On 11 Oct we filed a drill order that lived 30 blocks: entity <code>0x0bd2969f…b57302c</code>, created at block 437,835. Run the first query and it is gone; run the second, the same query at block 437,835, and it is there. The drill’s rewind slider and the CLI’s <code>at</code> command do exactly this.</p>
+          <pre className="code">{q("app = str('switched-off') AND order_id = str('drill-evidence-lapse')")}</pre>
+          <pre className="code">{q("app = str('switched-off') AND order_id = str('drill-evidence-lapse')", `,\\"atBlock\\":\\"0x6ae4b\\"`)}</pre>
+        </div>
+        <div className="panel" style={{ display: 'grid', gap: 10 }}>
+          <h2 className="h3">Nobody can delete the archive</h2>
+          <p className="mute" style={{ margin: 0 }}>Every live record is owned by <code>0x…dEaD</code>, an address nobody holds a key for, while its <code>$creator</code> still shows who filed it. Only an owner can delete an entity, so these can only expire, and anyone can extend them. This query should return all of them:</p>
+          <pre className="code">{q("$owner = addr(0x000000000000000000000000000000000000dEaD) AND app = str('switched-off') AND type = str('record')")}</pre>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
           <h2 className="h3">Who filed it</h2>

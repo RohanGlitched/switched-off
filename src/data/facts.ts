@@ -27,7 +27,7 @@ export const FACTS: Fact[] = [
   },
   {
     big: '2021',
-    text: 'Parliament’s IT committee recommended a centralised database of every shutdown, recording its duration, reasons and authority. Five years on, none exists. This register is that database.',
+    text: 'Parliament’s IT committee recommended a centralised database of every shutdown, recording its duration, reasons and authority. No official one exists. Switched Off is an open, public version anyone can add to and nobody can quietly edit.',
     source: 'PRS summary of the 26th Report',
     url: 'https://prsindia.org/policy/report-summaries/suspension-of-telecom-services-internet-and-its-impact',
   },

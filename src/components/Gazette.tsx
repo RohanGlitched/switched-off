@@ -21,6 +21,7 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
       <div className="mast">
         <div style={{ fontSize: 15 }}>{o.net === 'drill' ? 'Drill Gazette' : 'Register of Suspension Orders'}</div>
         <small>{o.authority || 'Issuing authority not recorded'}</small>
+        <small style={{ fontStyle: 'italic' }}>Unofficial transcription, not the Gazette of India</small>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
         <h3>{o.stateName}</h3>
@@ -44,6 +45,9 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
           {o.basis && <span>Under: {o.basis}</span>}
           {emergencyPending && !lapsed && <span style={{ color: 'var(--seal)' }}>Issued in an emergency: lapses at {fmtDateTime(lapseAt)} unless the competent authority confirms it.</span>}
           {o.published === false && <span style={{ color: 'var(--seal)' }}>The order text was not published.</span>}
+          {o.published == null && <span>Whether the order text was published: not known.</span>}
+          {'corrects' in o && o.corrects && <span>This entry corrects an earlier record, which stays on Arkiv unchanged.</span>}
+          {'sealed' in o && <span>{o.sealed ? 'Sealed: owned by an address nobody holds a key for, so nobody can edit or delete it. Anyone can keep it alive.' : 'Not sealed yet: its filer can still delete it.'}</span>}
           {o.notes && <span>Note: {o.notes}</span>}
           <span>Filed by {official ? 'the Switched Off registrar' : 'a community transcriber'}</span>
           {o.sources.length > 0 && (

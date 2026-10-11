@@ -28,7 +28,8 @@ export function RegisterPage() {
       <div className="section-head">
         <span className="chip sodium">Register</span>
         <h1 className="h2">Every suspension order on file.</h1>
-        <p className="lede">Read straight from Arkiv: each card is a readonly <code>record</code> entity. Orders still in force also exist as a short-lived <code>order</code> entity that disappears the moment the order lapses.</p>
+        <p className="lede">Read straight from Arkiv: each card is a readonly, sealed <code>record</code> entity. Orders still in force also exist as a short-lived <code>order</code> entity that disappears the moment the order lapses.</p>
+        <div className="row"><Link to="/file" className="btn small primary">File a published order</Link><span className="hint">Seen one that isn’t here? Anyone can add it.</span></div>
       </div>
       <div className="row" style={{ marginBottom: 18, alignItems: 'end' }}>
         <label className="field" style={{ minWidth: 200, flex: '1 1 200px' }}>State

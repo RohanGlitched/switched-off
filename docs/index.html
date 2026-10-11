@@ -41,11 +41,12 @@
     <button id="go">Read from Arkiv</button>
     <span id="status" class="tag">idle</span>
   </div>
-  <p style="font-size:13px">Query sent: <code id="q"></code></p>
+  <p style="font-size:13px">Query sent: <code id="q"></code> · to <code id="rpc"></code> (add <code>?rpc=…</code> to use another Arkiv endpoint)</p>
   <div id="out" class="grid"></div>
 </main>
 <script>
-const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
+// any Arkiv endpoint works: ?rpc=https://your-node.example adds independence from this one
+const RPC = new URLSearchParams(location.search).get('rpc') || 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 const RELAY = 'https://switched-off.vercel.app/api/rpc'
 let via = RPC
 const $ = (id) => document.getElementById(id)
@@ -83,6 +84,7 @@ async function read() {
     return `<div class="card"><small>${esc(p.authority || 'Issuing authority not recorded')}</small><h3>${esc(p.stateName || a.state)}</h3><small>${esc((p.districts || []).join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(p.reason)}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${(p.sources || []).map((s) => `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title)}</a></small>`).join('')}</div>`
   }).join('')
 }
+$('rpc').textContent = RPC.replace('https://', '')
 $('go').onclick = read
 read()
 </script>

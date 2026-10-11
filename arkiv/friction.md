@@ -103,8 +103,11 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Creation flags are exactly the right primitives.** `readonly` plus `permissionlessExtension` gives "anyone may keep this alive, nobody
   may change it" in one line. Our two-person test proved a second key extends a report it can't edit.
 - **`executeBatch` is atomic and cheap.** Order + archive record in one transaction; 111 records in 12 transactions; deleting 10 duplicates in one.
-- **Lifetime isn't priced on Tiramisu (yet).** A create costs 90,656 gas at 1 gwei for a 1-day or a 365-day lifetime (script item 6),
-  about 0.0001 GLM each.
+- **Lifetime isn't priced on Tiramisu (yet).** The same create costs the same gas for a 1-day or a 365-day lifetime: 90,656 gas for the
+  repro entity (script item 6), 97,160 for our slightly larger registrar profile on day one (friction-log.md); about 0.0001 GLM at 1 gwei.
+- **Ownership transfer closes the last gap.** `readonly` stops edits, but an owner can still delete. Transferring a record to
+  `0x…dEaD` makes deletion impossible while `permissionlessExtension` still lets anyone extend it: the former owner's delete was refused
+  ("owned by 0x…dEaD, not 0xA272…") and a fresh stranger key extended it (`scripts/seal.ts --test`). Worth a line in the docs as a pattern.
 - **Client-side validation saves gas where it exists.** The 128-byte `str` limit is caught before sending, with a message telling you to
   move the long form to the payload (script item 5). That's the right design, and it shaped our schema (legal basis as a short code).
 - **Errors are mostly excellent.** Items 2 and 5 name their own fixes.

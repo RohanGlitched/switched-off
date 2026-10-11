@@ -7,7 +7,7 @@
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils'
 import { i32, u64 } from '@arkiv-network/sdk/attr'
 import type { Hex } from 'viem'
-import { APP, BLOCK_SECONDS, pub, type Net, type Order, type Report, type Scope, type Source } from './arkiv'
+import { APP, BLOCK_SECONDS, SEALED, pub, type Net, type Order, type Report, type Scope, type Source } from './arkiv'
 import { account, ensureGas, wallet } from './wallet'
 import { basisCode } from './basis'
 
@@ -126,7 +126,10 @@ export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {
     flags: { readonly: true, permissionlessExtension: true },
   })
   const r = await wallet.executeBatch({ creates })
-  return { orderKey: live ? r.createdEntities[0] : null, recordKey: r.createdEntities[live ? 1 : 0], txHash: r.txHash }
+  const recordKey = r.createdEntities[live ? 1 : 0]
+  // seal the archive copy: nobody (the filer included) can delete it afterwards; anyone can extend it
+  void wallet.changeOwnership({ entityKey: recordKey, newOwner: SEALED }).catch(() => {})
+  return { orderKey: live ? r.createdEntities[0] : null, recordKey, txHash: r.txHash }
 }
 
 /** The competent authority confirmed an emergency order: it now lives to its stated end. Owner only. */

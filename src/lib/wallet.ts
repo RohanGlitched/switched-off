@@ -43,4 +43,18 @@ export async function ensureGas(): Promise<void> {
   if (!r.ok) throw new Error(j.error ?? 'Could not get testnet gas for this browser.')
 }
 
+/**
+ * Forget this browser's key (and any reports waiting offline). A phone checked at a checkpoint then
+ * holds nothing that links it to reports already filed; the reports themselves stay on Arkiv.
+ */
+export function forgetKey() {
+  try {
+    localStorage.removeItem(KEY)
+    localStorage.removeItem('switched-off:queue')
+  } catch {
+    /* nothing stored */
+  }
+  location.reload()
+}
+
 export const fmtGlm = (v: bigint) => `${Number(formatEther(v)).toFixed(4)} GLM`

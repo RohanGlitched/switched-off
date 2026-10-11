@@ -47,9 +47,12 @@ export function Home() {
     return spans.filter(({ r, end }) => r.starts <= t && t < end).map(({ r }) => r) as unknown as Order[]
   }, [at, spans])
   const map = useMapState(geo, at === null ? live.orders : inForceAt, at === null ? live.reports : [])
+  // the headline numbers always describe right now, whatever date the map is replaying
+  const nowMap = useMapState(geo, live.orders, live.reports)
   const down = live.reports.filter((r) => r.status !== 'back')
   const archive = useMemo(() => [...live.records].sort((a, b) => b.starts - a.starts), [live.records])
   const totals = useMemo(() => tally(archive), [archive])
+  const latest = archive[0]
 
   return (
     <>
@@ -59,13 +62,13 @@ export function Home() {
             <span className="chip sodium" style={{ justifySelf: 'start' }}>Register of telecom suspension orders · India</span>
             <h1 className="h1">{t('The record of a shutdown can’t be switched off.')}</h1>
             <p className="lede">
-              Every Indian internet shutdown order, filed on Arkiv the way the law says it works: it lives until it lapses, nobody can quietly edit it,
-              and anyone can keep the record alive. When the lights go out without a published order, people on the ground can say so, and their
+              India’s internet shutdown orders, filed on Arkiv the way the law says they work: each lives until it lapses, nobody can quietly edit or
+              delete the record, and anyone can keep it alive. When the lights go out without a published order, people on the ground can say so, and their
               neighbours can confirm it.
             </p>
             <div className="stats" role="group" aria-label="Right now">
               <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
-              <div className="stat"><b>{live.loading ? '…' : map.off.size}</b><span>{t('districts switched off')}</span></div>
+              <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
               <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>{t('live reports of no internet')}</span></div>
             </div>
             <div className="row">
@@ -73,8 +76,11 @@ export function Home() {
               <Link to="/register" className="btn">{t('Open the register')}</Link>
             </div>
             {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>Arkiv didn’t answer just now ({live.error.slice(0, 80)}). The map will retry on its own.</p>}
-            {!live.loading && !live.error && live.orders.length === 0 && (
-              <p className="hint">No order in force is on the register right now. Every lapsed order stays in the archive below, and the <Link to="/drill">drill</Link> shows the register working at one legal day per minute.</p>
+            {!live.loading && !live.error && live.orders.length === 0 && latest && (
+              <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
+                <span><span className="hint">No order on the register is in force right now. Latest on file:</span><br /><b>{latest.stateName}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
+                <span className="chip">lapsed</span>
+              </Link>
             )}
           </div>
           <div className="hero-map">
@@ -119,7 +125,7 @@ export function Home() {
           <div className="grid3">
             <Rule n="15" unit="days, at most" title="An order can’t run longer than fifteen days." body="Each order is filed with its Arkiv expiry set to the day it lapses. When that block comes, the order entity is gone, its districts light up again, and nothing anyone does can stretch it: a longer shutdown needs a new order, so every renewal shows." />
             <Rule n="24" unit="hours" title="An emergency order dies in a day unless confirmed." body="When an officer issues an order in an emergency, it is filed to expire 24 hours later. Confirming it is extending it, and only the filer’s key can: until then the gazette says EMERGENCY and the clock is running." />
-            <Rule n="0" unit="edits" title="Orders and reports are read-only once filed." body="Every order and every citizen report is created with Arkiv’s readonly flag. Not the filer, not this site, not anyone can change the text. A correction is a new, linked entity, so the history of the correction shows too." />
+            <Rule n="0" unit="edits, 0 deletions" title="Records are readonly, then sealed." body="Every order and report is created with Arkiv’s readonly flag, so its text can never change. The archive record is then handed to an address nobody holds a key for, so nobody can delete it either, not even the registrar. A mistake gets a correction: a new entity that names the one it corrects, both kept." />
           </div>
           <div className="grid2" style={{ marginTop: 20 }}>
             <Rule n="6" unit="hours" title="A report fades unless a neighbour confirms it." body="“No mobile data in Imphal West” lives six hours. Reports are created with permissionless extension: anyone who sees the same thing can push the expiry out again with one tap, without being able to touch what it says. A rumour fades; a real blackout stays lit red." />
@@ -165,13 +171,13 @@ export function Home() {
             <p className="lede">The Supreme Court held in <i>Anuradha Bhasin v. Union of India</i> (2020) that suspension orders must be published. When people report no internet in a district and no order is on the register, that district burns red on the map. Each red light is a question the state should answer.</p>
           </div>
           <div className="list">
-            {[...map.flagged.entries()].slice(0, 6).map(([di, rs]) => (
+            {[...nowMap.flagged.entries()].slice(0, 6).map(([di, rs]) => (
               <Link key={di} to={`/report?d=${geo?.districts[di].id ?? ''}`} className="item">
                 <span><b>{geo?.districts[di].name}</b>, {geo?.districts[di].state}<br /><span className="hint">{rs.length} live report{rs.length > 1 ? 's' : ''} · {rs.map((r) => r.carrier).filter((v, i, a) => a.indexOf(v) === i).join(', ')}</span></span>
                 <span className="chip red">no order</span>
               </Link>
             ))}
-            {map.flagged.size === 0 && <div className="empty">No district is reported dark without an order right now. If yours is, <Link to="/report">say so</Link>: it takes one tap and no sign-up.</div>}
+            {nowMap.flagged.size === 0 && <div className="empty">No district is reported dark without an order right now. If yours is, <Link to="/report">say so</Link>: it takes one tap and no sign-up.</div>}
           </div>
         </div>
       </section>
@@ -184,9 +190,9 @@ export function Home() {
             <p className="lede">A shutdown tracker on one server is one blocking order away from disappearing. The register isn’t on our server: it is Arkiv entities that any copy of this page, any script, any newsroom can read straight from the network. This site only runs a small cache in front of Arkiv to stay inside its query quota, and the switch in the header turns even that off.</p>
           </div>
           <div className="grid3">
-            <Card title="Ask the network directly" body="One JSON-RPC call returns every order in force. No API key, no account, no Switched Off server in the middle." to="/data" cta="See the exact query" />
+            <Card title="Ask the network directly" body="One JSON-RPC call returns every order in force. No account and no Switched Off server in the middle (Arkiv meters keyless reads, so heavy users want their own free key)." to="/data" cta="See the exact query" />
             <Card title="Open a mirror" body="A one-file copy of the register that reads Arkiv from your browser. Save it, host it anywhere, email it: it keeps working." to="/data#mirrors" cta="Get the mirror" />
-            <Card title="Keep the history alive" body="Every record can be extended by anyone. Pay a few testnet cents and a lapsed order’s record outlives this site." to="/register" cta="Pick a record" />
+            <Card title="Keep the history alive" body="Every record is sealed: owned by an address nobody holds, so nobody can delete it, us included. Anyone can extend it, so a lapsed order’s record can outlive this site." to="/register" cta="Pick a record" />
           </div>
         </div>
       </section>
@@ -194,7 +200,7 @@ export function Home() {
       <section className="section">
         <div className="wrap grid2" style={{ alignItems: 'center' }}>
           <div className="section-head" style={{ marginBottom: 0 }}>
-            <h2 className="h2">India led the world in internet shutdowns six years running. Parliament asked for a register in 2021. Nobody built one.</h2>
+            <h2 className="h2">India led the world in internet shutdowns six years running. Parliament asked for a register in 2021. There still isn’t an official one.</h2>
             <p className="lede">The people it happens to are the last to be able to say so, and the government told Parliament it doesn’t count them. <Link to="/why">Read why this register exists</Link>, and what we deliberately keep off-chain to protect the people who use it.</p>
           </div>
           <div className="row" style={{ justifyContent: 'flex-end' }}>

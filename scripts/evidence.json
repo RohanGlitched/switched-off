@@ -1,0 +1,11 @@
+{
+ "entityKey": "0x0bd2969f5a238f263e2846426c6c0cfb2bb9466fd28aae57954a68c30b57302c",
+ "txHash": "0xa601fee06f9faa65d32411932dff7d793a926f2a98483a505fc9e8e22c46c206",
+ "createdAtBlock": "437835",
+ "lifetimeBlocks": 30,
+ "checkedAtHead": "437873",
+ "aliveAtHead": 0,
+ "aliveAtCreationBlock": 1,
+ "query": "app = str('switched-off') AND order_id = str('drill-evidence-lapse')",
+ "atBlockHex": "0x6ae4b"
+}

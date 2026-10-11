@@ -9,6 +9,7 @@ import { ReportPage } from './pages/Report'
 import { DrillPage } from './pages/Drill'
 import { DataPage } from './pages/Data'
 import { WhyPage } from './pages/Why'
+import { FilePage } from './pages/File'
 import { ToastHost } from './components/Toast'
 import { setLang, useLang, useT } from './lib/i18n'
 import { MODE, setMode } from './lib/arkiv'
@@ -36,6 +37,7 @@ export function App() {
     : route === '/drill' ? <DrillPage />
     : route === '/data' ? <DataPage />
     : route === '/why' ? <WhyPage />
+    : route === '/file' ? <FilePage />
     : <NotFound />
   return (
     <>
@@ -102,6 +104,7 @@ function Footer() {
             <li><Link to="/register">Register of orders</Link></li>
             <li><Link to="/report">Report no internet</Link></li>
             <li><Link to="/drill">Run a drill</Link></li>
+            <li><Link to="/file">File a published order</Link></li>
           </ul>
         </div>
         <div>

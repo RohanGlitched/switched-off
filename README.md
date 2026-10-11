@@ -9,7 +9,8 @@ Live: **https://switched-off.vercel.app** · Mirror: **https://rohanglitched.git
 India led the world in internet shutdowns six years running (Access Now: 134, 121, 109, 106, 84 and 116 from 2018 to 2023), and
 in 2021 Parliament's IT committee recommended a central database of every shutdown, with its duration, reasons and authority.
 The Union government later told the committee it is "not aware of the number of internet shutdowns imposed by the States".
-Nobody built the register. This is it.
+There is still no official register. Volunteer trackers such as SFLC.in's do careful work, on one team's server.
+Switched Off is an open register on Arkiv that anyone can add to, nobody can quietly edit or delete, and anyone can keep alive.
 
 ## What it does
 
@@ -23,8 +24,12 @@ Nobody built the register. This is it.
 - **A drill.** The same rules at one legal day per minute: issue an order, watch its districts go dark and relight on time,
   watch an unconfirmed emergency order die after a day, rewind to any past block.
 - **Play the history.** Replay every order on file from 2019 to today on the map.
+- **Sealed archive.** Every record is readonly and then handed to an address nobody holds a key for: nobody can edit or delete
+  it, not even us, and anyone can extend it. Mistakes get a correction entity that names the record it corrects.
+- **Anyone can file.** A form for transcribing a published order (source link required, designations not names), labelled as a
+  community transcription.
 - **Can't be switched off.** A one-file mirror, an independent GitHub Pages copy and a zero-dependency CLI all read Arkiv
-  directly. Block this site and the register is still there.
+  directly, and take any Arkiv endpoint. Block this site and the register is still there.
 
 ## How the law becomes the database
 

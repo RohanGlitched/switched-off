@@ -8,7 +8,7 @@ import { Link, go, param } from '../lib/router'
 import { ReportCard, humanError } from './Entity'
 import { toast } from '../components/Toast'
 import type { Net, Report } from '../lib/arkiv'
-import { witnessName, account } from '../lib/wallet'
+import { witnessName, account, forgetKey } from '../lib/wallet'
 import { useT } from '../lib/i18n'
 
 const PII = /(\+?91[\s-]?)?[6-9]\d{9}|@[a-z0-9.-]+\.[a-z]{2,}|aadhaar|\b\d{4}\s?\d{4}\s?\d{4}\b/i
@@ -116,6 +116,11 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
             {done && (
               <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>
             )}
+          </div>
+          <div className="panel" style={{ padding: 16, display: 'grid', gap: 8 }}>
+            <b style={{ fontSize: 15 }}>Your safety</b>
+            <p className="hint" style={{ margin: 0 }}>Reports carry no name, number or location finer than a district. The only link between this phone and what it filed is the throwaway key in this browser ({witnessName(account.address)}). Forget it before handing your phone to anyone; your reports stay on the register, but nothing on the phone points to them.</p>
+            <button className="btn small danger" style={{ justifySelf: 'start' }} onClick={() => { if (confirm('Forget this browser’s key? Reports you filed stay public, but you can no longer withdraw them from this phone.')) forgetKey() }}>Forget this browser’s key</button>
           </div>
           {net === 'live' && <p className="hint">Just trying it out? <Link to="/report?drill=1">Use the drill version of this form</Link>: same entities, kept off the live map.</p>}
           <p className="hint">{t('In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.')}</p>
