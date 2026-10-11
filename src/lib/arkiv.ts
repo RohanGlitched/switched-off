@@ -49,13 +49,36 @@ export const MODE = getMode()
 const RELAY = typeof location !== 'undefined' ? `${location.origin}/api/rpc` : RPC
 export const ENDPOINT = MODE === 'direct' ? RPC : RELAY
 
-export const pub = createPublicClient({ chain: tiramisu, transport: http(ENDPOINT, { batch: { wait: 30 }, retryCount: 2 }) })
+// No transport retries: Arkiv's 429 arrives with retry-after of up to ~1000 s and viem would wait it out
+// in silence. A failed read goes to the other path (below) instead.
+const HTTP = { batch: { wait: 30 }, retryCount: 0, timeout: 9000 } as const
+export const pub = createPublicClient({ chain: tiramisu, transport: http(ENDPOINT, HTTP) })
 let direct: typeof pub | null = null
 /** Arkiv's public endpoint, straight from the browser: the fallback when the relay can't answer. */
-export const directClient = () => (direct ??= MODE === 'direct' ? pub : createPublicClient({ chain: tiramisu, transport: http(RPC, { batch: { wait: 30 }, retryCount: 1 }) }))
+export const directClient = () => (direct ??= MODE === 'direct' ? pub : createPublicClient({ chain: tiramisu, transport: http(RPC, HTTP) }))
 let relayC: typeof pub | null = null
 /** This site's relay: the fallback when a direct read hits Arkiv's keyless budget. */
-export const relayClient = () => (relayC ??= MODE === 'relay' ? pub : createPublicClient({ chain: tiramisu, transport: http(RELAY, { batch: { wait: 30 }, retryCount: 1 }) }))
+export const relayClient = () => (relayC ??= MODE === 'relay' ? pub : createPublicClient({ chain: tiramisu, transport: http(RELAY, HTTP) }))
+const RELAY_DOWN = /budget|ANON|429|quota|rate ?limit|Arkiv answered|Method not relayed|only answers|only calls|timed out|timeout|HTTP request failed|Failed to fetch|NetworkError/i
+/**
+ * Every read goes through here: the page's own path first (relay by default), and if that path is
+ * out (its key's budget, a limit, a timeout) the same read goes the other way, once, and the pages
+ * say so. Direct → relay covers Arkiv's per-network keyless budget; relay → direct covers us.
+ */
+export async function viaFallback<T>(fn: (c: typeof pub) => Promise<T>): Promise<T> {
+  try {
+    return await fn(pub)
+  } catch (e) {
+    if (!RELAY_DOWN.test(String((e as Error).message))) throw e
+    if (MODE === 'relay') {
+      relayFailed = true
+      fellBackTo = 'direct'
+      return fn(directClient())
+    }
+    fellBackTo = 'relay'
+    return fn(relayClient())
+  }
+}
 /** Set once a read had to use the other path ('direct' or 'relay'); the pages say so. */
 export let fellBackTo: 'relay' | 'direct' | null = null
 export let relayFailed = false
@@ -245,23 +268,8 @@ async function pages(client: typeof pub, where: Expression[], atBlock?: bigint):
   }
   return out
 }
-const RELAY_DOWN = /budget|ANON|429|quota|rate ?limit|Arkiv answered|Method not relayed|only answers/i
-/** Reads go through the relay; if it can't answer (its key's budget, a limit), the same read goes to Arkiv directly. */
-async function all(where: Expression[], atBlock?: bigint): Promise<Raw[]> {
-  try {
-    return await pages(pub, where, atBlock)
-  } catch (e) {
-    if (!RELAY_DOWN.test(String((e as Error).message))) throw e
-    if (MODE === 'relay') {
-      relayFailed = true
-      fellBackTo = 'direct'
-      return pages(directClient(), where, atBlock)
-    }
-    // direct mode: Arkiv's keyless budget for this network is spent; the relay has its own key
-    fellBackTo = 'relay'
-    return pages(relayClient(), where, atBlock)
-  }
-}
+/** A paged query on whichever path answers. */
+const all = (where: Expression[], atBlock?: bigint): Promise<Raw[]> => viaFallback((c) => pages(c, where, atBlock))
 
 const base = (type: string, net: Net) => [eq('app', APP), eq('type', type), eq('net', net)]
 
@@ -318,8 +326,14 @@ export async function allRecords(net: Net): Promise<Record_[]> {
  */
 export async function extenders(key: Hex, fromBlock: bigint, creator?: string): Promise<Hex[]> {
   try {
-    const logs = await pub.getLogs({ address: ARKIV_ADDRESS, event: parseAbiItem('event ExpiryExtended(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt)'), args: { entityKey: key }, fromBlock, toBlock: 'latest' })
-    const froms = await Promise.all(logs.map((l) => pub.getTransaction({ hash: l.transactionHash! }).then((t) => t.from.toLowerCase() as Hex)))
+    // the node answers at most 100,000 blocks per log query (about 55 hours): walk the range in windows
+    const head = await viaFallback((c) => c.getBlockNumber())
+    const WINDOW = 99_000n
+    const event = parseAbiItem('event ExpiryExtended(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt)')
+    const windows: [bigint, bigint][] = []
+    for (let from = fromBlock > 0n ? fromBlock : 0n; from <= head && windows.length < 40; from += WINDOW + 1n) windows.push([from, from + WINDOW < head ? from + WINDOW : head])
+    const logs = (await Promise.all(windows.map(([a, b]) => viaFallback((c) => c.getLogs({ address: ARKIV_ADDRESS, event, args: { entityKey: key }, fromBlock: a, toBlock: b }))))).flat()
+    const froms = await Promise.all(logs.map((l) => viaFallback((c) => c.getTransaction({ hash: l.transactionHash! })).then((t) => t.from.toLowerCase() as Hex)))
     return [...new Set(froms)].filter((f) => f !== (creator ?? '').toLowerCase())
   } catch {
     return []
@@ -334,7 +348,7 @@ export async function reportsSince(net: Net, sinceUnix: number): Promise<Report[
   return (await all([...base('report', net), gt('seen', u64(BigInt(sinceUnix)))])).map(toReport)
 }
 export async function entity(key: Hex) {
-  return pub.getEntity(key) as unknown as Promise<Raw & { attributes: Record<string, unknown> }>
+  return viaFallback((c) => c.getEntity(key)) as unknown as Promise<Raw & { attributes: Record<string, unknown> }>
 }
 export async function orderByKey(key: Hex): Promise<Order | Record_ | Report | null> {
   try {
@@ -351,7 +365,7 @@ export async function orderByKey(key: Hex): Promise<Order | Record_ | Report | n
 let clock: { block: bigint; time: number; at: number } | null = null
 /** Block numbers to wall-clock time: expiries are kept in blocks, people think in hours. */
 export async function syncClock() {
-  const t = await pub.getBlockTiming()
+  const t = await viaFallback((c) => c.getBlockTiming())
   clock = { block: t.currentBlock, time: t.currentBlockTime, at: Date.now() }
   return clock
 }

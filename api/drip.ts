@@ -38,19 +38,28 @@ export default async function handler(req: Req, res: Res) {
   if (recent.length >= 6) return res.status(429).json({ error: 'Many top-ups from this network just now. Try again in a few minutes.' })
   hour = hour.filter((t) => t > now - 3_600_000)
   if (hour.length >= HOURLY) return res.status(429).json({ error: 'The gas tap is busy this hour. Reading the register still works; try reporting again later.' })
-  // take the slots before the slow part, so a burst of parallel requests can't all pass the checks
+  // take the slots before the slow part, so a burst of parallel requests can't all pass the checks;
+  // each reservation is its own stamp, so two requests in the same millisecond can't free each other
+  const stamp = now + Math.random()
   seen.set(address.toLowerCase(), now)
-  byIp.set(ip, [...recent, now])
-  hour.push(now)
+  byIp.set(ip, [...recent, stamp])
+  hour.push(stamp)
   const release = () => {
     seen.delete(address.toLowerCase())
-    byIp.set(ip, (byIp.get(ip) ?? []).filter((t) => t !== now))
-    hour = hour.filter((t) => t !== now)
+    byIp.set(ip, (byIp.get(ip) ?? []).filter((t) => t !== stamp))
+    hour = hour.filter((t) => t !== stamp)
   }
 
   const opts = process.env.ARKIV_KEY ? { fetchOptions: { headers: { 'x-api-key': process.env.ARKIV_KEY } } } : {}
-  const pub = createPublicClient({ chain: tiramisu, transport: http(RPC, opts) })
-  const wallet = createWalletClient({ chain: tiramisu, transport: http(RPC, opts), account: privateKeyToAccount(key) })
+  let pub: ReturnType<typeof createPublicClient>
+  let wallet: ReturnType<typeof createWalletClient>
+  try {
+    pub = createPublicClient({ chain: tiramisu, transport: http(RPC, opts) })
+    wallet = createWalletClient({ chain: tiramisu, transport: http(RPC, opts), account: privateKeyToAccount(key) })
+  } catch {
+    release()
+    return res.status(503).json({ error: 'The gas tap is not configured properly.' })
+  }
   let have: bigint
   try {
     const [h, tap] = await Promise.all([pub.getBalance({ address }), pub.getBalance({ address: wallet.account!.address })])
@@ -67,12 +76,14 @@ export default async function handler(req: Req, res: Res) {
     release()
     return res.status(502).json({ error: 'Arkiv did not answer. Try again in a moment.' })
   }
+  let hash: Hex | null = null
   try {
-    const hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as unknown as Parameters<typeof wallet.sendTransaction>[0])
+    hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as unknown as Parameters<typeof wallet.sendTransaction>[0])
     await pub.waitForTransactionReceipt({ hash, timeout: 30_000 })
     return res.status(200).json({ ok: true, funded: true, txHash: hash, balance: formatEther(have + DRIP) })
   } catch (e) {
-    release()
-    return res.status(502).json({ error: 'The testnet did not take the top-up. Try again in a moment.', detail: String((e as Error).message).slice(0, 160) })
+    // a transaction that was sent keeps its slot (it may still land); only a failed send frees it
+    if (!hash) release()
+    return res.status(hash ? 202 : 502).json({ error: hash ? 'The top-up was sent and is taking a while to land. Try your report again in a moment.' : 'The testnet did not take the top-up. Try again in a moment.', txHash: hash ?? undefined, detail: String((e as Error).message).slice(0, 160) })
   }
 }

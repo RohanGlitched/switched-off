@@ -1,15 +1,19 @@
 // Personal data never goes on the register: reports and orders are public and readonly. This is
 // checked in the form (to explain) and again right before every write (so nothing slips through).
-// Digits are normalised first (Devanagari and other scripts, full-width), so "९८७६५४३२१०" is a number.
-const DIGITS = /(?:\d[\s\-().\/]*){10,}/ // ten or more digits, however they are spaced: phone, Aadhaar, account numbers
-const EMAIL = /[^\s@]+@[^\s@]+\.[\p{L}\p{M}]{2,}/iu
+// Digits are normalised first (Devanagari and other scripts, full-width), so "९८७६५४३२१०" is a number;
+// dates and clock times are set aside before counting digits, so "03.05.2023 (10:00) to 08.05.2023" is not.
+const DIGITS = /(?:\d(?:[\s\-‒–_:().\/]|,(?!\s))*){10,}/ // ten or more digits, however they are spaced: phone, Aadhaar, account numbers (a comma followed by a space is a list, not a separator)
+const DATE_OR_TIME = /\b\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\b|\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}:\d{2}(?::\d{2})?\b|\b(?:19|20)\d{2}\b/g
+const EMAIL = /[^\s@]+\s*@\s*[^\s@]+\s*\.\s*[\p{L}\p{M}]{2,}/iu
 const EMAIL_SPELLED = /\b[\w.\-]{2,}\s*(?:\(at\)|\[at\]|\sat\s)\s*[\w\-]{2,}\s*(?:\(dot\)|\[dot\]|\sdot\s)\s*\p{L}{2,}\b/iu
-const UPI = /\b[\w.\-]{2,}@(?:ok\w+|ybl|ibl|axl|paytm|upi|apl|icici|sbi|hdfc\w*)\b/i
-const AADHAAR_WORD = /\baadha?ar\b/i
-// A person's name: an honorific or a judicial style before a capitalised name, or a case title "X v. Y".
-const NAME = /\b(?:[Ss]hri|[Ss]mt|[Ss]h\.|[Dd]r\.|[Mm]r\.|[Mm]rs\.|[Mm]s\.|[Jj]ustice|[Hh]on'?ble|[Aa]dvocate|[Aa]dv\.)\s+[A-Z][\p{L}'-]+/u
-const CASE = /\b[A-Z][\p{L}'\-]+(?:\s+[A-Z][\p{L}'\-]+)*\s+(?:v\.|vs\.?|versus)\s+[A-Z]/u
-const JUDGE_STYLE = /\b(?:JJ?\.|CJ|JJ)\b/
+const UPI = /\b[\w.\-]{2,}@[a-z]{3,}\b(?![.\w])/i // a handle with no dot after the host is a UPI id, not a web address
+const AADHAAR_WORD = /\baadha?ar\b|आधार/i
+// A person's name: an honorific (with or without a dot, any case) or a judicial style before a name,
+// a case title "X v. Y", or a role word followed by two capitalised words.
+const HONORIFIC = /(?:^|[\s(,;:])(?:shri|sri|smt|shrimati|kumari|sh|dr|mr|mrs|ms|prof|justice|hon'?ble|advocate|adv|श्री|श्रीमती|कुमारी|डॉ|न्यायमूर्ति)\.?\s+[\p{L}][\p{L}'\-]+/iu
+const CASE = /\b[\p{Lu}][\p{L}'\-]+(?:\s+(?:[\p{Lu}][\p{L}'\-]+|&|and|Ors\.?|Anr\.?))*\s+(?:[vV]\.?|[vV][sS]\.?|versus)\s+[\p{Lu}]/u
+const ROLE_NAME = /\b(?:petitioner|respondent|complainant|accused|DM|SP|SDM|ADM|collector|magistrate|officer)\s+[\p{Lu}][\p{L}'\-]+\s+[\p{Lu}][\p{L}'\-]+/u
+const JUDGE_STYLE = /\b(?:JJ?\.(?=\s|$|[,;)])|(?:CJ|JJ)(?=\s|$|[,;)])(?!\s+(?:Colony|bench|Bench)))/
 
 const normalise = (t: string) => t.normalize('NFKC').replace(/\p{Nd}/gu, digitValue)
 function digitValue(ch: string): string {
@@ -22,10 +26,11 @@ function digitValue(ch: string): string {
 /** The reason a text can't be published, or null if it looks clean. */
 export function personalData(text: string): string | null {
   const t = normalise(text)
-  if (DIGITS.test(t)) return 'a long number (a phone, Aadhaar or account number)'
+  // links are sources, not numbers about a person: they are set aside before the digits are counted
+  if (DIGITS.test(t.replace(/https?:\/\/\S+/gi, ' ').replace(DATE_OR_TIME, ' '))) return 'a long number (a phone, Aadhaar or account number)'
   if (EMAIL.test(t) || EMAIL_SPELLED.test(t) || UPI.test(t)) return 'an email or UPI address'
   if (AADHAAR_WORD.test(t)) return 'an Aadhaar reference'
-  if (NAME.test(t) || CASE.test(t) || JUDGE_STYLE.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
+  if (HONORIFIC.test(t) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
   return null
 }
 

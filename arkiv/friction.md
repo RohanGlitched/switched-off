@@ -116,7 +116,7 @@ What went smoothly is documented with the same care at the end, because a lot of
 ## 10. Sealing makes a privacy mistake permanent
 
 - **Expected:** a readonly entity handed to `0x…dEaD` is the point of the design: nobody can rewrite history.
-- **Actual:** it also means nobody can repair it. Seven of our 111 imported records quoted case titles and bench names in their `notes`
+- **Actual:** it also means nobody can repair it. Nine of our 111 imported records quoted case titles and bench names in their `notes` or source titles
   (judges, petitioners, a person named in a police operation). They are public court records, but the challenge rules say no real
   personal data, and our own schema says designations only. The records are sealed, so the fix is a registrar `correction` entity per
   record with name-free notes (`scripts/correct-names.ts`, sealed in the same transaction as it is created), and readers show the
@@ -125,6 +125,20 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Fix (for us):** a name check in the personal-data guard before every write, run over the import too (`scripts/pii-check.ts`).
 - **Fix (for Arkiv):** none wanted; this is the trade-off working as designed. A note in the docs next to `changeOwnership` that a transfer
   to a burn address is irreversible for *content* as well as ownership would save someone else the lesson.
+
+## 11. A 429 with a long `retry-after`, and a client that obeys it, is a silent hang
+
+- **Expected:** when the keyless budget is spent, a read fails fast with the message from item 5, and the app can fall back.
+- **Actual:** the 429 arrives with `retry-after: 1013` (seconds). viem's `http` transport honours it: with its default `retryCount: 3`
+  the page sat on skeletons for what would have been about 17 minutes, having sent four requests, with nothing in the console but
+  two 429s. Our register in direct mode did exactly that until we set `retryCount: 0` and a 9 s timeout on every transport and
+  moved every read (`arkiv_query`, `getBlockTiming`, `getEntity`, `getLogs`) behind one fallback that tries the other path.
+- **Also measured:** `eth_getLogs` answers at most 100,000 blocks per query (`query exceeds max block range 100000`, about 55 hours),
+  so "who kept this record alive since it was written" must be read in windows; and the relay's own `Retry-After: 30` had the same
+  effect on a paced visitor until the same change.
+- **Repro:** a viem `http` transport with default retries against the public RPC after the hour's budget is spent; watch the network tab.
+- **Fix:** a `retry-after` that long is a "come back later", not a retry hint. Cap it (or say so in the docs next to the budget), and
+  put the 100,000-block log cap in the JSON-RPC docs next to `eth_getLogs`.
 
 ## What went smoothly (with the same rigour)
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Gazette } from '../components/Gazette'
-import { recordsWhere, setMode, type Record_ } from '../lib/arkiv'
+import { MODE, recordsWhere, setMode, type Record_ } from '../lib/arkiv'
 import { useRegister } from '../lib/store'
 import { Link, param } from '../lib/router'
 import { STATES } from '../lib/geo'
@@ -91,7 +91,8 @@ export function RegisterPage() {
       <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? 'Reading the register from Arkiv…' : `${list.length} of ${live.records.length} orders`}{remote && remote.for === `${state}|${since}` ? <> · query sent to Arkiv: <code className="num">{remote.query}</code></> : null}</p>
       {live.error && !live.loading && (
         <p className="hint" style={{ color: 'var(--vermilion)', marginBottom: 16 }}>
-          Arkiv didn’t answer through this site’s relay ({live.error.slice(0, 90)}). <button className="btn small" onClick={() => setMode('direct')}>Read Arkiv directly from your browser</button>
+          {MODE === 'direct' ? 'Arkiv didn’t answer your browser directly' : 'Arkiv didn’t answer through this site’s relay'} ({live.error.slice(0, 90)}).{' '}
+          {MODE === 'direct' ? <button className="btn small" onClick={() => setMode('relay')}>Read through the relay instead</button> : <button className="btn small" onClick={() => setMode('direct')}>Read Arkiv directly from your browser</button>}
         </p>
       )}
       {live.loading ? (

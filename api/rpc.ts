@@ -40,7 +40,7 @@ function refused(call: Call): string | null {
   const p = call.params ?? []
   if (call.method === 'arkiv_query') {
     const q = String(p[0] ?? '')
-    if (!/app\s*=\s*str\('switched-off'\)/.test(q)) return "This relay only answers queries that include app = str('switched-off'). Ask Arkiv directly for anything else."
+    if (typeof p[0] !== 'string' || !q.trim()) return 'Send a query expression.'
     if (q.length > 2000) return 'That query is too long.'
   }
   if (call.method === 'eth_getLogs') {
@@ -66,6 +66,13 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
     return { jsonrpc: '2.0', id: call?.id ?? null, error: { code: -32601, message: `Method not relayed: ${call?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
   const why = refused(call)
   if (why) return { jsonrpc: '2.0', id: call.id ?? null, error: { code: -32602, message: why } }
+  // the key is spent on this app's data only: every query is wrapped in the app clause on the way out,
+  // which also covers lookups by key ($key = key(0x…)) and attempts like NOT (app = …)
+  if (call.method === 'arkiv_query') {
+    const q = String(call.params![0])
+    const scoped = /^\s*app\s*=\s*str\('switched-off'\)\s*AND\b/.test(q) ? q : `app = str('switched-off') AND (${q})`
+    call = { ...call, params: [scoped, ...(call.params ?? []).slice(1)] }
+  }
   const ttl = CACHE_MS[call.method]
   const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
   const hit = ck ? cache.get(ck) : undefined

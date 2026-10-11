@@ -41,7 +41,7 @@ export async function refresh(net: Net, light = false) {
       const head = currentBlock()
       const still = new Set(o.map((x) => x.key.toLowerCase()))
       for (const old of before.orders)
-        if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head)
+        if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head + 6n)
           wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, text: `${net === 'drill' ? 'Drill: ' : ''}Order lapsed on Arkiv's clock: ${old.stateName}, ${old.districts.length === 1 ? old.districts[0] : `${old.districts.length} districts`} relit. Nobody deleted it; its expiry block arrived.` }, ...wire].slice(0, 40)
       snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false }
     } catch (e) {

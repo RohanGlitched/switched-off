@@ -118,5 +118,7 @@ orders (paraphrase + source links), and the presentation layer. See the Why page
 - Sealing: all live records transferred to `0x…dEaD` in 5 batches on 11 Oct 2026, e.g. `0xf7bde6fe470afc11c7f22dce4530fc78c78879db3811ae99a810497a041c2420`;
   the former owner's delete was refused ("owned by 0x…dEaD, not 0xA272…") and a stranger's key extended a sealed record (`scripts/seal.ts --test`).
 - Correction: `0x3f268a4203917f33e963bffa50ab10f3ad9faad5bd2f03c179ba14c4f543736a` corrects the Udaipur record `0x5a55754b…667a0e`.
+- Nine name-free corrections created and sealed in one transaction, keys predicted with `predictEntityKeys`:
+  `0x131f819faa99ab79c1effc929608e8df88ca673a71bd1040bf2ff77beb55519e` (the pairs are in `scripts/corrections.json`).
 - Archive import: 111 `record` entities in 12 `executeBatch` transactions on 11 Oct 2026, e.g.
   `0xb329d2e099e06b37160c5fa7222b66f997a00733d588b3ca717fbd3d8e9cab51`. All keys are in `scripts/seeded.json`.

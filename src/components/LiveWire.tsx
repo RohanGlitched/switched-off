@@ -50,12 +50,17 @@ export function LiveWire({ limit = 9 }: { limit?: number }) {
           <span className="mute">Listening to Arkiv… New orders, reports and confirmations appear here the moment they land in a block. <Link to="/drill">Start a drill</Link> to see it move.</span>
         </div>
       )}
-      {items.map((w) => (
-        <div key={w.id} className={Date.now() - w.at < 4000 ? 'new' : ''}>
-          <time>{fmtTime(w.at)}</time>
-          <Link to={`/e/${w.key}`} style={{ color: 'var(--text)', textDecoration: 'none' }}>{line(w)} <span className="faint num">· block {w.block.toString()}</span></Link>
-        </div>
-      ))}
+      {items.map((w) => {
+        // once an entity has been named on the wire its words stay, even after it expires and can't be looked up
+        const text = line(w)
+        if (!w.text && find(w.key)) w.text = text
+        return (
+          <div key={w.id} className={Date.now() - w.at < 4000 ? 'new' : ''}>
+            <time>{fmtTime(w.at)}</time>
+            <Link to={`/e/${w.key}`} style={{ color: 'var(--text)', textDecoration: 'none' }}>{text} <span className="faint num">· block {w.block.toString()}</span></Link>
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -24,6 +24,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const now = useNow()
   const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
   const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex; renews?: { key: Hex; label: string }; renewedBy?: { key: Hex; label: string }[] }>({})
+  const [showOld, setShowOld] = useState(false)
   const load = () => syncClock().then(() => orderByKey(entityKey)).then((x) => {
     setE(x)
     if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n, x.creator).then(setWitnesses)
@@ -86,7 +87,13 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 16, minWidth: 0 }}>
-          {isReport(e) ? <ReportCard r={e} /> : <Gazette o={e} live={!isRecord(e)} />}
+          {related.correctedBy && !showOld ? (
+            <div className="panel" style={{ display: 'grid', gap: 10 }}>
+              <h2 className="h3">Superseded by a correction</h2>
+              <p className="mute" style={{ margin: 0 }}>The registrar filed a correction for this record (its notes or source titles quoted people’s names, or a date was wrong). The register shows the correction; this original is sealed and readonly, so it stays on Arkiv until it expires.</p>
+              <div className="row"><Link to={`/e/${related.correctedBy}`} className="btn primary">Open the correction</Link><button className="btn" onClick={() => setShowOld(true)}>Show the original anyway</button></div>
+            </div>
+          ) : isReport(e) ? <ReportCard r={e} /> : <Gazette o={e} live={!isRecord(e)} />}
         </div>
         <div className="panel" style={{ display: 'grid', gap: 14 }}>
           <h1 className="h3">{isReport(e) ? 'Citizen report' : isRecord(e) ? 'Permanent record' : 'Order in force'} on Arkiv</h1>

@@ -138,7 +138,7 @@ export function Home() {
           <div className="section-head">
             <span className="chip">Live wire</span>
             <h2 className="h2">Every change, as Arkiv writes it.</h2>
-            <p className="lede">This feed follows Arkiv’s entity events: a new order, a report, a neighbour confirming a report, someone paying to keep a record alive. Each shows up here within seconds of its block, for everyone, read from the chain (over a WebSocket in direct mode).</p>
+            <p className="lede">This feed follows Arkiv’s entity events: a new order, a report, a neighbour confirming a report, someone paying to keep a record alive. Each shows up here within seconds of its block, for everyone, over Arkiv’s WebSocket (a node-side filter polled through the relay if the socket can’t open).</p>
             <div className="row"><Link to="/report" className="btn small">File a report</Link><Link to="/drill" className="btn small">Start a drill to watch it move</Link></div>
           </div>
           <LiveWire />

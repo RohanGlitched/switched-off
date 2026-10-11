@@ -142,15 +142,18 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
         const x = ox + (c.lon - minx) * s
         const y = oy + (maxy - c.lat) * 1.07 * s
         const flag = st.flagged.has(d)
+        const comm = !flag && !st.off.get(d)?.official
         const dimH = f && geo.districts[d].code !== f ? 0.35 : 1
         const pulse = reduce ? 1 : 0.7 + 0.3 * Math.sin(t / 420 + d)
         g.beginPath()
         g.arc(x, y, Math.max(r * 4, c.r * s + r * 2), 0, Math.PI * 2)
-        g.fillStyle = flag ? `rgba(255, 98, 80, ${0.16 * pulse * dimH})` : `rgba(120, 128, 200, ${0.1 * dimH})`
+        g.fillStyle = flag ? `rgba(255, 98, 80, ${0.16 * pulse * dimH})` : comm ? `rgba(190, 150, 80, ${0.1 * dimH})` : `rgba(120, 128, 200, ${0.1 * dimH})`
         g.fill()
         g.lineWidth = Math.max(1, r * 0.5)
-        g.strokeStyle = flag ? `rgba(255, 98, 80, ${0.75 * pulse * dimH})` : `rgba(120, 128, 200, ${0.6 * dimH})`
+        if (comm) g.setLineDash([r * 1.5, r * 1.2])
+        g.strokeStyle = flag ? `rgba(255, 98, 80, ${0.75 * pulse * dimH})` : comm ? `rgba(190, 150, 80, ${0.7 * dimH})` : `rgba(120, 128, 200, ${0.6 * dimH})`
         g.stroke()
+        g.setLineDash([])
       }
       for (let i = 0; i < n; i++) {
         const [lon, lat, d] = geo.dots[i]
@@ -158,6 +161,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
         const y = oy + (maxy - lat) * 1.07 * s
         const isOff = d >= 0 && st.off.has(d)
         const isFlag = d >= 0 && st.flagged.has(d)
+        const community = isOff && !st.off.get(d)!.official
         const target = d < 0 ? 0.35 : isOff ? 0.06 : 1
         // a district switching off dies with a short flicker, like a grid going down
         const k = reduce ? 1 : Math.min(1, dt * (isOff ? 2.2 + seed[i] * 2 : 1.4 + seed[i]))
@@ -169,7 +173,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
           const p = reduce ? 1 : 0.65 + 0.35 * Math.sin(t / 380 + seed[i] * 6)
           g.fillStyle = `rgba(255, 98, 80, ${0.9 * p * dim})`
         } else if (v < 0.2) {
-          g.fillStyle = `rgba(96, 104, 170, ${0.95 * dim})`
+          g.fillStyle = community ? `rgba(150, 120, 70, ${0.95 * dim})` : `rgba(96, 104, 170, ${0.95 * dim})`
         } else {
           const tw = reduce ? 1 : 0.85 + 0.15 * Math.sin(t / 900 + seed[i] * 40)
           g.fillStyle = `rgba(255, ${170 + Math.round(seed[i] * 40)}, ${60 + Math.round(seed[i] * 50)}, ${v * tw * dim})`
@@ -208,9 +212,11 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       const o = st.off.get(di)
       const fl = st.flagged.get(di)
       const text = o
-        ? `${d.name}, ${d.state}: switched off by order${o.emergency && !o.confirmed ? ' (emergency, unconfirmed)' : ''}`
+        ? `${d.name}, ${d.state}: switched off by ${o.official ? 'order' : 'a community-filed order (unverified)'}${o.emergency && !o.confirmed ? ' (emergency, unconfirmed)' : ''}`
         : fl
           ? `${d.name}, ${d.state}: ${fl.length} report${fl.length > 1 ? 's' : ''} of no internet, and no published order`
+          : o === undefined && false
+            ? ''
           : `${d.name}, ${d.state}: lights on`
       setTip({ x: px, y: py, text })
     }
@@ -242,6 +248,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       <figcaption className="legend">
         <span><i style={{ background: 'var(--sodium)' }} />{t('Lights on')}</span>
         <span><i style={{ background: '#6068aa' }} />{t('Switched off by an order in force')}</span>
+        <span><i style={{ background: '#967846', outline: '1px dashed #be9650' }} />{t('Community-filed order (unverified)')}</span>
         <span><i style={{ background: 'var(--vermilion)' }} />{t('Reported dark, no published order')}</span>
       </figcaption>
     </figure>

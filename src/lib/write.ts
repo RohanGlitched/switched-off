@@ -153,12 +153,14 @@ export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {
     : []
   const r = await wallet.executeBatch({ creates, ...(ownershipChanges.length ? { ownershipChanges } : {}) })
   const recordKey = r.createdEntities[live ? 1 : 0]
-  let sealed = sealNow
-  if (!sealNow) {
-    // the keys couldn't be predicted: seal in a second transaction and say whether it landed
+  const asPredicted = sealNow && r.createdEntities.every((k, i) => k.toLowerCase() === predicted[i].key.toLowerCase())
+  let sealed = asPredicted
+  if (!asPredicted) {
+    // the keys couldn't be predicted (or another write moved the nonce): seal the record in a second
+    // transaction and say whether it landed; a non-emergency order stays with its filer in that case
     try {
       await wallet.changeOwnership({ entityKey: recordKey, newOwner: SEALED })
-      sealed = true
+      sealed = !live || o.emergency
     } catch {
       sealed = false
     }
