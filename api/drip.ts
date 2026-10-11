@@ -9,6 +9,7 @@ const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 const DRIP = parseEther('0.005') // about fifty writes
 const ENOUGH = parseEther('0.002')
 const seen = new Map<string, number>()
+const byIp = new Map<string, number[]>()
 
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
@@ -22,11 +23,12 @@ export default async function handler(req: Req, res: Res) {
   const key = process.env.FAUCET_KEY as Hex | undefined
   if (!key) return res.status(503).json({ error: 'The gas tap is not configured.' })
 
+  // one top-up a minute per wallet; a shared office or campus IP gets six per ten minutes
   const ip = String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim() || 'unknown'
   const now = Date.now()
-  for (const id of [ip, address.toLowerCase()]) {
-    if ((seen.get(id) ?? 0) > now - 60_000) return res.status(429).json({ error: 'One top-up a minute. Try again shortly.' })
-  }
+  if ((seen.get(address.toLowerCase()) ?? 0) > now - 60_000) return res.status(429).json({ error: 'This browser was topped up a moment ago. Try again in a minute.' })
+  const recent = (byIp.get(ip) ?? []).filter((t) => t > now - 600_000)
+  if (recent.length >= 6) return res.status(429).json({ error: 'Many top-ups from this network just now. Try again in a few minutes.' })
 
   const opts = process.env.ARKIV_KEY ? { fetchOptions: { headers: { 'x-api-key': process.env.ARKIV_KEY } } } : {}
   const pub = createPublicClient({ chain: tiramisu, transport: http(RPC, opts) })
@@ -35,10 +37,10 @@ export default async function handler(req: Req, res: Res) {
 
   const wallet = createWalletClient({ chain: tiramisu, transport: http(RPC, opts), account: privateKeyToAccount(key) })
   try {
-    const hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as Parameters<typeof wallet.sendTransaction>[0])
+    const hash = await wallet.sendTransaction({ to: address, value: DRIP, chain: tiramisu, account: wallet.account! } as unknown as Parameters<typeof wallet.sendTransaction>[0])
     await pub.waitForTransactionReceipt({ hash, timeout: 30_000 })
-    seen.set(ip, now)
     seen.set(address.toLowerCase(), now)
+    byIp.set(ip, [...recent, now])
     return res.status(200).json({ ok: true, funded: true, txHash: hash, balance: formatEther(have + DRIP) })
   } catch (e) {
     return res.status(502).json({ error: 'The testnet did not take the top-up. Try again in a moment.', detail: String((e as Error).message).slice(0, 160) })
