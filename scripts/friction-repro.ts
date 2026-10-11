@@ -58,3 +58,11 @@ await run('8 an expired entity: gone now, still there at an earlier block', asyn
   try { await pub.getEntity(r.entityKey) } catch (e) { get = String((e as Error).message).slice(0, 160) }
   return { aliveNow: now, aliveAtCreationBlock: then, getEntity: get }
 })
+await run('4a bare number vs u64(...) in a range query (raw RPC)', async () => {
+  const ask = (q: string) =>
+    fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json', ...(env.ARKIV_KEY ? { 'x-api-key': env.ARKIV_KEY } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true }, limit: '0xc8' }] }) })
+      .then((r) => r.json())
+      .then((j) => (j.result ? j.result.data.length : j))
+  const base = "app = str('switched-off') AND type = str('record') AND net = str('live')"
+  return { bare: await ask(`${base} AND issued > 1688169600`), typed: await ask(`${base} AND issued > u64(1688169600)`) }
+})

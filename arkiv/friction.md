@@ -43,7 +43,7 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Actual:** it returns **0** results and no error. `issued > u64(1688169600)` returns **72**. The grammar docs do say a bare number
   defaults to `i32`, but a type mismatch that turns a range into an empty set is easy to ship: our own Data page published the bare
   form until our QA pass ran every command.
-- **Repro:** the two `arkiv_query` calls above against `app = str('switched-off') AND type = str('record')`, 12 Oct 2026.
+- **Repro:** script item 4a (adds `net = str('live')`: bare 0, typed 64); the same two calls without the `net` filter returned 0 and 72 on 12 Oct 2026.
 - **Fix:** reject comparisons whose literal type can't match the attribute's type, or coerce integer literals to the attribute's type.
 
 ## 4. Raw query syntax isn't discoverable from the network page
