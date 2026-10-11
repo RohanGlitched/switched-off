@@ -30,6 +30,12 @@ export function App() {
   const t = useT()
   const lang = useLang()
   useEffect(() => setOpen(false), [path])
+  useEffect(() => {
+    document.documentElement.lang = lang
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', esc)
+    return () => window.removeEventListener('keydown', esc)
+  }, [lang])
   const page = route === '/' ? <Home />
     : route === '/register' ? <RegisterPage />
     : route.startsWith('/e/') ? <EntityPage entityKey={route.slice(3) as `0x${string}`} />
@@ -51,9 +57,10 @@ export function App() {
           <ChainBadge />
           <nav className={`nav${open ? ' open' : ''}`} aria-label="Main">
             {NAV.map(([to, label]) => <Link key={to} to={to}>{t(label)}</Link>)}
+            <button className="lang mobile-only" style={{ textAlign: 'left', marginTop: 8 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')}>{MODE === 'direct' ? 'Reading Arkiv directly · switch to the relay' : 'Reading through the relay · read Arkiv directly'}</button>
           </nav>
           <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
-          <button className="menu-btn" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>{open ? 'Close' : 'Menu'}</button>
+          <button className="menu-btn" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
         </div>
       </header>
       <main id="main">{page}</main>

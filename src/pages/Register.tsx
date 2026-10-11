@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Gazette } from '../components/Gazette'
 import { useRegister } from '../lib/store'
 import { Link, param } from '../lib/router'
@@ -7,10 +7,20 @@ import { scopeLabel } from '../lib/fmt'
 
 export function RegisterPage() {
   const live = useRegister('live')
-  const [state, setState] = useState(param('state') ?? '')
+  const [state, setState] = useState((param('state') ?? '').toUpperCase())
   const [q, setQ] = useState(param('q') ?? '')
-  const [scope, setScope] = useState('')
-  const [show, setShow] = useState<'all' | 'force'>('all')
+  const [scope, setScope] = useState(param('scope') ?? '')
+  const [show, setShow] = useState<'all' | 'force'>(param('show') === 'force' ? 'force' : 'all')
+  // filters live in the URL, so a filtered view can be shared and Back restores it
+  useEffect(() => {
+    const u = new URLSearchParams()
+    if (state) u.set('state', state)
+    if (q) u.set('q', q)
+    if (scope) u.set('scope', scope)
+    if (show === 'force') u.set('show', 'force')
+    const next = `/register${u.toString() ? `?${u}` : ''}`
+    if (next !== location.pathname + location.search) history.replaceState(null, '', next)
+  }, [state, q, scope, show])
   const forceKeys = useMemo(() => new Set(live.orders.map((o) => o.orderId)), [live.orders])
   const list = useMemo(() => {
     const ql = q.toLowerCase()
@@ -64,7 +74,7 @@ export function RegisterPage() {
           ))}
         </div>
       ) : (
-        <div className="empty">No order on file matches. Clear a filter, or <Link to="/drill">file one in the drill</Link>.</div>
+        <div className="empty">{show === 'force' && live.orders.length === 0 ? <>No order on the register is in force right now. Know of one? <Link to="/file">File it</Link>.</> : <>No order on file matches. Clear a filter, or <Link to="/file">file one that’s missing</Link>.</>}</div>
       )}
     </section>
   )

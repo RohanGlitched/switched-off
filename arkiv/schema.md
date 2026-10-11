@@ -77,9 +77,9 @@ Raw JSON-RPC (`arkiv_query`):
 ```text
 Orders in force now:      app = str('switched-off') AND type = str('order') AND net = str('live')
 The archive:              app = str('switched-off') AND type = str('record') AND net = str('live')
-One state's history:      app = str('switched-off') AND type = str('record') AND state = str('MN')
+One state's history:      app = str('switched-off') AND type = str('record') AND net = str('live') AND state = str('MN')
 Live reports:             app = str('switched-off') AND type = str('report') AND net = str('live')
-Issued after 1 Jul 2023:  app = str('switched-off') AND type = str('record') AND issued > 1688169600
+Issued after 1 Jul 2023:  app = str('switched-off') AND type = str('record') AND net = str('live') AND issued > u64(1688169600)
 In force at a past block: (any of the above) with options { "atBlock": "0x…" }
 Filed by the registrar:   $creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e) AND app = str('switched-off')
 Sealed (undeletable):     $owner = addr(0x000000000000000000000000000000000000dEaD) AND app = str('switched-off') AND type = str('record')

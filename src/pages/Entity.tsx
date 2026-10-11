@@ -20,6 +20,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const [e, setE] = useState<Any | null | 'loading'>('loading')
   const [busy, setBusy] = useState(false)
   const [tx, setTx] = useState<Hex | null>(null)
+  const [err, setErr] = useState<string | null>(null)
   const now = useNow()
   const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
   const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex }>({})
@@ -32,6 +33,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
 
   const act = async (fn: () => Promise<Hex>, done: string) => {
     setBusy(true)
+    setErr(null)
     try {
       const h = await fn()
       setTx(h)
@@ -39,8 +41,9 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
       await load()
       void refresh('live')
       void refresh('drill')
-    } catch (err) {
-      toast(humanError(err))
+    } catch (x) {
+      setErr(humanError(x))
+      toast(humanError(x))
     } finally {
       setBusy(false)
     }
@@ -97,6 +100,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           {!isReport(e) && !isRecord(e) && e.emergency && mine && expMs - e.issued * 1000 < 26 * 3600_000 && (
             <button className="btn primary" disabled={busy} onClick={() => act(() => confirmEmergency(e), 'Confirmed: the order now runs to its stated end.')}>{busy ? 'Writing to Arkiv…' : 'Confirm this emergency order'}</button>
           )}
+          {err && <p role="alert" style={{ margin: 0, color: 'var(--vermilion)', fontSize: 14 }}>{err}</p>}
           {tx && <p className="hint" style={{ margin: 0 }}>Written in transaction <a href={txUrl(tx)}>{short(tx)}</a>.</p>}
           <p className="hint" style={{ margin: 0 }}>Reproduce: <code>arkiv_getEntity("{short(e.key)}")</code> on Tiramisu, or see <Link to="/data">the exact queries</Link>.</p>
         </div>
@@ -130,7 +134,7 @@ export function humanError(err: unknown): string {
   if (/insufficient funds/i.test(m)) return 'This browser’s testnet wallet is out of gas. Try again in a minute: the gas tap refills it.'
   if (/would not move the expiry later|not later/i.test(m)) return 'Someone just extended it further than this would. Nothing to do.'
   if (/not.*owner|permission/i.test(m)) return 'Only the filer’s key can do that.'
-  if (/gas tap|top-up|address/i.test(m)) return m
+  if (/gas tap|top-up|topped up|top-ups|looks like it contains|address/i.test(m)) return m
   if (/fetch|network|timeout/i.test(m)) return 'Arkiv didn’t answer in time. Your action was not written; try again.'
   return `Arkiv refused the write: ${m.slice(0, 140)}`
 }

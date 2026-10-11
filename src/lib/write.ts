@@ -10,6 +10,7 @@ import type { Hex } from 'viem'
 import { APP, BLOCK_SECONDS, SEALED, pub, type Net, type Order, type Report, type Scope, type Source } from './arkiv'
 import { account, ensureGas, wallet } from './wallet'
 import { basisCode } from './basis'
+import { assertNoPersonalData } from './pii'
 
 /** In a drill the law runs fast: one legal day is one real minute. */
 export const DRILL_DAY_MS = 60_000
@@ -28,6 +29,7 @@ const life = (seconds: number) => ExpirationTime.fromBlocks(Math.max(1, Math.cei
 export type ReportInput = { net: Net; state: string; district: string; carrier: string; status: Report['status']; note?: string; seenAt?: number; late?: boolean }
 
 export async function fileReport(r: ReportInput): Promise<{ key: Hex; txHash: Hex }> {
+  assertNoPersonalData(r.note)
   await ensureGas()
   const seen = sec(r.seenAt ?? Date.now())
   const { entityKey, txHash } = await wallet.createEntity({
@@ -105,6 +107,7 @@ function orderPayload(o: OrderInput) {
  * The record is the memory: readonly, and anyone may extend it.
  */
 export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {}): Promise<{ orderKey: Hex | null; recordKey: Hex; txHash: Hex }> {
+  assertNoPersonalData(o.reason, o.authority, ...o.sources.map((s) => s.title))
   await ensureGas()
   const day = dayMs(o.net)
   const lapse = o.emergency ? Math.min(o.ends, o.issued + day) : o.ends

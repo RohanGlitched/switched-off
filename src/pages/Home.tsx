@@ -91,11 +91,11 @@ export function Home() {
                 <div className="row" style={{ justifyContent: 'space-between' }}>
                   <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : 'Now'} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${inForceAt.length} order${inForceAt.length === 1 ? '' : 's'} in force, ${map.off.size} districts dark` : `${live.orders.length} orders in force`}</span></span>
                   <span className="row" style={{ gap: 6 }}>
-                    <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? 'Pause' : 'Play the history'}</button>
-                    {at !== null && <button className="btn small" onClick={() => { setPlaying(false); setAt(null) }}>Back to now</button>}
+                    <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? 'Pause' : t('Play the history')}</button>
+                    {at !== null && <button className="btn small" onClick={() => { setPlaying(false); setAt(null) }}>{t('Back to now')}</button>}
                   </span>
                 </div>
-                <input type="range" aria-label="Day to show" min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
+                <input type="range" aria-label="Day to show" aria-valuetext={at ? fmtDate(at) : 'today'} min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
                 <span className="hint">Every order on the register, replayed from its stated start to its stated end. Orders without a published end date are shown until the next order on file for that state, at most fifteen days.</span>
               </div>
             )}

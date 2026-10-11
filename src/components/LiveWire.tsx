@@ -1,7 +1,7 @@
 // Arkiv's entity events, rendered as a news wire.
 import { useMemo } from 'react'
 import { getSnapshot, useNow, useWire, type WireItem } from '../lib/store'
-import { fmtTime } from '../lib/fmt'
+import { fmtTime, where as placeList } from '../lib/fmt'
 import { Link } from '../lib/router'
 import { STATES } from '../lib/geo'
 import type { Net, Order, Record_, Report } from '../lib/arkiv'
@@ -28,7 +28,7 @@ function line(w: WireItem): string {
     if (w.kind === 'extended') return `${drill}Someone confirmed the report from ${where}`
   }
   if (f.t === 'order') {
-    if (w.kind === 'created') return `${drill}Suspension order filed: ${where}, ${(f.e as Order).districts.length} district${(f.e as Order).districts.length > 1 ? 's' : ''}`
+    if (w.kind === 'created') return `${drill}Suspension order filed: ${where}, ${placeList((f.e as Order).districts)}`
     if (w.kind === 'extended') return `${drill}Emergency order confirmed: ${where}`
   }
   if (f.t === 'record') {

@@ -10,7 +10,7 @@ import { activeOrders, currentBlock, liveReports, blockToTime, type Order, type 
 import { DRILL_DAY_MS, fileOrder, fileReport, confirmEmergency } from '../lib/write'
 import { refresh, useNow, useRegister } from '../lib/store'
 import { account } from '../lib/wallet'
-import { fmtTime, scopeLabel, short, txUrl } from '../lib/fmt'
+import { fmtTime, scopeLabel, short, txUrl, where } from '../lib/fmt'
 import { Link } from '../lib/router'
 import { humanError } from './Entity'
 
@@ -26,6 +26,7 @@ export function DrillPage() {
   const [busy, setBusy] = useState('')
   const [lastTx, setLastTx] = useState<string | null>(null)
   const [rewind, setRewind] = useState(0) // minutes back
+  const [target, setTarget] = useState<number | null>(null) // a district picked on the map, waiting to be reported
   const [past, setPast] = useState<{ orders: Order[]; reports: Report[] } | null>(null)
   useNow()
 
@@ -58,6 +59,8 @@ export function DrillPage() {
 
   const issue = (renews?: Order) => {
     const now = Date.now()
+    // a renewal is a new order that takes over when the current one lapses
+    const from = renews ? Math.max(now, renews.ends * 1000) : now
     const ds = renews ? renews.districts : picked.length ? picked : ['Statewide']
     const st = renews?.state ?? state
     return run('issue', () => fileOrder({
@@ -68,8 +71,8 @@ export function DrillPage() {
       districts: ds,
       scope: (renews?.scope ?? scope) as Order['scope'],
       issued: now,
-      starts: now,
-      ends: now + (renews ? 15 : daysN) * DRILL_DAY_MS,
+      starts: from,
+      ends: from + (renews ? 15 : daysN) * DRILL_DAY_MS,
       emergency: renews ? false : emergency,
       basis: 'Telecommunications (Temporary Suspension of Services) Rules, 2024 (drill)',
       authority: `Home Department, Government of ${STATES[st] ?? st} (drill)`,
@@ -78,7 +81,7 @@ export function DrillPage() {
       seq: renews ? renews.seq + 1 : 1,
       published: true,
       sources: [],
-    }), renews ? 'Renewal filed: a new order, linked to the last. The old one still lapses on time.' : emergency ? 'Emergency order filed. It dies in one drill day unless you confirm it.' : 'Order filed. Watch its districts go dark.')
+    }), renews ? 'Renewal filed: a new order that takes over when the current one lapses.' : emergency ? 'Emergency order filed. It dies in one drill day unless you confirm it.' : 'Order filed. Watch its districts go dark.').then(() => { setEmergency(false); setPicked([]) })
   }
 
   return (
@@ -108,7 +111,7 @@ export function DrillPage() {
             </div>
             <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
               <legend className="mute" style={{ fontSize: 14, marginBottom: 6 }}>Districts ({picked.length ? picked.length : 'whole state'})</legend>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 132, overflowY: 'auto' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 220, overflowY: 'auto', paddingRight: 4 }}>
                 {districts.map((d) => {
                   const on = picked.includes(d.name)
                   return <button key={d.id} className={`chip${on ? ' sodium' : ''}`} style={{ cursor: 'pointer', background: 'none', minHeight: 32 }} aria-pressed={on} onClick={() => setPicked(on ? picked.filter((x) => x !== d.name) : [...picked, d.name])}>{d.name}</button>
@@ -119,7 +122,7 @@ export function DrillPage() {
               <input type="range" min={1} max={15} value={daysN} onChange={(e) => setDaysN(+e.target.value)} />
               <span className="hint">The rules cap an order at fifteen days, so the slider stops at fifteen.</span>
             </label>
-            <label className="row" style={{ gap: 10, cursor: 'pointer' }}>
+            <label className="row" style={{ gap: 10, cursor: 'pointer', flexWrap: 'nowrap', alignItems: 'flex-start' }}>
               <input type="checkbox" checked={emergency} onChange={(e) => setEmergency(e.target.checked)} style={{ width: 20, height: 20 }} />
               <span>Issued in an emergency (lapses after one drill day unless confirmed)</span>
             </label>
@@ -140,7 +143,7 @@ export function DrillPage() {
                 const pendingEmergency = o.emergency && exp - o.issued * 1000 <= DRILL_DAY_MS + 60_000
                 return (
                   <div key={o.key} className="item">
-                    <span>{o.stateName} · {o.districts.length} district{o.districts.length > 1 ? 's' : ''} · lapses {fmtTime(exp)}{pendingEmergency ? ' (unconfirmed)' : ''}</span>
+                    <span>{o.stateName} · {where(o.districts)}{o.seq > 1 ? ` · renewal ${o.seq - 1}` : ''} · lapses {fmtTime(exp)}{pendingEmergency ? ' (unconfirmed)' : ''}</span>
                     <span className="row" style={{ gap: 6 }}>
                       {pendingEmergency && <button className="btn small primary" disabled={!!busy} onClick={() => run('confirm', () => confirmEmergency(o), 'Confirmed: the order now runs its full length.')}>Confirm</button>}
                       <button className="btn small" disabled={!!busy} onClick={() => issue(o)}>Renew</button>
@@ -154,13 +157,16 @@ export function DrillPage() {
         </div>
 
         <div style={{ display: 'grid', gap: 14, minWidth: 0 }}>
-          <NightMap state={map} focus={null} onPick={(i) => {
-            if (!geo || rewind) return
-            const d = geo.districts[i]
-            void run('report', () => fileReport({ net: 'drill', state: d.code, district: d.name, carrier: 'All networks', status: 'down', note: 'Drill report' }), `Drill report filed for ${d.name}.`)
-          }} label="Drill map: click a district to report it dark" />
-          <label className="field">Rewind the drill: {rewind ? `${rewind} minute${rewind > 1 ? 's' : ''} ago (querying Arkiv at block ${(currentBlock() - BigInt(rewind * 30)).toLocaleString()})` : 'now'}
-            <input type="range" min={0} max={30} value={rewind} onChange={(e) => setRewind(+e.target.value)} />
+          <NightMap state={map} focus={null} onPick={(i) => { if (geo && !rewind) setTarget(i) }} label="Drill map: pick a district to report it dark" />
+          {target !== null && geo && (
+            <div className="panel" style={{ padding: 14, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ flex: '1 1 200px' }}>Report <b>{geo.districts[target].name}</b>, {geo.districts[target].state} as dark (drill)?{map.off.has(target) ? ' An order is already in force here.' : ' No order is in force here, so it will burn red.'}</span>
+              <button className="btn small primary" disabled={!!busy} onClick={() => { const d = geo.districts[target]; setTarget(null); void run('report', () => fileReport({ net: 'drill', state: d.code, district: d.name, carrier: 'All networks', status: 'down', note: 'Drill report' }), `Drill report filed for ${d.name}.`) }}>Report it</button>
+              <button className="btn small" onClick={() => setTarget(null)}>Cancel</button>
+            </div>
+          )}
+          <label className="field">Rewind the drill: {rewind ? `${rewind} minute${rewind > 1 ? 's' : ''} ago (querying Arkiv at block ${(currentBlock() - BigInt(rewind * 30)).toString()})` : 'now'}
+            <input type="range" min={-30} max={0} value={-rewind} onChange={(e) => setRewind(-e.target.value)} aria-valuetext={rewind ? `${rewind} minutes ago` : 'now'} />
             <span className="hint">Arkiv answers queries as of any past block, so lapsed orders and faded reports reappear exactly as they were.</span>
           </label>
           {busy === 'report' && <p className="hint">Writing the report to Arkiv…</p>}

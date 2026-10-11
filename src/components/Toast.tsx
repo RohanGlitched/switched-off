@@ -10,7 +10,7 @@ export function ToastHost() {
     push = (m) => {
       setMsg(m)
       clearTimeout(t)
-      t = window.setTimeout(() => setMsg(null), 5200)
+      t = window.setTimeout(() => setMsg(null), Math.max(6000, m.length * 70))
     }
     return () => { push = null }
   }, [])

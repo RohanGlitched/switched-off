@@ -75,6 +75,9 @@ async function read() {
     if (/budget|ANON|429/i.test(e.message) && via === RPC) $('status').innerHTML += ` <button id="relay">Retry through switched-off.vercel.app</button> <span style="color:var(--mute);font-size:13px">Arkiv limits keyless reads per network; the site’s relay uses its own key.</span>`, $('relay').onclick = () => { via = RELAY; read() }
     return
   }
+  // a correction replaces the record it names in `corrects`; both stay on Arkiv, the mirror shows the correction
+  const corrected = new Set(all.map((e) => String(attrs(e).corrects || '').toLowerCase()).filter(Boolean))
+  all = all.filter((e) => !corrected.has(String(e.key).toLowerCase()))
   $('status').textContent = `${all.length} found`
   if (!all.length) { $('out').innerHTML = `<p>${type === 'order' ? 'No order is in force on the register right now.' : 'Nothing found.'}</p>`; return }
   all.sort((a, b) => Number(attrs(b).starts || attrs(b).seen || 0) - Number(attrs(a).starts || attrs(a).seen || 0))

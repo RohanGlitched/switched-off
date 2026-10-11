@@ -37,6 +37,15 @@ What went smoothly is documented with the same care at the end, because a lot of
   the SDK and the RPC docs contradict each other.
 - **Fix:** expose `where('*')` in the SDK, or say in the RPC docs that the SDK forbids it on purpose.
 
+## 4a. A bare number silently compares as `i32`, so a range over a `u64` attribute returns nothing
+
+- **Expected:** `issued > 1688169600` against a `u64` attribute returns the records issued after that time, or fails with a type error.
+- **Actual:** it returns **0** results and no error. `issued > u64(1688169600)` returns **72**. The grammar docs do say a bare number
+  defaults to `i32`, but a type mismatch that turns a range into an empty set is easy to ship: our own Data page published the bare
+  form until our QA pass ran every command.
+- **Repro:** the two `arkiv_query` calls above against `app = str('switched-off') AND type = str('record')`, 12 Oct 2026.
+- **Fix:** reject comparisons whose literal type can't match the attribute's type, or coerce integer literals to the attribute's type.
+
 ## 4. Raw query syntax isn't discoverable from the network page
 
 - **Expected:** the Tiramisu page that lists the RPC URL links to the query grammar.

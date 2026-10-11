@@ -25,8 +25,8 @@ const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?
   {
     title: 'Every order ever filed for Manipur',
     claim: 'Filter by state code on an attribute, not by reading payloads.',
-    expr: "app = str('switched-off') AND type = str('record') AND state = str('MN')",
-    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('state','MN')])).fetch()`,
+    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND state = str('MN')",
+    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live'), eq('state','MN')])).fetch()`,
   },
   {
     title: 'Live citizen reports',
@@ -35,10 +35,10 @@ const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?
     sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','report'), eq('net','live')])).fetch()`,
   },
   {
-    title: 'Orders that ran past the fifteen-day cap',
-    claim: 'u64 attributes make range queries possible: records whose stated end is more than 15 days after their start can be found with arithmetic in the app, and any order issued after a date with a range filter.',
-    expr: "app = str('switched-off') AND type = str('record') AND issued > 1688169600",
-    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), gt('issued', 1688169600)])).fetch() // issued after 1 Jul 2023`,
+    title: 'Orders issued after a date',
+    claim: 'Timestamps are u64 attributes, so ranges are a query, not a scan. Note the u64(…) tag: a bare number is read as i32 and silently matches nothing (see friction.md).',
+    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND issued > u64(1688169600)",
+    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), gt('issued', u64(1688169600n))])).fetch() // issued after 1 Jul 2023`,
   },
 ]
 
@@ -76,7 +76,7 @@ export function DataPage() {
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
           <h2 className="h3">Nobody can delete the archive</h2>
           <p className="mute" style={{ margin: 0 }}>Every live record is owned by <code>0x…dEaD</code>, an address nobody holds a key for, while its <code>$creator</code> still shows who filed it. Only an owner can delete an entity, so these can only expire, and anyone can extend them. This query should return all of them:</p>
-          <pre className="code">{q("$owner = addr(0x000000000000000000000000000000000000dEaD) AND app = str('switched-off') AND type = str('record')")}</pre>
+          <pre className="code">{q("\\$owner = addr(0x000000000000000000000000000000000000dEaD) AND app = str('switched-off') AND type = str('record') AND net = str('live')")}</pre>
         </div>
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
           <h2 className="h3">Who filed it</h2>

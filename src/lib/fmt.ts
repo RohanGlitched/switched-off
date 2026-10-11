@@ -4,7 +4,7 @@ const IST = 'Asia/Kolkata'
 export const fmtDate = (ms: number) =>
   ms ? new Date(ms).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: IST }) : '—'
 export const fmtDateTime = (ms: number) =>
-  ms ? new Date(ms).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: IST }) + ' IST' : '—'
+  ms ? new Date(ms).toLocaleString('en-IN', { day: 'numeric', month: 'short', ...(new Date(ms).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}), hour: '2-digit', minute: '2-digit', timeZone: IST }) + ' IST' : '—'
 export const fmtTime = (ms: number) => new Date(ms).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: IST })
 
 /** "3d 4h", "47m 10s", "lapsed" */
@@ -34,4 +34,7 @@ export const scopeLabel: Record<string, string> = {
   'voice-sms-too': 'Internet, calls and SMS',
   unknown: 'Internet',
 }
+/** "Statewide", "3 districts", "Imphal West" */
+export const where = (ds: string[]) => (ds.some((d) => /statewide/i.test(d)) ? 'statewide' : ds.length === 1 ? ds[0] : `${ds.length} districts`)
+
 export const carriers = ['Jio', 'Airtel', 'Vi', 'BSNL', 'Broadband', 'All networks']

@@ -10,6 +10,7 @@ import { toast } from '../components/Toast'
 import { humanError } from './Entity'
 import { BASIS_LABEL } from '../lib/basis'
 import type { Scope } from '../lib/arkiv'
+import { personalData } from '../lib/pii'
 
 const day = 86_400_000
 const toMs = (d: string) => (d ? new Date(`${d}T00:00:00+05:30`).getTime() : 0)
@@ -38,6 +39,7 @@ export function FilePage() {
     ends && starts && toMs(ends) < toMs(starts) && 'The end date is before the start date.',
     !/^https:\/\/\S+\.\S+/.test(srcUrl) && 'Link the published order or reporting that cites it (https://…).',
     reason.trim().length < 10 && 'Paraphrase the reason the order gives.',
+    personalData(`${reason} ${authority} ${srcTitle}`) && `Remove ${personalData(`${reason} ${authority} ${srcTitle}`)}: the register is public.`,
   ].filter(Boolean) as string[]
   const nameWarn = /\b(shri|smt|sh\.|dr\.|mr\.|mrs\.|ms\.)\s+[A-Z]/i.test(authority)
 

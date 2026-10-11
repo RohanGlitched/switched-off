@@ -11,7 +11,7 @@ import type { Net, Report } from '../lib/arkiv'
 import { witnessName, account, forgetKey } from '../lib/wallet'
 import { useT } from '../lib/i18n'
 
-const PII = /(\+?91[\s-]?)?[6-9]\d{9}|@[a-z0-9.-]+\.[a-z]{2,}|aadhaar|\b\d{4}\s?\d{4}\s?\d{4}\b/i
+import { personalData } from '../lib/pii'
 
 export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const reg = useRegister(net)
@@ -42,7 +42,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
 
   const districts = useMemo(() => (geo && state ? districtsOf(geo, state) : []), [geo, state])
   const nearby = useMemo(() => reg.reports.filter((r) => !state || r.state === state).sort((a, b) => b.seen - a.seen).slice(0, 8), [reg.reports, state])
-  const piiWarn = PII.test(note)
+  const piiWarn = personalData(note)
 
   const submit = async () => {
     if (!state || !district) return toast('Pick your state and district first.')
@@ -109,9 +109,9 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
             </label>
             <label className="field">{t('What you see (optional, 140 characters)')}
               <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mobile data gone since morning; broadband still working" />
-              {piiWarn ? <span className="hint" style={{ color: 'var(--vermilion)' }}>That looks like a phone number, email or ID. Remove it: reports are public.</span> : <span className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
+              {piiWarn ? <span className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>That looks like {piiWarn}. Remove it: reports are public and permanent.</span> : <span className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
             </label>
-            <button className="btn primary" disabled={busy || !district} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : !district ? t('Choose a district to report') : t('File this report')}</button>
+            <button className="btn primary" disabled={busy || !district || !!piiWarn} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : !district ? t('Choose a district to report') : t('File this report')}</button>
             {pending > 0 && <p className="hint" style={{ margin: 0 }}>{pending} report{pending > 1 ? 's' : ''} saved on this phone, waiting for a connection.</p>}
             {done && (
               <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>

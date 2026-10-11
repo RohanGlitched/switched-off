@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { districtIndexes, loadGeo, type Geo } from '../lib/geo'
 import type { Order, Report } from '../lib/arkiv'
+import { useT } from '../lib/i18n'
 
 export type MapState = { off: Map<number, Order>; flagged: Map<number, Report[]>; restored: Set<number> }
 
@@ -106,7 +107,7 @@ export function NightMap({ state, focus, onPick, label }: Props) {
           const p = reduce ? 1 : 0.65 + 0.35 * Math.sin(t / 380 + seed[i] * 6)
           g.fillStyle = `rgba(255, 98, 80, ${0.9 * p * dim})`
         } else if (v < 0.2) {
-          g.fillStyle = `rgba(52, 57, 92, ${0.9 * dim})`
+          g.fillStyle = `rgba(74, 80, 133, ${0.95 * dim})`
         } else {
           const tw = reduce ? 1 : 0.85 + 0.15 * Math.sin(t / 900 + seed[i] * 40)
           g.fillStyle = `rgba(255, ${170 + Math.round(seed[i] * 40)}, ${60 + Math.round(seed[i] * 50)}, ${v * tw * dim})`
@@ -166,6 +167,7 @@ export function NightMap({ state, focus, onPick, label }: Props) {
     }
   }, [geo])
 
+  const t = useT()
   const offCount = state.off.size
   const flagCount = state.flagged.size
   return (
@@ -176,9 +178,9 @@ export function NightMap({ state, focus, onPick, label }: Props) {
         {tip && <div className="map-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>}
       </div>
       <figcaption className="legend">
-        <span><i style={{ background: 'var(--sodium)' }} />Lights on</span>
-        <span><i style={{ background: '#34395c' }} />Switched off by an order in force</span>
-        <span><i style={{ background: 'var(--vermilion)' }} />Reported dark, no published order</span>
+        <span><i style={{ background: 'var(--sodium)' }} />{t('Lights on')}</span>
+        <span><i style={{ background: '#4a5085' }} />{t('Switched off by an order in force')}</span>
+        <span><i style={{ background: 'var(--vermilion)' }} />{t('Reported dark, no published order')}</span>
       </figcaption>
     </figure>
   )
