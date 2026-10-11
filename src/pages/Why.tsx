@@ -28,12 +28,13 @@ const FEATURES = [
   ['Expiration', 'An order entity expires at its lapse block (an unconfirmed emergency order: 24 hours after issue). The map relights a district when its last order expires, with no server deciding.', 'Map, gazette countdowns'],
   ['Lifetime extension', 'Confirming a report extends it (one confirmation per key, the filer can’t confirm their own); confirming an emergency order extends it to its stated end; keeping a record alive extends it a year. The entity page counts distinct keys from the extension transactions.', 'Confirm and Keep alive buttons, “confirmed by N keys”'],
   ['Creation flags', 'Orders and reports are readonly. Reports and archive records add permissionless extension, so anyone may keep them alive but no one may change them.', 'Flags on every entity page'],
-  ['Ownership transfer', 'Every archive record is handed to 0x…dEaD after it is written. Readonly stops edits; an owner nobody holds stops deletion. That closes the one gap readonly leaves.', '“Sealed” on every gazette and entity page'],
+  ['Ownership transfer', 'Every archive record, and every non-emergency order filed on the site, is handed to 0x…dEaD in the same transaction that creates it (the keys are predicted from the account’s entity nonce). Readonly stops edits; an owner nobody holds stops deletion and stretching. That closes the gap readonly leaves.', '“Sealed” on every gazette and entity page'],
   ['Attributes vs payload', 'Everything we filter or sort on is a typed attribute: state, district, scope, net, issued/starts/ends as u64 timestamps, seq. Reason text, authority and sources sit in the JSON payload because nobody queries them.', 'Register filters, state pages'],
-  ['Queries', 'Typed equality and range queries, paged in 200s; atBlock for history.', 'Every list, the rewind slider'],
+  ['Queries', 'Typed equality (state) and u64 range queries (issued since a year) run on Arkiv, paged in 200s, and the register prints the exact query it sent; atBlock for history. A correction counts only when it comes from the registrar or from the record’s own filer.', 'Register filters and their query line, the rewind slider'],
   ['$owner / $creator', 'After sealing they differ: $owner is 0x…dEaD, $creator is who filed it. Registrar filings and community transcriptions (the File an order page) are labelled by $creator.', 'Gazette footer, entity page'],
-  ['Entity events', 'The live wire and the map react to EntityCreated and ExpiryExtended events: over Arkiv’s WebSocket in direct mode, polled through our relay by default (to stay inside the keyless budget).', 'Live wire, map refresh'],
-  ['Batch writes', 'An order and its permanent record are written in one transaction, so there is never an order without its archive copy.', 'Issue order (drill), archive import'],
+  ['Entity events', 'The live wire and the map react to EntityCreated and ExpiryExtended events over Arkiv’s WebSocket (a subscription costs no query budget); if the socket can’t open, a node-side filter is polled through our relay. Expiry has no event, so the next re-read is timed to the soonest expiry on screen.', 'Live wire, map refresh'],
+  ['Batch writes', 'An order, its permanent record and the ownership transfers that seal them are one transaction, so there is never an order without its archive copy, or a record anyone could delete.', 'Issue order (drill), File an order, archive import'],
+  ['Delete', 'The one thing an owner of a readonly entity can still do. A report’s filer can withdraw it; nobody can delete a sealed record, because nobody owns it.', '“Withdraw my report” on your own reports'],
 ]
 
 const LIMITS = [
@@ -41,6 +42,9 @@ const LIMITS = [
   ['One public endpoint, many possible', 'The site, mirror and CLI default to Arkiv’s public RPC. Each takes another endpoint (?rpc= in the mirror, ARKIV_RPC for the CLI), so anyone running an Arkiv node can serve the register without asking anyone.'],
   ['The register is only as complete as its transcribers', '111 orders are on file; Access Now counted 116 shutdowns in India in 2023 alone. The File an order page lets anyone add the rest, labelled as community transcriptions.'],
   ['Reporting needs a signal, and a key', 'During a mobile-data cut, people on broadband or Wi-Fi can still report, and the offline queue sends reports when the signal returns. The gas tap runs on this site; a mirror can read the register but not fund new keys. Your browser key links your phone to your reports until you forget it (button on the Report page).'],
+  ['Keys are not people', 'A confirmation is one extension per key, and keys are free: one person with several browsers can inflate “confirmed by N keys”. The count is a signal, not proof; a report is still a question for the state to answer, not a verdict.'],
+  ['Anyone can write to the app’s namespace', 'Arkiv has no schema owner, so anyone can write entities tagged like ours. The readers defend themselves: a correction hides a record only if it comes from the registrar or the record’s own filer, a community order darkens the map only within the law’s fifteen-day cap, and every entity shows its $creator.'],
+  ['Public court records, not private people', 'Orders cite reported cases and judgments as sources. Nobody is named in a record (designations only); an early batch of notes quoted case titles with parties’ and judges’ names, and those records have been corrected with name-free notes. The originals are sealed and readable until they expire, which is the price of an archive nobody can edit.'],
 ]
 
 export function WhyPage() {
@@ -102,7 +106,7 @@ export function WhyPage() {
       </div>
 
       <div id="sources">
-        <div className="section-head"><h2 className="h2">Sources</h2><p className="lede">Every order on the register carries its own source links. The archive was transcribed from published orders, court records and reporting that cites them; {live.records.length} orders are on file.</p></div>
+        <div className="section-head"><h2 className="h2">Sources</h2><p className="lede">Every order on the register carries its own source links. The archive was transcribed from published orders, court records and reporting that cites them; {live.loadedAt ? live.records.length : '…'} orders are on file.</p></div>
         <div className="row"><Link to="/register" className="btn">Open the register</Link><Link to="/data" className="btn">Check the queries</Link></div>
       </div>
     </section>

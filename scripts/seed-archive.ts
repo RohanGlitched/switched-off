@@ -50,7 +50,7 @@ const WEAK = new Set(['mh-beed-2023-10-30', 'or-cuttack-2025-10-05', 'mn-2026-04
 // IST midnight when only a date is known
 const t = (s: string | null) => (s ? Math.floor(new Date(/T|\d:\d/.test(s) ? s.replace(' ', 'T') + (/[zZ+]/.test(s.slice(10)) ? '' : '+05:30') : `${s}T00:00:00+05:30`).getTime() / 1000) : 0)
 
-const all = (JSON.parse(fs.readFileSync('../research/orders-all.json', 'utf8')) as Src[]).filter((o) => !WEAK.has(o.id))
+const all = (JSON.parse(fs.readFileSync(fs.existsSync('research/orders-all.json') ? 'research/orders-all.json' : '../research/orders-all.json', 'utf8')) as Src[]).filter((o) => !WEAK.has(o.id))
 for (const o of all) {
   o.districts = o.districts.flatMap((d) => (/walled city areas of north and central/i.test(d) ? ['Central', 'North'] : [d]))
 }

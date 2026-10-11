@@ -94,6 +94,31 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       resize()
       draw(performance.now())
     }
+    // centre and radius of each district that is off or flagged, computed once per map state
+    const centroidCache = new WeakMap<MapState, Map<number, { lon: number; lat: number; r: number }>>()
+    const centroids = (st: MapState) => {
+      let m = centroidCache.get(st)
+      if (m) return m
+      m = new Map()
+      const acc = new Map<number, { lon: number; lat: number; k: number; pts: [number, number][] }>()
+      for (const [lon, lat, d] of geo.dots) {
+        if (d < 0 || !(st.off.has(d) || st.flagged.has(d))) continue
+        const a = acc.get(d) ?? { lon: 0, lat: 0, k: 0, pts: [] }
+        a.lon += lon
+        a.lat += lat
+        a.k++
+        a.pts.push([lon, lat])
+        acc.set(d, a)
+      }
+      for (const [d, a] of acc) {
+        const lon = a.lon / a.k, lat = a.lat / a.k
+        let r = 0
+        for (const [x, y] of a.pts) r = Math.max(r, Math.hypot(x - lon, (y - lat) * 1.07))
+        m.set(d, { lon, lat, r })
+      }
+      centroidCache.set(st, m)
+      return m
+    }
     // a resize clears the canvas: repaint at once, even if animation frames are paused (hidden tab)
     const ro = new ResizeObserver(() => {
       resize()
@@ -111,6 +136,22 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
       g.clearRect(0, 0, w, h)
       const r = Math.min(14, Math.max(1.1, s * 0.085))
+      // a halo under each district that is off or flagged, so one dark or red cluster reads at a glance
+      const halos = centroids(st)
+      for (const [d, c] of halos) {
+        const x = ox + (c.lon - minx) * s
+        const y = oy + (maxy - c.lat) * 1.07 * s
+        const flag = st.flagged.has(d)
+        const dimH = f && geo.districts[d].code !== f ? 0.35 : 1
+        const pulse = reduce ? 1 : 0.7 + 0.3 * Math.sin(t / 420 + d)
+        g.beginPath()
+        g.arc(x, y, Math.max(r * 4, c.r * s + r * 2), 0, Math.PI * 2)
+        g.fillStyle = flag ? `rgba(255, 98, 80, ${0.16 * pulse * dimH})` : `rgba(120, 128, 200, ${0.1 * dimH})`
+        g.fill()
+        g.lineWidth = Math.max(1, r * 0.5)
+        g.strokeStyle = flag ? `rgba(255, 98, 80, ${0.75 * pulse * dimH})` : `rgba(120, 128, 200, ${0.6 * dimH})`
+        g.stroke()
+      }
       for (let i = 0; i < n; i++) {
         const [lon, lat, d] = geo.dots[i]
         const x = ox + (lon - minx) * s
@@ -128,7 +169,7 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
           const p = reduce ? 1 : 0.65 + 0.35 * Math.sin(t / 380 + seed[i] * 6)
           g.fillStyle = `rgba(255, 98, 80, ${0.9 * p * dim})`
         } else if (v < 0.2) {
-          g.fillStyle = `rgba(74, 80, 133, ${0.95 * dim})`
+          g.fillStyle = `rgba(96, 104, 170, ${0.95 * dim})`
         } else {
           const tw = reduce ? 1 : 0.85 + 0.15 * Math.sin(t / 900 + seed[i] * 40)
           g.fillStyle = `rgba(255, ${170 + Math.round(seed[i] * 40)}, ${60 + Math.round(seed[i] * 50)}, ${v * tw * dim})`
@@ -195,12 +236,12 @@ export function NightMap({ state, focus, onPick, label, zoom }: Props) {
     <figure style={{ margin: 0 }}>
       <div className="map-wrap" ref={wrap}>
         {!geo && <div className="skel" style={{ position: 'absolute', inset: '8%' }} aria-hidden="true" />}
-        <canvas ref={ref} role="img" aria-label={label ?? `Map of India's districts at night. ${offCount} districts switched off by an order in force; ${flagCount} districts with reports of no internet but no published order.`} />
+        <canvas ref={ref} role="img" aria-label={label ?? `Map of India's districts at night. ${offCount} district${offCount === 1 ? '' : 's'} switched off by an order in force; ${flagCount} district${flagCount === 1 ? '' : 's'} with reports of no internet but no published order.`} />
         {tip && <div className="map-tip" style={{ left: tip.x, top: tip.y }}>{tip.text}</div>}
       </div>
       <figcaption className="legend">
         <span><i style={{ background: 'var(--sodium)' }} />{t('Lights on')}</span>
-        <span><i style={{ background: '#4a5085' }} />{t('Switched off by an order in force')}</span>
+        <span><i style={{ background: '#6068aa' }} />{t('Switched off by an order in force')}</span>
         <span><i style={{ background: 'var(--vermilion)' }} />{t('Reported dark, no published order')}</span>
       </figcaption>
     </figure>

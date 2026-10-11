@@ -10,7 +10,7 @@ import type { Hex } from 'viem'
 import { APP, BLOCK_SECONDS, SEALED, pub, type Net, type Order, type Report, type Scope, type Source } from './arkiv'
 import { account, ensureGas, wallet } from './wallet'
 import { basisCode } from './basis'
-import { assertNoPersonalData } from './pii'
+import { assertNoPersonalData, looksLikeEmail } from './pii'
 
 /** In a drill the law runs fast: one legal day is one real minute. */
 export const DRILL_DAY_MS = 60_000
@@ -59,6 +59,13 @@ export async function confirmReport(key: Hex, net: Net): Promise<Hex> {
   return txHash
 }
 
+/** Withdraw your own report: a report is owned by the key that filed it, and only an owner can delete. */
+export async function withdrawReport(key: Hex): Promise<Hex> {
+  await ensureGas()
+  const { txHash } = await wallet.deleteEntity({ entityKey: key })
+  return txHash
+}
+
 export type OrderInput = {
   net: Net
   orderId: string
@@ -102,12 +109,16 @@ function orderPayload(o: OrderInput) {
 }
 
 /**
- * Files an order and its permanent record in one transaction.
+ * Files an order and its permanent record in one transaction, and seals both in that same
+ * transaction: the record is handed to 0x…dEaD so nobody can delete it, and so is a non-emergency
+ * order, so not even its filer can stretch or cut it (an emergency order stays with its filer,
+ * whose confirmation is an extension). The entity keys are predicted from the account's entity
+ * nonce, which is what lets a batch hand over entities it is creating.
  * The order expires when it lapses (an unconfirmed emergency order: 24 hours after issue).
- * The record is the memory: readonly, and anyone may extend it.
  */
-export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {}): Promise<{ orderKey: Hex | null; recordKey: Hex; txHash: Hex }> {
+export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {}): Promise<{ orderKey: Hex | null; recordKey: Hex; txHash: Hex; sealed: boolean }> {
   assertNoPersonalData(o.reason, o.authority, ...o.sources.map((s) => s.title))
+  for (const s of o.sources) if (looksLikeEmail(s.url)) throw new Error('A source link must not contain an email address: everything on the register is public and permanent.')
   await ensureGas()
   const day = dayMs(o.net)
   const lapse = o.emergency ? Math.min(o.ends, o.issued + day) : o.ends
@@ -128,11 +139,31 @@ export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {
     expires: o.net === 'drill' ? ExpirationTime.fromDays(1) : ExpirationTime.fromYears(RECORD_YEARS.live),
     flags: { readonly: true, permissionlessExtension: true },
   })
-  const r = await wallet.executeBatch({ creates })
+  // a predicted key only comes out as predicted if the create carries the salt it was predicted with
+  let predicted: { key: Hex; salt: bigint }[] = []
+  try {
+    predicted = (await pub.predictEntityKeys({ owner: account.address, count: creates!.length })) as unknown as { key: Hex; salt: bigint }[]
+  } catch {
+    predicted = []
+  }
+  const sealNow = predicted.length === creates!.length
+  if (sealNow) creates!.forEach((c, i) => ((c as { salt?: bigint }).salt = predicted[i].salt))
+  const ownershipChanges = sealNow
+    ? predicted.filter((_, i) => !(live && i === 0 && o.emergency)).map((p) => ({ entityKey: p.key, newOwner: SEALED as Hex }))
+    : []
+  const r = await wallet.executeBatch({ creates, ...(ownershipChanges.length ? { ownershipChanges } : {}) })
   const recordKey = r.createdEntities[live ? 1 : 0]
-  // seal the archive copy: nobody (the filer included) can delete it afterwards; anyone can extend it
-  void wallet.changeOwnership({ entityKey: recordKey, newOwner: SEALED }).catch(() => {})
-  return { orderKey: live ? r.createdEntities[0] : null, recordKey, txHash: r.txHash }
+  let sealed = sealNow
+  if (!sealNow) {
+    // the keys couldn't be predicted: seal in a second transaction and say whether it landed
+    try {
+      await wallet.changeOwnership({ entityKey: recordKey, newOwner: SEALED })
+      sealed = true
+    } catch {
+      sealed = false
+    }
+  }
+  return { orderKey: live ? r.createdEntities[0] : null, recordKey, txHash: r.txHash, sealed }
 }
 
 /** The competent authority confirmed an emergency order: it now lives to its stated end. Owner only. */

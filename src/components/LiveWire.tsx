@@ -18,6 +18,7 @@ function find(key: string): { net: Net; e: Order | Record_ | Report; t: 'order' 
 }
 
 function line(w: WireItem): string {
+  if (w.text) return w.text
   const f = find(w.key)
   if (!f) return w.kind === 'extended' ? 'An entity on the register was kept alive' : 'A register entity changed'
   const where = f.t === 'report' ? `${(f.e as Report).district}, ${STATES[(f.e as Report).state] ?? (f.e as Report).state}` : `${(f.e as Order).stateName}`

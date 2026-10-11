@@ -26,7 +26,11 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Repro:** script item 2.
 - **Note:** this is one of the best error messages we saw: it names the fix. But computed lifetimes are odd half the time, so every app
   that derives an expiry from a real-world deadline hits it. We now convert with `fromBlocks(Math.ceil(seconds / 2))`.
-- **Fix:** round by default (or `fromSeconds(n, { round: 'up' })`), since a lifetime is already approximate.
+- **Correction (11 Oct, evening):** the SDK already has the right tool for a deadline, `ExpirationTime.atDate(date)`, which rounds up to the
+  next block (`utils/expirationTime.ts`), and `atBlock(n)`. We missed both because the docs and the error message steer you to `fromSeconds`
+  and `fromBlocks`. So the friction is discoverability, not a missing feature.
+- **Fix:** have `fromSeconds` round by default (a lifetime is already approximate), and have the `InvalidExpiryError` message and the
+  quick-start mention `atDate` for deadlines.
 
 ## 3. The SDK refuses a query the RPC accepts
 
@@ -40,10 +44,10 @@ What went smoothly is documented with the same care at the end, because a lot of
 ## 4a. A bare number silently compares as `i32`, so a range over a `u64` attribute returns nothing
 
 - **Expected:** `issued > 1688169600` against a `u64` attribute returns the records issued after that time, or fails with a type error.
-- **Actual:** it returns **0** results and no error. `issued > u64(1688169600)` returns **72**. The grammar docs do say a bare number
+- **Actual:** it returns **0** results and no error. `issued > u64(1688169600)` returns **76**. The grammar docs do say a bare number
   defaults to `i32`, but a type mismatch that turns a range into an empty set is easy to ship: our own Data page published the bare
   form until our QA pass ran every command.
-- **Repro:** script item 4a (adds `net = str('live')`: bare 0, typed 64); the same two calls without the `net` filter returned 0 and 72 on 12 Oct 2026.
+- **Repro:** script item 4a (adds `net = str('live')`: bare 0, typed 64); the same two calls without the `net` filter returned 0 and 76 on 11 Oct 2026 (72 earlier that day, before the last imports).
 - **Fix:** reject comparisons whose literal type can't match the attribute's type, or coerce integer literals to the attribute's type.
 
 ## 4. Raw query syntax isn't discoverable from the network page
@@ -63,6 +67,12 @@ What went smoothly is documented with the same care at the end, because a lot of
   The message is clear. What isn't written anywhere we could find: the budget's size and window, that each `arkiv_query` costs 100 units
   whatever it selects (`Arkiv-Cost: 100` response header), and the separate 600 requests/60 s per IP limit (`RateLimit` header).
   `eth_*` methods kept working, so writes were unaffected.
+- **Measured later (11 Oct):** the 429 itself carries the answer in headers, `ratelimit: limit=10000, remaining=0, reset=3130` and
+  `retry-after: 3130`, so the keyless budget is 10,000 units (100 queries) per network per roughly an hour. Three smaller things: the 429
+  body is not JSON-RPC shaped (`{"error":"ANON_COST_LIMITED","message":…}`, no `jsonrpc` or `id`, so generic clients report "no result"
+  instead of the message); `Arkiv-Quota-Used-Percent` is listed in the CORS-exposed headers but never sent; and because the budget is per
+  network, a judge who runs our documented `curl` after we spent the hour's budget sees it fail. The site, mirror and CLI now fall back
+  to the relay when a direct read hits the budget, and say so.
 - **Design consequence:** the access-keys page rightly warns that a key in browser code can be read and spent by anyone. So a public site
   either puts every visitor on the keyless budget or runs a proxy. We run a small allowlisted relay with a 4-second shared cache, plus a
   "direct" switch so readers can bypass us. The mirror falls back to the relay when the keyless budget is spent.
@@ -102,6 +112,19 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **No `orderBy`; `MAX_LIMIT = 200`:** we sort client-side after walking cursors. Fine at our size.
 
 ---
+
+## 10. Sealing makes a privacy mistake permanent
+
+- **Expected:** a readonly entity handed to `0x…dEaD` is the point of the design: nobody can rewrite history.
+- **Actual:** it also means nobody can repair it. Seven of our 111 imported records quoted case titles and bench names in their `notes`
+  (judges, petitioners, a person named in a police operation). They are public court records, but the challenge rules say no real
+  personal data, and our own schema says designations only. The records are sealed, so the fix is a registrar `correction` entity per
+  record with name-free notes (`scripts/correct-names.ts`, sealed in the same transaction as it is created), and readers show the
+  correction. The originals stay readable until they expire in 2028.
+- **Repro:** read any of the corrected records' originals by key (listed in `scripts/corrections.json` once filed) and compare.
+- **Fix (for us):** a name check in the personal-data guard before every write, run over the import too (`scripts/pii-check.ts`).
+- **Fix (for Arkiv):** none wanted; this is the trade-off working as designed. A note in the docs next to `changeOwnership` that a transfer
+  to a burn address is irreversible for *content* as well as ownership would save someone else the lesson.
 
 ## What went smoothly (with the same rigour)
 

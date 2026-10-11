@@ -33,9 +33,9 @@
   <p>This page has no server. It asks Arkiv’s Tiramisu network directly for the register’s entities, so it keeps working wherever it is hosted, or as a saved file. The full site: <a href="https://switched-off.vercel.app" style="color:var(--sodium)">switched-off.vercel.app</a>.</p>
   <div class="row">
     <select id="what" aria-label="What to show">
+      <option value="record">The whole archive</option>
       <option value="order">Orders in force now</option>
       <option value="report">Live citizen reports</option>
-      <option value="record">The whole archive</option>
     </select>
     <input id="state" placeholder="State code, e.g. MN" maxlength="2" size="14" aria-label="State code">
     <button id="go">Read from Arkiv</button>
@@ -72,11 +72,15 @@ async function read() {
     } while (cursor && all.length < 2000)
   } catch (e) {
     $('status').innerHTML = `<span class="err">Arkiv said: ${esc(e.message)}</span>`
-    if (/budget|ANON|429/i.test(e.message) && via === RPC) $('status').innerHTML += ` <button id="relay">Retry through switched-off.vercel.app</button> <span style="color:var(--mute);font-size:13px">Arkiv limits keyless reads per network; the site’s relay uses its own key.</span>`, $('relay').onclick = () => { via = RELAY; read() }
+    if (/budget|ANON|429/i.test(e.message) && via === RPC) $('status').innerHTML += ` <button id="relay">Retry through switched-off.vercel.app</button> <span style="color:var(--mute);font-size:13px">Arkiv limits keyless reads per network; the site’s relay uses its own key.</span>`, $('relay').onclick = () => { via = RELAY; $('rpc').textContent = RELAY.replace('https://', '') + ' (the site’s relay, with its own key)'; read() }
     return
   }
-  // a correction replaces the record it names in `corrects`; both stay on Arkiv, the mirror shows the correction
-  const corrected = new Set(all.map((e) => String(attrs(e).corrects || '').toLowerCase()).filter(Boolean))
+  // a correction replaces the record it names in `corrects`, but only when it comes from the registrar or
+  // from whoever filed the original; a stranger's "correction" can't hide a record. Both stay on Arkiv.
+  const REGISTRARS = ['0xa2724ea69ea093677d8426e7fe20644ee90a0e3e']
+  const byKey = new Map(all.map((e) => [String(e.key).toLowerCase(), e]))
+  const trusted = (e) => { const c = String(attrs(e).corrects || '').toLowerCase(); if (!c) return false; const cr = String(e.creator || '').toLowerCase(); const o = byKey.get(c); return REGISTRARS.includes(cr) || (o && cr === String(o.creator || '').toLowerCase()) }
+  const corrected = new Set(all.filter(trusted).map((e) => String(attrs(e).corrects).toLowerCase()))
   all = all.filter((e) => !corrected.has(String(e.key).toLowerCase()))
   $('status').textContent = `${all.length} found`
   if (!all.length) { $('out').innerHTML = `<p>${type === 'order' ? 'No order is in force on the register right now.' : 'Nothing found.'}</p>`; return }
@@ -84,10 +88,10 @@ async function read() {
   $('out').innerHTML = all.map((e) => {
     const a = attrs(e), p = payload(e)
     if (type === 'report') return `<div class="rep"><b>${esc(a.district)}</b>, ${esc(a.state)} · ${esc(a.carrier)}<br><span style="color:var(--mute)">${esc(a.status)} · seen ${day(a.seen)}</span>${p.note ? `<p>“${esc(p.note)}”</p>` : ''}</div>`
-    return `<div class="card"><small>${esc(p.authority || 'Issuing authority not recorded')}</small><h3>${esc(p.stateName || a.state)}</h3><small>${esc((p.districts || []).join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(p.reason)}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${(p.sources || []).map((s) => `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title)}</a></small>`).join('')}</div>`
+    return `<div class="card"><small>${esc(p.authority || 'Issuing authority not recorded')}</small><h3>${esc(p.stateName || a.state)}</h3><small>${esc((p.districts || []).join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(p.reason)}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${(p.sources || []).map((s) => /^https:\/\//i.test(String(s.url || '')) ? `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title)}</a></small>` : `<small>${esc(s.title)}</small>`).join('')}</div>`
   }).join('')
 }
-$('rpc').textContent = RPC.replace('https://', '')
+$('rpc').textContent = RPC.replace('https://', '') + (new URLSearchParams(location.search).get('rpc') ? ' (a custom endpoint you chose: this page can only show what it answers)' : '')
 $('go').onclick = read
 read()
 </script>

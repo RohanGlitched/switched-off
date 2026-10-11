@@ -10,8 +10,8 @@ sandbox where the law runs at one legal day per real minute. The two never mix i
 
 | type | What it is | Lives for | Flags | Created by |
 |---|---|---|---|---|
-| `order` | A suspension order **while it is in force** | Until the order lapses: its stated end, or for an unconfirmed emergency order 24 h after issue (drill: 1 min) | `readonly` | Registrar or any transcriber (their key) |
-| `record` | The permanent archive copy of an order | 2 years (drill: 1 day), extendable by anyone | `readonly`, `permissionlessExtension`, then **sealed** (owner → `0x…dEaD`) | Same transaction as the `order` (batch); sealed in the next |
+| `order` | A suspension order **while it is in force** | Until the order lapses: its stated end, or for an unconfirmed emergency order 24 h after issue (drill: 1 min) | `readonly`; a non-emergency order filed on the site is also **sealed** (owner → `0x…dEaD`) in the same transaction, so its filer can't stretch or cut it | Registrar or any transcriber (their key) |
+| `record` | The permanent archive copy of an order | 2 years (drill: 1 day), extendable by anyone | `readonly`, `permissionlessExtension`, **sealed** (owner → `0x…dEaD`) | Same transaction as the `order`, and sealed in it too: the batch's `ownershipChanges` name keys predicted with `predictEntityKeys` (the archive import of 11 Oct sealed in a second transaction) |
 | `report` | A citizen's "no internet here" (or "it's back") | 6 hours (drill: 6 min), extendable by anyone | `readonly`, `permissionlessExtension` | The visitor's in-browser key |
 | `registrar` | The registrar's public profile | 365 days | `readonly` | Registrar |
 
@@ -32,7 +32,7 @@ Attributes (everything the app filters on):
 | `emergency` | bool | `false` | Emergency orders die in 24 h unless confirmed |
 | `basis` | str (code) | `tsr-2024`, `tsr-2017`, `telegraph-5-2`, `crpc-144`, `not-stated` | Short and queryable; the full citation is in the payload (str attributes are capped at 128 bytes) |
 | `renews` | str | `mn-2023-11-13` | The order this one renewed |
-| `corrects` | str (entity key) | `0x5a55…7a0e` | Only on a correction: the record it replaces (which stays on Arkiv unchanged) |
+| `corrects` | str (entity key) | `0x5a55…7a0e` | Only on a correction: the record it replaces (which stays on Arkiv unchanged). Readers honour it only when the correction's `$creator` is the registrar or the original's own `$creator` |
 | `seq` | i32 | `5` | Position in its renewal chain |
 
 Payload (`application/json`, never queried, shown on the gazette page):
@@ -66,7 +66,9 @@ No name, phone number, IP address or GPS position is ever written.
 | Edit any `order`, `record`, `report` | Nobody (`readonly`) | A correction is a new entity with `corrects` |
 | Transfer a `record` to `0x000000000000000000000000000000000000dEaD` (seal) | Its filer, once | “Sealed” on the gazette; `$owner` ≠ `$creator` from then on |
 | Delete a sealed `record` | Nobody: only an owner can delete, and nobody holds the key for `0x…dEaD` | It can only expire, and anyone can extend it |
-| Delete a `report` | Its author only | Withdrawing your own report; nobody else can |
+| Delete a `report` | Its author only | "Withdraw my report" on the entity page; nobody else can |
+| Write a `record` with `corrects` from a stranger's key | Anyone (Arkiv has no schema owner) | Nothing: readers ignore it unless it comes from the registrar or the original's filer |
+| File an `order` from a stranger's key with an end years ahead | Anyone | It appears in the register as a community transcription; it darkens the map only if it runs within the law's 15-day cap |
 
 Renewal is never an extension: a renewed order is a new `order` + `record` with `renews` and `seq`, so every renewal is counted.
 

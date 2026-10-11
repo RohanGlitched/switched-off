@@ -54,7 +54,7 @@ export function DataPage() {
           <span className="chip">RPC {RPC.replace('https://', '')}</span>
           <span className="chip">WebSocket {WS.replace('wss://', '')}</span>
           <a className="chip" href={EXPLORER}>Explorer</a>
-          <span className="chip num">{live.records.length} records · {live.orders.length} in force · {live.reports.length} live reports</span>
+          <span className="chip num">{live.loadedAt ? `${live.records.length} records · ${live.orders.length} in force · ${live.reports.length} live reports` : 'reading Arkiv…'}</span>
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export function DataPage() {
         <div className="panel" style={{ display: 'grid', gap: 10 }}>
           <h2 className="h3">Who filed it</h2>
           <p className="mute" style={{ margin: 0 }}>Every entity carries its <code>$creator</code> and <code>$owner</code>. Orders from the Switched Off registrar come from these addresses; anything else is a community transcription, labelled as such.</p>
-          <pre className="code">{REGISTRARS.map((r) => `${r.name}: ${r.address}`).join('\n')}{`\n\nownedBy: pub.select('*').where(eq('app','switched-off')).ownedBy('${REGISTRARS[0].address}').fetch()`}</pre>
+          <pre className="code">{REGISTRARS.map((r) => `${r.name}: ${r.address}`).join('\n')}{`\n\ncreatedBy: pub.select('*').where(eq('app','switched-off')).createdBy('${REGISTRARS[0].address}').fetch()\n(ownedBy would find almost nothing: the records are sealed, so their $owner is 0x…dEaD)`}</pre>
         </div>
       </div>
 

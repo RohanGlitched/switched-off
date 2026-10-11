@@ -43,6 +43,7 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const districts = useMemo(() => (geo && state ? districtsOf(geo, state) : []), [geo, state])
   const nearby = useMemo(() => reg.reports.filter((r) => !state || r.state === state).sort((a, b) => b.seen - a.seen).slice(0, 8), [reg.reports, state])
   const piiWarn = personalData(note)
+  const [cooling, setCooling] = useState(false)
 
   const submit = async () => {
     if (!state || !district) return toast('Pick your state and district first.')
@@ -58,6 +59,8 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
     try {
       const r = await fileReport(input)
       setDone({ key: r.key, tx: r.txHash })
+      setCooling(true)
+      window.setTimeout(() => setCooling(false), 30_000)
       setNote('')
       void refresh(net)
       toast('Filed on Arkiv. Neighbours can now confirm it.')
@@ -108,10 +111,10 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
               </div>
             </label>
             <label className="field">{t('What you see (optional, 140 characters)')}
-              <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mobile data gone since morning; broadband still working" />
-              {piiWarn ? <span className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>That looks like {piiWarn}. Remove it: reports are public and permanent.</span> : <span className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
+              <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mobile data gone since morning; broadband still working" aria-invalid={!!piiWarn} aria-describedby="note-hint" />
+              {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>That looks like {piiWarn}. Remove it: reports are public and permanent.</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
             </label>
-            <button className="btn primary" disabled={busy || !district || !!piiWarn} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : !district ? t('Choose a district to report') : t('File this report')}</button>
+            <button className="btn primary" disabled={busy || !district || !!piiWarn || cooling} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : cooling ? 'Filed ✓ (one report per district is enough; neighbours confirm it)' : !district ? t('Choose a district to report') : t('File this report')}</button>
             {pending > 0 && <p className="hint" style={{ margin: 0 }}>{pending} report{pending > 1 ? 's' : ''} saved on this phone, waiting for a connection.</p>}
             {done && (
               <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>

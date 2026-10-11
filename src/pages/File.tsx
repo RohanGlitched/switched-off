@@ -71,7 +71,7 @@ export function FilePage() {
       })
       setDone({ order: r.orderKey, record: r.recordKey, tx: r.txHash })
       void refresh('live')
-      toast(r.orderKey ? 'Filed: the order is in force on the map until it lapses, and its record is sealed.' : 'Filed to the archive and sealed.')
+      toast(r.sealed ? (r.orderKey ? 'Filed and sealed in one transaction: the order is in force on the map until it lapses.' : 'Filed to the archive and sealed.') : 'Filed. The seal did not land: this browser still owns the record. Open it and try again, or leave it; it is readonly either way.')
     } catch (e) {
       toast(humanError(e))
     } finally {

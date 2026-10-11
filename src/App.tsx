@@ -59,7 +59,7 @@ export function App() {
             {NAV.map(([to, label]) => <Link key={to} to={to}>{t(label)}</Link>)}
             <button className="lang mobile-only" style={{ textAlign: 'left', marginTop: 8 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')}>{MODE === 'direct' ? 'Reading Arkiv directly · switch to the relay' : 'Reading through the relay · read Arkiv directly'}</button>
           </nav>
-          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
+          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें (आंशिक अनुवाद)'} title={lang === 'hi' ? 'English' : 'Hindi: the headline, map and report form so far'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
           <button className="menu-btn" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
         </div>
       </header>
@@ -119,6 +119,9 @@ function Footer() {
           <ul>
             <li><Link to="/data">Exact queries</Link></li>
             <li><Link to="/data#mirrors">Mirrors and CLI</Link></li>
+            <li><a href="https://rohanglitched.github.io/switched-off/">Independent mirror (GitHub Pages)</a></li>
+            <li><a href="https://github.com/RohanGlitched/switched-off">Source on GitHub (MIT)</a></li>
+            <li><Link to="/why">Why Arkiv, and the honest limits</Link></li>
             <li><a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/schema.md">schema.md</a></li>
             <li><a href="https://github.com/RohanGlitched/switched-off/blob/main/arkiv/friction.md">friction.md</a></li>
           </ul>

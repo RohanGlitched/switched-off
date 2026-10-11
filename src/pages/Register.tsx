@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Gazette } from '../components/Gazette'
+import { recordsWhere, setMode, type Record_ } from '../lib/arkiv'
 import { useRegister } from '../lib/store'
 import { Link, param } from '../lib/router'
 import { STATES } from '../lib/geo'
@@ -11,6 +12,21 @@ export function RegisterPage() {
   const [q, setQ] = useState(param('q') ?? '')
   const [scope, setScope] = useState(param('scope') ?? '')
   const [show, setShow] = useState<'all' | 'force'>(param('show') === 'force' ? 'force' : 'all')
+  const [since, setSince] = useState(param('since') ?? '')
+  // state and "since" go to Arkiv as a typed query (equality on state, a u64 range on issued);
+  // the free-text search runs in the browser because reason text lives in the payload, not an attribute
+  const [remote, setRemote] = useState<{ for: string; list: Record_[]; query: string } | null>(null)
+  useEffect(() => {
+    const key = `${state}|${since}`
+    if (!state && !since) return setRemote(null)
+    let alive = true
+    void recordsWhere('live', { state: state || undefined, since: since ? Math.floor(new Date(`${since}-01-01T00:00:00+05:30`).getTime() / 1000) : undefined })
+      .then((r) => alive && setRemote({ for: key, ...r }))
+      .catch(() => alive && setRemote(null))
+    return () => {
+      alive = false
+    }
+  }, [state, since])
   // filters live in the URL, so a filtered view can be shared and Back restores it
   useEffect(() => {
     const u = new URLSearchParams()
@@ -18,19 +34,22 @@ export function RegisterPage() {
     if (q) u.set('q', q)
     if (scope) u.set('scope', scope)
     if (show === 'force') u.set('show', 'force')
+    if (since) u.set('since', since)
     const next = `/register${u.toString() ? `?${u}` : ''}`
     if (next !== location.pathname + location.search) history.replaceState(null, '', next)
-  }, [state, q, scope, show])
+  }, [state, q, scope, show, since])
   const forceKeys = useMemo(() => new Set(live.orders.map((o) => o.orderId)), [live.orders])
   const list = useMemo(() => {
     const ql = q.toLowerCase()
-    return [...live.records]
+    const source = remote && remote.for === `${state}|${since}` ? remote.list : live.records
+    return [...source]
       .filter((r) => !state || r.state === state)
+      .filter((r) => !since || r.issued >= Math.floor(new Date(`${since}-01-01T00:00:00+05:30`).getTime() / 1000))
       .filter((r) => !scope || r.scope === scope)
       .filter((r) => show === 'all' || forceKeys.has(r.orderId))
       .filter((r) => !ql || `${r.stateName} ${r.districts.join(' ')} ${r.reason} ${r.authority}`.toLowerCase().includes(ql))
       .sort((a, b) => b.starts - a.starts)
-  }, [live.records, state, q, scope, show, forceKeys])
+  }, [live.records, remote, state, since, q, scope, show, forceKeys])
   const statesOnFile = useMemo(() => [...new Set(live.records.map((r) => r.state))].sort((a, b) => (STATES[a] ?? a).localeCompare(STATES[b] ?? b)), [live.records])
 
   return (
@@ -47,6 +66,13 @@ export function RegisterPage() {
             <option value="">All states and UTs</option>
             {statesOnFile.map((s) => <option key={s} value={s}>{STATES[s] ?? s}</option>)}
           </select>
+          <select className="input" value={since} onChange={(e) => setSince(e.target.value)} aria-label="Issued since">
+
+            <option value="">Any year</option>
+
+            {['2025', '2024', '2023', '2022', '2021', '2020', '2019'].map((y) => <option key={y} value={y}>Issued {y} or later</option>)}
+
+          </select>
         </label>
         <label className="field" style={{ minWidth: 180, flex: '1 1 180px' }}>What was cut
           <select className="input" value={scope} onChange={(e) => setScope(e.target.value)}>
@@ -62,7 +88,12 @@ export function RegisterPage() {
           <button aria-pressed={show === 'force'} onClick={() => setShow('force')}>In force now</button>
         </div>
       </div>
-      <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? 'Reading the register from Arkiv…' : `${list.length} of ${live.records.length} orders`}</p>
+      <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? 'Reading the register from Arkiv…' : `${list.length} of ${live.records.length} orders`}{remote && remote.for === `${state}|${since}` ? <> · query sent to Arkiv: <code className="num">{remote.query}</code></> : null}</p>
+      {live.error && !live.loading && (
+        <p className="hint" style={{ color: 'var(--vermilion)', marginBottom: 16 }}>
+          Arkiv didn’t answer through this site’s relay ({live.error.slice(0, 90)}). <button className="btn small" onClick={() => setMode('direct')}>Read Arkiv directly from your browser</button>
+        </p>
+      )}
       {live.loading ? (
         <div className="grid3">{[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="skel" style={{ height: 300 }} />)}</div>
       ) : list.length ? (

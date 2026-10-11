@@ -14,8 +14,48 @@ const ALLOW = new Set([
   'eth_newFilter', 'eth_getFilterChanges', 'eth_getFilterLogs', 'eth_uninstallFilter', 'eth_newBlockFilter',
 ])
 // reads that can be shared between visitors for a moment
-const CACHE_MS: Record<string, number> = { arkiv_query: 4000, eth_blockNumber: 1500, arkiv_getBlockTiming: 1500, arkiv_getEntityCount: 10000, eth_chainId: 3600_000, eth_getLogs: 1500 }
+const CACHE_MS: Record<string, number> = { arkiv_query: 4000, eth_blockNumber: 1500, arkiv_getBlockTiming: 1500, arkiv_getEntityCount: 10000, eth_chainId: 3600_000, eth_getLogs: 1500, eth_getFilterChanges: 1500 }
 const cache = new Map<string, { at: number; body: unknown }>()
+const ARKIV = '0x4400000000000000000000000000000000000044'
+const MAX_BATCH = 10
+const MAX_LOG_RANGE = 400_000n
+// the relay's key has a monthly quota: a visitor gets a fair share, not the whole of it
+const PER_IP = 150
+const WINDOW_MS = 60_000
+const hits = new Map<string, number[]>()
+function paced(ip: string, n: number): boolean {
+  const now = Date.now()
+  const list = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
+  if (list.length + n > PER_IP) {
+    hits.set(ip, list)
+    return true
+  }
+  for (let i = 0; i < n; i++) list.push(now)
+  hits.set(ip, list)
+  if (hits.size > 5000) hits.delete(hits.keys().next().value!)
+  return false
+}
+/** Why a call is refused, or null. The key is spent only on this app's own reads and on Arkiv's contract. */
+function refused(call: Call): string | null {
+  const p = call.params ?? []
+  if (call.method === 'arkiv_query') {
+    const q = String(p[0] ?? '')
+    if (!/app\s*=\s*str\('switched-off'\)/.test(q)) return "This relay only answers queries that include app = str('switched-off'). Ask Arkiv directly for anything else."
+    if (q.length > 2000) return 'That query is too long.'
+  }
+  if (call.method === 'eth_getLogs') {
+    const f = (p[0] ?? {}) as { address?: string | string[]; fromBlock?: string; toBlock?: string }
+    const addrs = Array.isArray(f.address) ? f.address : [f.address ?? '']
+    if (addrs.length !== 1 || String(addrs[0]).toLowerCase() !== ARKIV) return 'This relay only reads Arkiv entity logs.'
+    if (typeof f.fromBlock === 'string' && typeof f.toBlock === 'string' && f.fromBlock.startsWith('0x') && f.toBlock.startsWith('0x') && BigInt(f.toBlock) - BigInt(f.fromBlock) > MAX_LOG_RANGE)
+      return 'Ask for a narrower block range.'
+  }
+  if (call.method === 'eth_call' || call.method === 'eth_estimateGas') {
+    const tx = (p[0] ?? {}) as { to?: string }
+    if (String(tx.to ?? '').toLowerCase() !== ARKIV) return 'This relay only calls the Arkiv contract.'
+  }
+  return null
+}
 
 type Call = { jsonrpc: '2.0'; id: unknown; method: string; params?: unknown[] }
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
@@ -24,6 +64,8 @@ type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: 
 async function one(call: Call, key: string | undefined): Promise<unknown> {
   if (!call || typeof call.method !== 'string' || !ALLOW.has(call.method))
     return { jsonrpc: '2.0', id: call?.id ?? null, error: { code: -32601, message: `Method not relayed: ${call?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
+  const why = refused(call)
+  if (why) return { jsonrpc: '2.0', id: call.id ?? null, error: { code: -32602, message: why } }
   const ttl = CACHE_MS[call.method]
   const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
   const hit = ck ? cache.get(ck) : undefined
@@ -57,9 +99,13 @@ export default async function handler(req: Req, res: Res) {
     return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } })
   }
   const key = process.env.ARKIV_KEY
-  if (Array.isArray(body)) {
-    if (body.length > 20) return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32600, message: 'At most 20 calls per batch' } })
-    return res.status(200).json(await Promise.all(body.map((c) => one(c, key))))
+  const ip = String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim() || 'unknown'
+  const n = Array.isArray(body) ? body.length : 1
+  if (Array.isArray(body) && body.length > MAX_BATCH) return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32600, message: `At most ${MAX_BATCH} calls per batch` } })
+  if (paced(ip, n)) {
+    res.setHeader('Retry-After', '30')
+    return res.status(429).json({ jsonrpc: '2.0', id: null, error: { code: -32005, message: `Too many calls from this network in a minute. Flip the site to "direct" or talk to ${UPSTREAM} yourself.` } })
   }
+  if (Array.isArray(body)) return res.status(200).json(await Promise.all(body.map((c) => one(c, key))))
   return res.status(200).json(await one(body, key))
 }

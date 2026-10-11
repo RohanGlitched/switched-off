@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
 import { Gazette } from '../components/Gazette'
-import { SEALED, allRecords, blockToTime, currentBlock, extenders, orderByKey, syncClock, type Order, type Record_, type Report } from '../lib/arkiv'
-import { confirmEmergency, confirmReport, keepAlive } from '../lib/write'
+import { SEALED, allRecords, blockToTime, currentBlock, extenders, orderByKey, syncClock, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
+import { confirmEmergency, confirmReport, keepAlive, withdrawReport } from '../lib/write'
 import { account } from '../lib/wallet'
 import { addrUrl, ago, fmtDateTime, left, short, txUrl } from '../lib/fmt'
 import { refresh, useNow } from '../lib/store'
@@ -23,11 +23,19 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const [err, setErr] = useState<string | null>(null)
   const now = useNow()
   const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
-  const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex }>({})
+  const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex; renews?: { key: Hex; label: string }; renewedBy?: { key: Hex; label: string }[] }>({})
   const load = () => syncClock().then(() => orderByKey(entityKey)).then((x) => {
     setE(x)
-    if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n).then(setWitnesses)
-    if (x && 'permissionless' in x) void allRecords(x.net).then((rs) => setRelated({ corrects: (x.corrects || undefined) as Hex | undefined, correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase())?.key }))
+    if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n, x.creator).then(setWitnesses)
+    if (x && 'permissionless' in x)
+      void allRecords(x.net).then((rs) =>
+        setRelated({
+          corrects: (x.corrects || undefined) as Hex | undefined,
+          correctedBy: rs.find((r) => r.corrects.toLowerCase() === x.key.toLowerCase())?.key,
+          renews: x.renews ? rs.filter((r) => r.orderId === x.renews && !r.corrects).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDateTime(r.starts * 1000).slice(0, 11)})` }))[0] : undefined,
+          renewedBy: rs.filter((r) => r.renews === x.orderId && !r.corrects).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: `renewal no. ${Math.max(1, r.seq - 1)}, ${fmtDateTime(r.starts * 1000).slice(0, 11)}` })),
+        }),
+      )
   })
   useEffect(() => void load(), [entityKey])
 
@@ -50,6 +58,14 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   }
 
   if (e === 'loading') return <section className="wrap section" style={{ borderTop: 0 }}><div className="skel" style={{ height: 420, maxWidth: 560 }} /></section>
+  if (!/^0x[0-9a-fA-F]{64}$/.test(entityKey))
+    return (
+      <section className="wrap section" style={{ borderTop: 0, display: 'grid', gap: 14 }}>
+        <h1 className="h2">That isn’t an entity key.</h1>
+        <p className="lede">An Arkiv entity key is 0x followed by 64 hex characters. Check the link, or open the register and pick a record.</p>
+        <div className="row"><Link to="/register" className="btn">Open the register</Link><Link to="/" className="btn">Home</Link></div>
+      </section>
+    )
   if (!e)
     return (
       <section className="wrap section" style={{ borderTop: 0, display: 'grid', gap: 14 }}>
@@ -75,7 +91,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
         <div className="panel" style={{ display: 'grid', gap: 14 }}>
           <h1 className="h3">{isReport(e) ? 'Citizen report' : isRecord(e) ? 'Permanent record' : 'Order in force'} on Arkiv</h1>
           <dl style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0,1fr)', gap: '8px 14px', margin: 0, fontSize: 14 }}>
-            <dt className="mute">Entity key</dt><dd className="num" style={{ margin: 0, overflowWrap: 'anywhere' }}>{e.key}</dd>
+            <dt className="mute">Entity key</dt><dd className="num" style={{ margin: 0, overflowWrap: 'anywhere' }}><a href={`${EXPLORER}/entity/${e.key}`} target="_blank" rel="noreferrer">{e.key}</a><br /><span className="mute" style={{ fontFamily: 'inherit' }}>Explorer: its creation, and for sealed records the transfer to 0x…dEaD</span></dd>
             <dt className="mute">Owner</dt><dd style={{ margin: 0 }}><a href={addrUrl(e.owner)}>{short(e.owner)}</a>{mine ? ' (you)' : ''}{sealed ? ' · sealed: nobody holds this key, so nobody can delete it' : ''}</dd>
             <dt className="mute">Creator</dt><dd style={{ margin: 0 }}><a href={addrUrl(e.creator)}>{short(e.creator)}</a></dd>
             <dt className="mute">Expires</dt><dd className="num" style={{ margin: 0 }}>block {e.expiresAt.toLocaleString()} · {fmtDateTime(expMs)} · <b>{left(expMs - now)}</b></dd>
@@ -83,12 +99,20 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
             {witnesses && (isReport(e) || isRecord(e)) && <><dt className="mute">{isReport(e) ? 'Confirmed by' : 'Kept alive by'}</dt><dd style={{ margin: 0 }}>{witnesses.length ? `${witnesses.length} other key${witnesses.length === 1 ? '' : 's'} (${witnesses.slice(0, 3).map((w) => short(w)).join(', ')}${witnesses.length > 3 ? '…' : ''})` : 'nobody yet'}</dd></>}
             {related.corrects && <><dt className="mute">Corrects</dt><dd style={{ margin: 0 }}><Link to={`/e/${related.corrects}`}>{short(related.corrects)}</Link> (the original stays on Arkiv, unchanged)</dd></>}
             {related.correctedBy && <><dt className="mute">Corrected by</dt><dd style={{ margin: 0 }}><Link to={`/e/${related.correctedBy}`}>{short(related.correctedBy)}</Link></dd></>}
+            {related.renews && <><dt className="mute">Renews</dt><dd style={{ margin: 0 }}><Link to={`/e/${related.renews.key}`}>{related.renews.label}</Link></dd></>}
+            {related.renewedBy && related.renewedBy.length > 0 && <><dt className="mute">Renewed by</dt><dd style={{ margin: 0, display: 'grid', gap: 2 }}>{related.renewedBy.map((r) => <Link key={r.key} to={`/e/${r.key}`}>{r.label}</Link>)}</dd></>}
             <dt className="mute">Head</dt><dd className="num" style={{ margin: 0 }}>block {currentBlock().toLocaleString()}</dd>
           </dl>
           {isReport(e) && (
             <div style={{ display: 'grid', gap: 8 }}>
               <p className="mute" style={{ margin: 0 }}>Seeing the same thing? Confirming pushes this report’s expiry six {e.net === 'drill' ? 'minutes' : 'hours'} from now. You can’t change what it says, and neither can its author. Each browser key counts once; it counts keys, not people.</p>
               <button className="btn primary" disabled={busy || iFiled || iConfirmed} onClick={() => act(() => confirmReport(e.key, e.net), 'Confirmed. The report stays up for another window.')}>{busy ? 'Writing to Arkiv…' : iFiled ? 'You filed this: a neighbour has to confirm it' : iConfirmed ? 'You already confirmed this' : 'Still down here: confirm'}</button>
+              {iFiled && (
+                <>
+                  <p className="mute" style={{ margin: 0 }}>You filed this report, so this browser’s key owns it: the one thing an owner of a readonly entity can still do is delete it. Withdrawing removes it from the register now; its creation stays readable at past blocks.</p>
+                  <button className="btn small danger" style={{ justifySelf: 'start' }} disabled={busy} onClick={() => { if (confirm('Withdraw this report? It leaves the register at once.')) void act(() => withdrawReport(e.key), 'Withdrawn. The report is gone from the register.') }}>Withdraw my report</button>
+                </>
+              )}
             </div>
           )}
           {isRecord(e) && (

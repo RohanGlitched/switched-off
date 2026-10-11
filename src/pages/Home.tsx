@@ -23,15 +23,41 @@ export function Home() {
     const ss = live.records.map((r) => r.starts).filter(Boolean)
     return ss.length ? [Math.min(...ss) * 1000 - 7 * 86_400_000, Date.now()] as const : null
   }, [live.records])
+  // every moment the map changes: an order starting or ending. Playback steps through these, so a
+  // one-day order holds the screen as long as a fortnight does, instead of flashing past
+  const stops = useMemo(() => {
+    const ts = new Set<number>()
+    for (const r of live.records) {
+      if (!r.starts) continue
+      ts.add(r.starts * 1000 + 1000)
+      const end = r.ends ? r.ends * 1000 : r.starts * 1000 + 15 * 86_400_000
+      ts.add(end + 1000)
+    }
+    return [...ts].sort((a, b) => a - b).filter((x) => x < Date.now())
+  }, [live.records])
   useEffect(() => {
-    if (!playing || !span) return
+    if (!playing || !span || !stops.length) return
     const id = window.setInterval(() => setAt((a) => {
-      const n = (a ?? span[0]) + 3 * 86_400_000
-      if (n >= span[1]) { setPlaying(false); return null }
-      return n
-    }, ), 60)
+      const i = stops.findIndex((x) => x > (a ?? -Infinity))
+      if (i < 0) { setPlaying(false); return null }
+      return stops[i]
+    }), 320)
     return () => clearInterval(id)
-  }, [playing, span])
+  }, [playing, span, stops])
+  // with nothing in force today, play the history once so the first screen shows what the map does
+  useEffect(() => {
+    if (live.loading || live.orders.length > 0 || !span || !stops.length || at !== null || playing) return
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    try {
+      if (sessionStorage.getItem('switched-off:played')) return
+      sessionStorage.setItem('switched-off:played', '1')
+    } catch {
+      return
+    }
+    setAt(stops[0])
+    setPlaying(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live.loading, live.orders.length, span, stops])
   // an order with no published end is shown until the next order on file for its state, at most
   // fifteen days (the per-order cap since November 2020); the note under the map says so
   const spans = useMemo(() => {
@@ -68,7 +94,11 @@ export function Home() {
             </p>
             <div className="stats" role="group" aria-label="Right now">
               <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
-              <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
+              {live.loading || live.orders.length > 0 ? (
+                <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
+              ) : (
+                <div className="stat"><b>{archive.length}</b><span>{t('orders on file')}</span></div>
+              )}
               <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>{t('live reports of no internet')}</span></div>
             </div>
             <div className="row">
@@ -89,7 +119,7 @@ export function Home() {
             {span && (
               <div className="panel" style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>
-                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : 'Now'} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${inForceAt.length} order${inForceAt.length === 1 ? '' : 's'} in force, ${map.off.size} districts dark` : `${live.orders.length} orders in force`}</span></span>
+                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : 'Now'} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${inForceAt.length} order${inForceAt.length === 1 ? '' : 's'} in force, ${map.off.size} district${map.off.size === 1 ? '' : 's'} dark` : `${live.orders.length} order${live.orders.length === 1 ? '' : 's'} in force`}</span></span>
                   <span className="row" style={{ gap: 6 }}>
                     <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? 'Pause' : t('Play the history')}</button>
                     {at !== null && <button className="btn small" onClick={() => { setPlaying(false); setAt(null) }}>{t('Back to now')}</button>}
@@ -129,7 +159,7 @@ export function Home() {
           </div>
           <div className="grid2" style={{ marginTop: 20 }}>
             <Rule n="6" unit="hours" title="A report fades unless a neighbour confirms it." body="“No mobile data in Imphal West” lives six hours. Reports are created with permissionless extension: anyone who sees the same thing can push the expiry out again with one tap, without being able to touch what it says. A rumour fades; a real blackout stays lit red." />
-            <Rule n="∞" unit="as long as someone cares" title="The archive lives as long as anyone pays for it." body="Every order is written together with a permanent record in one batch. The record is readonly and anyone can extend it: a library, a newsroom or a law school can keep India’s shutdown history alive without asking us, and without being able to rewrite it." />
+            <Rule n="∞" unit="as long as someone cares" title="The archive lives as long as anyone pays for it." body="An order filed here is written together with its permanent record, and both are sealed, in one transaction. The record is readonly and anyone can extend it: a library, a newsroom or a law school can keep India’s shutdown history alive without asking us, and without being able to rewrite it." />
           </div>
         </div>
       </section>

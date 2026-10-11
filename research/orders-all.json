@@ -17,7 +17,7 @@
     "published": false,
     "sources": [
       {
-        "title": "Anuradha Bhasin vs Union of India, Supreme Court, 10 Jan 2020 (Indian Kanoon)",
+        "title": "Supreme Court judgment on the 2019 Kashmir shutdown, 10 Jan 2020 (Indian Kanoon)",
         "url": "https://indiankanoon.org/doc/82461587/"
       },
       {
@@ -95,7 +95,7 @@
         "url": "https://scroll.in/latest/946537/citizenship-bill-protests-mobile-internet-suspended-in-10-districts-of-assam-for-24-hours"
       },
       {
-        "title": "Global Freedom of Expression: Banashree Gogoi v. Union of India",
+        "title": "Global Freedom of Expression: the Gauhati High Court's 2019 order restoring mobile internet in Assam",
         "url": "https://globalfreedomofexpression.columbia.edu/cases/banashree-gogoi-v-union-of-india/"
       },
       {
@@ -103,7 +103,7 @@
         "url": "https://eastmojo.com/news/2019/12/19/gauhati-hc-directs-assam-govt-to-restore-mobile-data-by-5-pm-today/"
       }
     ],
-    "notes": "Scroll is inconsistent on the end: a quoted notice says 7 pm to 7 am, the headline says 24 hours. Later extended and expanded statewide; broadband restored by 17 Dec. Gauhati HC (Bhuyan and Saikia JJ, PIL 78/2019 and others) ordered statewide mobile restoration by 17:00 on 19 Dec 2019. Restored about 20 Dec."
+    "notes": "Scroll is inconsistent on the end: a quoted notice says 7 pm to 7 am, the headline says 24 hours. Later extended and expanded statewide; broadband restored by 17 Dec. Gauhati HC (PIL 78/2019 and others) ordered statewide mobile restoration by 17:00 on 19 Dec 2019. Restored about 20 Dec."
   },
   {
     "id": "ml-caa-2019-12-12",
@@ -365,7 +365,7 @@
     "endsAt": null,
     "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
     "legalBasis": "Section 5(2) Indian Telegraph Act, 1885; Rule 2(1) Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017",
-    "reasonStated": "Cites terror modules, cross-border handlers, VoIP/encrypted coordination and fake news; issued after the SC's 10.01.2020 Anuradha Bhasin judgment.",
+    "reasonStated": "Cites terror modules, cross-border handlers, VoIP/encrypted coordination and fake news; issued after the Supreme Court's judgment of 10.01.2020 on the Kashmir shutdown.",
     "renewalOf": "jk-2019-08-04",
     "published": true,
     "sources": [
@@ -709,7 +709,7 @@
         "url": "https://www.livelaw.in/news-updates/suspension-of-internet-farmers-protest-punjab-haryana-high-court-169475"
       }
     ],
-    "notes": "Added 14 districts and extended the original 3. Court: Sandeep Singh v. Union of India (CWP-2672-2021) challenged suspension in 17 districts; Justice Fatehdeep Singh issued notice on 5 Feb 2021."
+    "notes": "Added 14 districts and extended the original 3. Court: a writ petition (CWP-2672-2021) in the Punjab and Haryana High Court challenged the suspension in 17 districts; the court issued notice on 5 Feb 2021."
   },
   {
     "id": "dl-farmers-borders-2021-01-29",
@@ -961,7 +961,7 @@
         "url": "https://www.barandbench.com/news/litigation/breaking-calcutta-high-court-stays-west-bengal-internet-shutdown"
       }
     ],
-    "notes": "Only on exam days (7, 8, 9, 11, 12, 14, 16 Mar), 11:00 to 15:15, in blocks listed in an annexure. Data and internet suspended; voice and SMS not. Also cites Rule 2(1) of the 2017 Rules. LiveLaw gives the order date as both 3 and 6 Mar. Court: Calcutta HC (CJ Prakash Shrivastava, Rajarshi Bharadwaj J.) stayed it on 10 Mar 2022 in Ashlesh Biradar v. State of WB. This is 2022, not 2023."
+    "notes": "Only on exam days (7, 8, 9, 11, 12, 14, 16 Mar), 11:00 to 15:15, in blocks listed in an annexure. Data and internet suspended; voice and SMS not. Also cites Rule 2(1) of the 2017 Rules. LiveLaw gives the order date as both 3 and 6 Mar. Court: a Division Bench of the Calcutta High Court stayed it on 10 Mar 2022 in a writ petition against the order. This is 2022, not 2023."
   },
   {
     "id": "br-agnipath-2022-06-17",
@@ -1165,7 +1165,7 @@
         "url": "https://www.livelaw.in/high-court/punjab-and-haryana-high-court/punjab-and-haryana-high-court-seeks-replies-punjab-govt-uoi-access-publicly-available-wifi-govt-suspends-mobile-net-data-226933"
       }
     ],
-    "notes": "Mobile internet, SMS (banking and recharge exempt) and dongle services. Voice and broadband exempt. Coincided with the operation against Amritpal Singh, who the order does not name. Court: in Neeraj v. State of Punjab, the High Court sought replies from Punjab and the Union (reported 21 Apr 2023, listed for 8 Aug 2023). I found no ruling."
+    "notes": "Mobile internet, SMS (banking and recharge exempt) and dongle services. Voice and broadband exempt. Coincided with a statewide police operation, which the order does not name. Court: in a writ petition, the High Court sought replies from Punjab and the Union (reported 21 Apr 2023, listed for 8 Aug 2023). I found no ruling."
   },
   {
     "id": "pb-statewide-2023-03-19",
@@ -1204,7 +1204,7 @@
     "endsAt": "2023-03-21T12:00",
     "issuingAuthority": "Department of Home Affairs and Justice, Government of Punjab",
     "legalBasis": null,
-    "reasonStated": "Continued risk to public order during the search for Amritpal Singh.",
+    "reasonStated": "Continued risk to public order during a statewide police search operation.",
     "renewalOf": "pb-statewide-2023-03-19",
     "published": null,
     "sources": [
@@ -2017,7 +2017,7 @@
         "url": "https://www.barandbench.com/news/farmers-protest-plea-before-punjab-and-haryana-high-court-border-closure-internet-suspension"
       }
     ],
-    "notes": "Requested by ADGP CID. Covers mobile internet, bulk SMS and dongles; voice and broadband exempt. Court: Uday Pratap Singh v. UOI was mentioned 12 Feb 2024 (state asked to reply). A later bench told Punjab and Haryana to place their suspension orders on record (LiveLaw via Sabrang: https://sabrangindia.in/farmers-protest-the-law-is-clear-on-internet-suspension-court-asks-state-government-to-submit-internet-suspension-orders)."
+    "notes": "Requested by ADGP CID. Covers mobile internet, bulk SMS and dongles; voice and broadband exempt. Court: a writ petition against the suspension was mentioned on 12 Feb 2024 (state asked to reply). A later bench told Punjab and Haryana to place their suspension orders on record (LiveLaw via Sabrang: https://sabrangindia.in/farmers-protest-the-law-is-clear-on-internet-suspension-court-asks-state-government-to-submit-internet-suspension-orders)."
   },
   {
     "id": "hr-farmers-2024-02-13",
@@ -2273,7 +2273,7 @@
         "url": "https://www.barandbench.com/news/jharkhand-high-court-restrains-state-suspending-internet-exam-days"
       }
     ],
-    "notes": "08:00 to 13:30 on both days. The state told the court only mobile data was cut; BSNL said fixed line, FTTH and leased lines were also blocked. The petitioner said the 22 Sep notification was changed to all internet 04:00 to 15:30. Court: Ananda Sen and Anubha Rawat Choudhary JJ refused a stay on 21 Sep, then on 22 Sep ordered immediate restoration and barred exam shutdowns without its leave (Rajendra Krishna v. State of Jharkhand)."
+    "notes": "08:00 to 13:30 on both days. The state told the court only mobile data was cut; BSNL said fixed line, FTTH and leased lines were also blocked. The petitioner said the 22 Sep notification was changed to all internet 04:00 to 15:30. Court: a Division Bench of the Jharkhand High Court refused a stay on 21 Sep, then on 22 Sep ordered immediate restoration and barred exam shutdowns without its leave (writ petition)."
   },
   {
     "id": "or-bhadrak-2024-09-28",

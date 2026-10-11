@@ -5,6 +5,7 @@ import { dayMs } from '../lib/write'
 import { fmtDate, fmtDateTime, left, scopeLabel } from '../lib/fmt'
 import { useNow } from '../lib/store'
 import { REGISTRARS } from '../lib/registrars'
+import { BASIS_LABEL } from '../lib/basis'
 
 export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boolean; compact?: boolean }) {
   const now = useNow()
@@ -28,7 +29,7 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
         <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : 'IN FORCE'}</span>
       </div>
       <p className="meta" style={{ margin: '4px 0 8px' }}>
-        {o.districts.length > 4 ? `${o.districts.slice(0, 4).join(', ')} and ${o.districts.length - 4} more` : o.districts.join(', ')}
+        {compact && o.districts.length > 4 ? `${o.districts.slice(0, 4).join(', ')} and ${o.districts.length - 4} more` : o.districts.join(', ')}
       </p>
       <p style={{ margin: '0 0 8px', fontSize: 15 }}>
         <b>{scopeLabel[o.scope]}</b> suspended{o.ends ? ` for ${daysLong} ${o.net === 'drill' ? 'drill day' : 'day'}${daysLong === 1 ? '' : 's'}` : ', with no end date stated'}
@@ -42,7 +43,7 @@ export function Gazette({ o, live, compact }: { o: Order | Record_; live?: boole
       </div>
       {!compact && (
         <div className="meta" style={{ marginTop: 10, display: 'grid', gap: 4 }}>
-          {o.basis && <span>Under: {o.basis}</span>}
+          {o.basis && <span>Under: {BASIS_LABEL[o.basis] ?? o.basis}</span>}
           {emergencyPending && !lapsed && <span style={{ color: 'var(--seal)' }}>Issued in an emergency: lapses at {fmtDateTime(lapseAt)} unless the competent authority confirms it.</span>}
           {o.published === false && <span style={{ color: 'var(--seal)' }}>The order text was not published.</span>}
           {o.published == null && <span>Whether the order text was published: not known.</span>}

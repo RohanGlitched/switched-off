@@ -42,6 +42,27 @@ Switched Off is an open register on Arkiv that anyone can add to, nobody can qui
 | (citizens) "It's dark here" | A `report` that lives 6 h and that anyone may extend (confirm) but nobody may edit |
 
 Full schema, attributes, lifetimes and exact queries: [`arkiv/schema.md`](arkiv/schema.md).
+
+## Trust rules (what readers believe, and what they don't)
+
+Arkiv has no schema owner: anyone can write an entity tagged like ours. The readers (site, mirror, CLI) defend themselves, and
+say so on the Why page:
+
+- **A correction hides a record only if it comes from the registrar or from the record's own filer** (`$creator`). A stranger's
+  "correction" is shown as what it is: another entity.
+- **A community order darkens the map only within the law's fifteen-day cap.** Anyone can file an order; one dated years ahead
+  stays in the register as a community transcription but can't switch a district off.
+- **An order filed on the site is sealed in the same transaction that creates it** (its keys are predicted from the entity nonce),
+  so not even its filer can stretch, cut or delete it. Emergency orders stay with their filer, because confirming one is an extension.
+- **A report's filer can withdraw it** (delete is the one thing an owner of a readonly entity can still do); nobody can delete a
+  sealed record, because nobody owns it.
+- **"Confirmed by N keys" counts keys, not people.** Keys are free, so the count is a signal, not proof.
+- **Nobody is named.** Orders cite courts and dates, not judges or petitioners; a guard refuses names, numbers and emails before
+  any write. An early batch of notes quoted case titles with names; those records carry registrar corrections, and the originals
+  stay readable until they expire, which is what an archive nobody can edit costs.
+- **Reads survive the relay.** Through the relay by default (Arkiv meters keyless reads per network); if it can't answer, the page
+  reads Arkiv directly, and in direct mode it falls back to the relay. The relay only answers queries for this app, paces each
+  network, and never sees a key of yours.
 What was hard, with versions and reproductions: [`arkiv/friction.md`](arkiv/friction.md).
 
 ## Run it

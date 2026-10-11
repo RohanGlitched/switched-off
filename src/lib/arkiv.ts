@@ -3,7 +3,9 @@
 import { createPublicClient, createWalletClient } from '@arkiv-network/sdk'
 import { tiramisu } from '@arkiv-network/sdk/chains'
 import { and, eq, gt, type Expression } from '@arkiv-network/sdk/query'
+import { u64 } from '@arkiv-network/sdk/attr'
 import { http, webSocket, parseAbiItem, type Hex, type Account } from 'viem'
+import { REGISTRARS } from './registrars'
 
 export const APP = 'switched-off'
 export const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
@@ -13,6 +15,10 @@ export const BLOCK_SECONDS = 2
 /** Sealed records are owned by this address. Nobody holds its key, so nobody can delete them. */
 export const SEALED = '0x000000000000000000000000000000000000dEaD'
 const ARKIV_ADDRESS = '0x4400000000000000000000000000000000000044'
+/** The longest one order may run in law (15 days), with a day of slack for how dates are entered. */
+export const LAW_CAP_DAYS = 16
+const LAW_CAP_BLOCKS = BigInt((LAW_CAP_DAYS * 86_400) / 2)
+export const isRegistrar = (a?: string) => REGISTRARS.some((r) => r.address.toLowerCase() === (a ?? '').toLowerCase())
 
 /** "live" is the real register; "drill" is the sandbox where the law runs at one day per minute. */
 export type Net = 'live' | 'drill'
@@ -44,18 +50,32 @@ const RELAY = typeof location !== 'undefined' ? `${location.origin}/api/rpc` : R
 export const ENDPOINT = MODE === 'direct' ? RPC : RELAY
 
 export const pub = createPublicClient({ chain: tiramisu, transport: http(ENDPOINT, { batch: { wait: 30 }, retryCount: 2 }) })
+let direct: typeof pub | null = null
+/** Arkiv's public endpoint, straight from the browser: the fallback when the relay can't answer. */
+export const directClient = () => (direct ??= MODE === 'direct' ? pub : createPublicClient({ chain: tiramisu, transport: http(RPC, { batch: { wait: 30 }, retryCount: 1 }) }))
+let relayC: typeof pub | null = null
+/** This site's relay: the fallback when a direct read hits Arkiv's keyless budget. */
+export const relayClient = () => (relayC ??= MODE === 'relay' ? pub : createPublicClient({ chain: tiramisu, transport: http(RELAY, { batch: { wait: 30 }, retryCount: 1 }) }))
+/** Set once a read had to use the other path ('direct' or 'relay'); the pages say so. */
+export let fellBackTo: 'relay' | 'direct' | null = null
+export let relayFailed = false
 let evClient: ReturnType<typeof createPublicClient> | null = null
-/** Entity events: over the WebSocket in direct mode, polled through the relay otherwise. */
+/**
+ * Entity events come over Arkiv's WebSocket whichever mode the page is in: a subscription costs no
+ * query budget, so there is nothing to relay. If the socket can't be opened, the store falls back
+ * to polling a node-side filter through the relay.
+ */
 export function eventsClient() {
   if (!evClient) {
     try {
-      evClient = MODE === 'direct' ? createPublicClient({ chain: tiramisu, transport: webSocket(WS, { retryCount: 5 }) }) : pub
+      evClient = createPublicClient({ chain: tiramisu, transport: webSocket(WS, { retryCount: 3 }) })
     } catch {
       evClient = pub
     }
   }
   return evClient
 }
+export const pollingClient = () => pub
 export const walletFor = (account: Account) => createWalletClient({ chain: tiramisu, transport: http(ENDPOINT, { retryCount: 3 }), account })
 
 // ─── entity shapes ───────────────────────────────────────────────────────────
@@ -92,6 +112,8 @@ export type Order = {
   createdAt: bigint
   expiresAt: bigint
   readonly: boolean
+  /** Filed by the Switched Off registrar (by $creator); anything else is a community transcription. */
+  official: boolean
 }
 
 /** The permanent copy of an order: readonly, and anyone may pay to keep it alive. */
@@ -180,6 +202,7 @@ function toOrder(e: Raw): Order {
     createdAt: e.createdAt ?? 0n,
     expiresAt: e.expiresAt ?? 0n,
     readonly: !!e.creationFlags?.readonly,
+    official: isRegistrar(e.creator),
   }
 }
 
@@ -209,9 +232,9 @@ function toReport(e: Raw): Report {
 }
 
 /** Arkiv returns at most 200 per page: walk every page. */
-async function all(where: Expression[], atBlock?: bigint): Promise<Raw[]> {
+async function pages(client: typeof pub, where: Expression[], atBlock?: bigint): Promise<Raw[]> {
   const out: Raw[] = []
-  let q = pub.select('*').where(and(where)).limit(200)
+  let q = client.select('*').where(and(where)).limit(200)
   if (atBlock) q = q.atBlock(atBlock)
   let page = await q.fetch()
   out.push(...(page.entities as unknown as Raw[]))
@@ -222,30 +245,82 @@ async function all(where: Expression[], atBlock?: bigint): Promise<Raw[]> {
   }
   return out
 }
+const RELAY_DOWN = /budget|ANON|429|quota|rate ?limit|Arkiv answered|Method not relayed|only answers/i
+/** Reads go through the relay; if it can't answer (its key's budget, a limit), the same read goes to Arkiv directly. */
+async function all(where: Expression[], atBlock?: bigint): Promise<Raw[]> {
+  try {
+    return await pages(pub, where, atBlock)
+  } catch (e) {
+    if (!RELAY_DOWN.test(String((e as Error).message))) throw e
+    if (MODE === 'relay') {
+      relayFailed = true
+      fellBackTo = 'direct'
+      return pages(directClient(), where, atBlock)
+    }
+    // direct mode: Arkiv's keyless budget for this network is spent; the relay has its own key
+    fellBackTo = 'relay'
+    return pages(relayClient(), where, atBlock)
+  }
+}
 
 const base = (type: string, net: Net) => [eq('app', APP), eq('type', type), eq('net', net)]
 
-/** Orders in force right now: an order entity only exists while the order does. */
+/** The exact text a query sends to Arkiv, for the pages that show their work. */
+export const queryText = (type: string, net: Net, extra: string[] = []) => [`app = str('${APP}')`, `type = str('${type}')`, `net = str('${net}')`, ...extra].join(' AND ')
+
+/**
+ * Orders in force right now: an order entity only exists while the order does. Anyone may file an
+ * order; one that is not the registrar's switches districts off only if it runs within the law's
+ * cap (15 days), so a stray or hostile filing dated years ahead can't darken the map.
+ */
 export async function activeOrders(net: Net, atBlock?: bigint): Promise<Order[]> {
-  return (await all(base('order', net), atBlock)).map(toOrder)
+  return (await all(base('order', net), atBlock)).map(toOrder).filter((o) => o.official || o.expiresAt - o.createdAt <= LAW_CAP_BLOCKS)
 }
-/** The permanent register, every order ever transcribed. A correction replaces the record it names in `corrects`. */
+/**
+ * The permanent register, every order ever transcribed. A correction replaces the record it names
+ * in `corrects`, but only when the correction comes from the registrar or from whoever filed the
+ * original: a stranger's "correction" can't hide a record.
+ */
 export async function records(net: Net, atBlock?: bigint): Promise<Record_[]> {
-  const rs = (await all(base('record', net), atBlock)).map(toRecord)
-  const corrected = new Map(rs.filter((r) => r.corrects).map((r) => [r.corrects.toLowerCase(), r.key]))
+  return applyCorrections((await all(base('record', net), atBlock)).map(toRecord))
+}
+export function applyCorrections(rs: Record_[]): Record_[] {
+  const byKey = new Map(rs.map((r) => [r.key.toLowerCase(), r]))
+  const trusted = (c: Record_) => {
+    const orig = byKey.get(c.corrects.toLowerCase())
+    return c.official || (!!orig && orig.creator.toLowerCase() === c.creator.toLowerCase())
+  }
+  const corrected = new Map(rs.filter((r) => r.corrects && trusted(r)).map((r) => [r.corrects.toLowerCase(), r.key]))
   return rs.filter((r) => !corrected.has(r.key.toLowerCase())).map((r) => (r.corrects ? { ...r, correctedBy: undefined } : r))
+}
+/** Records narrowed on Arkiv itself (typed equality on `state`, a u64 range on `issued`), not in the browser. */
+export async function recordsWhere(net: Net, f: { state?: string; since?: number }): Promise<{ list: Record_[]; query: string }> {
+  const where = [...base('record', net)]
+  const extra: string[] = []
+  if (f.state) {
+    where.push(eq('state', f.state))
+    extra.push(`state = str('${f.state}')`)
+  }
+  if (f.since) {
+    where.push(gt('issued', u64(BigInt(f.since))))
+    extra.push(`issued > u64(${f.since})`)
+  }
+  return { list: applyCorrections((await all(where)).map(toRecord)), query: queryText('record', net, extra) }
 }
 /** Every record including the ones a correction replaced (for the entity page). */
 export async function allRecords(net: Net): Promise<Record_[]> {
   return (await all(base('record', net))).map(toRecord)
 }
 
-/** Who kept an entity alive: the senders of its ExpiryExtended events (the event itself only names the owner). */
-export async function extenders(key: Hex, fromBlock: bigint): Promise<Hex[]> {
+/**
+ * Who kept an entity alive: the senders of its ExpiryExtended events (the event itself only names
+ * the owner). The entity's own creator is left out, so "confirmed by N keys" counts other keys.
+ */
+export async function extenders(key: Hex, fromBlock: bigint, creator?: string): Promise<Hex[]> {
   try {
     const logs = await pub.getLogs({ address: ARKIV_ADDRESS, event: parseAbiItem('event ExpiryExtended(bytes32 indexed entityKey, address indexed owner, uint64 expiresAt)'), args: { entityKey: key }, fromBlock, toBlock: 'latest' })
     const froms = await Promise.all(logs.map((l) => pub.getTransaction({ hash: l.transactionHash! }).then((t) => t.from.toLowerCase() as Hex)))
-    return [...new Set(froms)]
+    return [...new Set(froms)].filter((f) => f !== (creator ?? '').toLowerCase())
   } catch {
     return []
   }
@@ -254,8 +329,9 @@ export async function extenders(key: Hex, fromBlock: bigint): Promise<Hex[]> {
 export async function liveReports(net: Net, atBlock?: bigint): Promise<Report[]> {
   return (await all(base('report', net), atBlock)).map(toReport)
 }
+/** Reports seen after a moment: a u64 range on Arkiv (a bare number would compare as i32 and match nothing). */
 export async function reportsSince(net: Net, sinceUnix: number): Promise<Report[]> {
-  return (await all([...base('report', net), gt('seen', sinceUnix)])).map(toReport)
+  return (await all([...base('report', net), gt('seen', u64(BigInt(sinceUnix)))])).map(toReport)
 }
 export async function entity(key: Hex) {
   return pub.getEntity(key) as unknown as Promise<Raw & { attributes: Record<string, unknown> }>
