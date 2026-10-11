@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0A0C17"/><rect x="10" y="22" width="44" height="20" rx="10" fill="#2B2F4B"/><circle cx="21" cy="32" r="7" fill="#6F7294"/><circle cx="46" cy="18" r="3" fill="#FFB547"/><circle cx="52" cy="26" r="2" fill="#FFB547" opacity=".6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0A0C17"/>
+  <!-- the switch is off... -->
+  <rect x="64" y="176" width="384" height="160" rx="80" fill="none" stroke="#FFB547" stroke-width="16"/>
+  <circle cx="144" cy="256" r="52" fill="#2B2F4B" stroke="#4A5085" stroke-width="6"/>
+  <!-- ...and the lights it was meant to kill stay on -->
+  <circle cx="262" cy="226" r="13" fill="#FFB547"/>
+  <circle cx="306" cy="226" r="13" fill="#FFB547" opacity=".85"/>
+  <circle cx="350" cy="226" r="13" fill="#FFD08A"/>
+  <circle cx="262" cy="270" r="13" fill="#FFB547" opacity=".7"/>
+  <circle cx="306" cy="270" r="13" fill="#FFD08A"/>
+  <circle cx="350" cy="270" r="13" fill="#FFB547" opacity=".9"/>
+  <circle cx="394" cy="248" r="13" fill="#FFB547" opacity=".75"/>
+</svg>
