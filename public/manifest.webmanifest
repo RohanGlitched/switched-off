@@ -1,0 +1,10 @@
+{
+  "name": "Switched Off: India's internet shutdown register",
+  "short_name": "Switched Off",
+  "start_url": "/report",
+  "display": "standalone",
+  "background_color": "#0A0C17",
+  "theme_color": "#0A0C17",
+  "description": "Report no internet, see which shutdown orders are in force, and keep the record alive. Works offline once opened.",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

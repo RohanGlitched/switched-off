@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Switched Off mirror: India's shutdown register, read straight from Arkiv</title>
+<meta name="description" content="A one-file copy of the Switched Off register. It reads Arkiv's Tiramisu testnet from your browser; it needs no server, so it works from any host or from a saved file.">
+<style>
+  :root { --night:#0a0c17; --panel:#11142a; --line:#262a46; --text:#ebe8f3; --mute:#a3a5c2; --sodium:#ffb547; --red:#ff6250; --paper:#f2ecdf; --ink:#1e1b15; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--night); color: var(--text); font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font: 400 clamp(30px, 5vw, 46px)/1.05 Georgia, serif; margin: 8px 0 10px; }
+  p { color: var(--mute); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  button, select, input { font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; min-height: 44px; }
+  button { cursor: pointer; background: var(--sodium); color: var(--ink); border-color: var(--sodium); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; }
+  .card { background: var(--paper); color: var(--ink); border-radius: 4px; padding: 16px; }
+  .card h3 { font: 400 20px/1.2 Georgia, serif; margin: 0 0 4px; }
+  .card small { color: #5e5646; display: block; }
+  .card a { color: #6b3b13; }
+  .rep { background: var(--panel); border: 1px solid var(--red); border-radius: 12px; padding: 14px; }
+  .tag { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; font-size: 13px; color: var(--mute); }
+  .err { color: var(--red); }
+  code { font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">Switched Off · mirror</span>
+  <h1>India’s internet shutdown register</h1>
+  <p>This page has no server. It asks Arkiv’s Tiramisu network directly for the register’s entities, so it keeps working wherever it is hosted, or as a saved file. The full site: <a href="https://switched-off.vercel.app" style="color:var(--sodium)">switched-off.vercel.app</a>.</p>
+  <div class="row">
+    <select id="what" aria-label="What to show">
+      <option value="order">Orders in force now</option>
+      <option value="report">Live citizen reports</option>
+      <option value="record">The whole archive</option>
+    </select>
+    <input id="state" placeholder="State code, e.g. MN" maxlength="2" size="14" aria-label="State code">
+    <button id="go">Read from Arkiv</button>
+    <span id="status" class="tag">idle</span>
+  </div>
+  <p style="font-size:13px">Query sent: <code id="q"></code></p>
+  <div id="out" class="grid"></div>
+</main>
+<script>
+const RPC = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
+const $ = (id) => document.getElementById(id)
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+const attrs = (e) => Object.fromEntries((e.attributes || []).map((a) => [a.name, a.value]))
+const payload = (e) => { try { return JSON.parse(new TextDecoder().decode(Uint8Array.from((e.payload || '0x').slice(2).match(/.{2}/g) || [], (h) => parseInt(h, 16)))) } catch { return {} } }
+const day = (s) => s && Number(s) ? new Date(Number(s) * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'not stated'
+async function read() {
+  const type = $('what').value, st = $('state').value.trim().toUpperCase()
+  const q = `app = str('switched-off') AND type = str('${type}') AND net = str('live')` + (/^[A-Z]{2}$/.test(st) ? ` AND state = str('${st}')` : '')
+  $('q').textContent = q
+  $('status').textContent = 'asking Arkiv…'
+  $('out').innerHTML = ''
+  let cursor, all = []
+  try {
+    do {
+      const r = await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...(cursor ? { cursor } : {}) }] }) })
+      const j = await r.json()
+      if (j.error) throw new Error(j.error.message || j.message || JSON.stringify(j.error))
+      if (!j.result) throw new Error(j.message || 'no result')
+      all = all.concat(j.result.data)
+      cursor = j.result.cursor
+    } while (cursor && all.length < 2000)
+  } catch (e) {
+    $('status').innerHTML = `<span class="err">Arkiv said: ${esc(e.message)}</span>`
+    return
+  }
+  $('status').textContent = `${all.length} found`
+  if (!all.length) { $('out').innerHTML = `<p>${type === 'order' ? 'No order is in force on the register right now.' : 'Nothing found.'}</p>`; return }
+  all.sort((a, b) => Number(attrs(b).starts || attrs(b).seen || 0) - Number(attrs(a).starts || attrs(a).seen || 0))
+  $('out').innerHTML = all.map((e) => {
+    const a = attrs(e), p = payload(e)
+    if (type === 'report') return `<div class="rep"><b>${esc(a.district)}</b>, ${esc(a.state)} · ${esc(a.carrier)}<br><span style="color:var(--mute)">${esc(a.status)} · seen ${day(a.seen)}</span>${p.note ? `<p>“${esc(p.note)}”</p>` : ''}</div>`
+    return `<div class="card"><small>${esc(p.authority || 'Issuing authority not recorded')}</small><h3>${esc(p.stateName || a.state)}</h3><small>${esc((p.districts || []).join(', '))}</small><p style="color:#1e1b15;margin:8px 0">${esc(p.reason)}</p><small>${day(a.starts)} → ${day(a.ends)} · ${esc(a.scope)}</small>${(p.sources || []).map((s) => `<small><a href="${esc(s.url)}" rel="noreferrer">${esc(s.title)}</a></small>`).join('')}</div>`
+  }).join('')
+}
+$('go').onclick = read
+read()
+</script>
+</body>
+</html>
