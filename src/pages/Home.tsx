@@ -6,11 +6,13 @@ import { Rewind } from '../components/Rewind'
 import { loadGeo, type Geo } from '../lib/geo'
 import { useNow, useRegister } from '../lib/store'
 import { Link, go } from '../lib/router'
+import { useT } from '../lib/i18n'
 import { days, fmtDate } from '../lib/fmt'
 import type { Order, Record_ } from '../lib/arkiv'
 
 export function Home() {
   const live = useRegister('live')
+  const t = useT()
   const [geo, setGeo] = useState<Geo | null>(null)
   useEffect(() => void loadGeo().then(setGeo), [])
   const now = useNow(5000)
@@ -46,20 +48,20 @@ export function Home() {
         <div className="wrap hero-grid">
           <div className="hero-copy">
             <span className="chip sodium" style={{ justifySelf: 'start' }}>Register of telecom suspension orders · India</span>
-            <h1 className="h1">The record of a shutdown can’t be switched off.</h1>
+            <h1 className="h1">{t('The record of a shutdown can’t be switched off.')}</h1>
             <p className="lede">
               Every Indian internet shutdown order, filed on Arkiv the way the law says it works: it lives until it lapses, nobody can quietly edit it,
               and anyone can keep the record alive. When the lights go out without a published order, people on the ground can say so, and their
               neighbours can confirm it.
             </p>
             <div className="stats" role="group" aria-label="Right now">
-              <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>orders in force now</span></div>
-              <div className="stat"><b>{live.loading ? '…' : map.off.size}</b><span>districts switched off</span></div>
-              <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>live reports of no internet</span></div>
+              <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
+              <div className="stat"><b>{live.loading ? '…' : map.off.size}</b><span>{t('districts switched off')}</span></div>
+              <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>{t('live reports of no internet')}</span></div>
             </div>
             <div className="row">
-              <Link to="/report" className="btn primary">Is your internet off? Report it</Link>
-              <Link to="/register" className="btn">Open the register</Link>
+              <Link to="/report" className="btn primary">{t('Is your internet off? Report it')}</Link>
+              <Link to="/register" className="btn">{t('Open the register')}</Link>
             </div>
             {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>Arkiv didn’t answer just now ({live.error.slice(0, 80)}). The map will retry on its own.</p>}
             {!live.loading && !live.error && live.orders.length === 0 && (

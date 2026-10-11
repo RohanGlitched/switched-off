@@ -10,6 +10,8 @@ import { DrillPage } from './pages/Drill'
 import { DataPage } from './pages/Data'
 import { WhyPage } from './pages/Why'
 import { ToastHost } from './components/Toast'
+import { setLang, useLang, useT } from './lib/i18n'
+import { MODE, setMode } from './lib/arkiv'
 
 const NAV = [
   ['/', 'Map'],
@@ -24,6 +26,8 @@ export function App() {
   const path = usePath()
   const route = path.split('?')[0]
   const [open, setOpen] = useState(false)
+  const t = useT()
+  const lang = useLang()
   useEffect(() => setOpen(false), [path])
   const page = route === '/' ? <Home />
     : route === '/register' ? <RegisterPage />
@@ -44,8 +48,9 @@ export function App() {
           </Link>
           <ChainBadge />
           <nav className={`nav${open ? ' open' : ''}`} aria-label="Main">
-            {NAV.map(([to, label]) => <Link key={to} to={to}>{label}</Link>)}
+            {NAV.map(([to, label]) => <Link key={to} to={to}>{t(label)}</Link>)}
           </nav>
+          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
           <button className="menu-btn" aria-expanded={open} aria-label="Menu" onClick={() => setOpen(!open)}>{open ? 'Close' : 'Menu'}</button>
         </div>
       </header>
@@ -66,7 +71,8 @@ function ChainBadge() {
   return (
     <span className="chain" title="Every read and write on this site goes to Arkiv's Tiramisu testnet">
       <span className={`pulse${ok === false ? ' off' : ''}`} aria-hidden="true" />
-      {ok === false ? 'Arkiv unreachable' : ok ? <>Arkiv Tiramisu · block <span className="num">{currentBlock().toLocaleString('en-IN')}</span></> : 'Connecting to Arkiv…'}
+      {ok === false ? 'Arkiv unreachable' : ok ? <>Arkiv Tiramisu · block <span className="num">{currentBlock().toString()}</span></> : 'Connecting to Arkiv…'}
+      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} title={MODE === 'direct' ? 'Your browser talks to Arkiv directly. Switch back to the shared, cached relay.' : 'Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.'}>{MODE === 'direct' ? 'direct' : 'via relay'}</button>
     </span>
   )
 }

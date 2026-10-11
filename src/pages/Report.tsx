@@ -9,11 +9,13 @@ import { ReportCard, humanError } from './Entity'
 import { toast } from '../components/Toast'
 import type { Net, Report } from '../lib/arkiv'
 import { witnessName, account } from '../lib/wallet'
+import { useT } from '../lib/i18n'
 
 const PII = /(\+?91[\s-]?)?[6-9]\d{9}|@[a-z0-9.-]+\.[a-z]{2,}|aadhaar|\b\d{4}\s?\d{4}\s?\d{4}\b/i
 
 export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const reg = useRegister(net)
+  const t = useT()
   const [geo, setGeo] = useState<Geo | null>(null)
   const pre = param('d')
   const [state, setState] = useState(pre ? pre.split('-')[0] : '')
@@ -77,48 +79,48 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
         <div style={{ display: 'grid', gap: 18, minWidth: 0 }}>
           <div className="section-head" style={{ marginBottom: 0 }}>
             <span className="chip red">Report</span>
-            <h1 className="h2">Is your internet off?</h1>
-            <p className="lede">Say where and on which network. No sign-up and no name: this browser holds a throwaway key, and the report is owned by it. It fades in {net === 'drill' ? 'six minutes' : `${REPORT_LIFE.live / 3600} hours`} unless someone nearby confirms it.</p>
+            <h1 className="h2">{t('Is your internet off?')}</h1>
+            <p className="lede">{t('Say where and on which network. No sign-up and no name: this browser holds a throwaway key, and the report is owned by it.')} {t('It fades unless someone nearby confirms it.') === 'It fades unless someone nearby confirms it.' ? `It fades in ${net === 'drill' ? 'six minutes' : `${REPORT_LIFE.live / 3600} hours`} unless someone nearby confirms it.` : t('It fades unless someone nearby confirms it.')}</p>
           </div>
           <div className="panel" style={{ display: 'grid', gap: 14 }}>
             <div className="seg" role="group" aria-label="What are you seeing">
               {([['down', 'No internet'], ['slow', 'Barely working'], ['back', 'It’s back']] as const).map(([k, v]) => (
-                <button key={k} aria-pressed={status === k} onClick={() => setStatus(k)}>{v}</button>
+                <button key={k} aria-pressed={status === k} onClick={() => setStatus(k)}>{t(v)}</button>
               ))}
             </div>
             <div className="grid2" style={{ gap: 12 }}>
-              <label className="field">State or UT
+              <label className="field">{t('State or UT')}
                 <select className="input" value={state} onChange={(e) => { setState(e.target.value); setDistrict('') }}>
-                  <option value="">Choose…</option>
+                  <option value="">{t('Choose…')}</option>
                   {Object.entries(STATES).sort((a, b) => a[1].localeCompare(b[1])).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </label>
-              <label className="field">District
+              <label className="field">{t('District')}
                 <select className="input" value={district} onChange={(e) => setDistrict(e.target.value)} disabled={!state}>
-                  <option value="">{state ? 'Choose…' : 'Pick a state first'}</option>
+                  <option value="">{state ? t('Choose…') : t('Pick a state first')}</option>
                   {districts.map((d) => <option key={d.id} value={d.name}>{d.name}</option>)}
                 </select>
               </label>
             </div>
-            <label className="field">Network
+            <label className="field">{t('Network')}
               <div className="seg" role="group" aria-label="Network">
                 {carriers.map((c) => <button key={c} aria-pressed={carrier === c} onClick={() => setCarrier(c)}>{c}</button>)}
               </div>
             </label>
-            <label className="field">What you see (optional, 140 characters)
+            <label className="field">{t('What you see (optional, 140 characters)')}
               <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Mobile data gone since morning; broadband still working" />
-              {piiWarn ? <span className="hint" style={{ color: 'var(--vermilion)' }}>That looks like a phone number, email or ID. Remove it: reports are public.</span> : <span className="hint">Never include names, phone numbers or exact addresses.</span>}
+              {piiWarn ? <span className="hint" style={{ color: 'var(--vermilion)' }}>That looks like a phone number, email or ID. Remove it: reports are public.</span> : <span className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}
             </label>
-            <button className="btn primary" disabled={busy || !district} onClick={submit}>{busy ? 'Writing to Arkiv… (about 8 seconds)' : !district ? 'Choose a district to report' : 'File this report'}</button>
+            <button className="btn primary" disabled={busy || !district} onClick={submit}>{busy ? t('Writing to Arkiv… (about 8 seconds)') : !district ? t('Choose a district to report') : t('File this report')}</button>
             {pending > 0 && <p className="hint" style={{ margin: 0 }}>{pending} report{pending > 1 ? 's' : ''} saved on this phone, waiting for a connection.</p>}
             {done && (
               <p className="hint" style={{ margin: 0 }}>Filed as <Link to={`/e/${done.key}`}>{short(done.key)}</Link> in transaction <a href={txUrl(done.tx)}>{short(done.tx)}</a>, signed by {witnessName(account.address)}.</p>
             )}
           </div>
-          <p className="hint">In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.</p>
+          <p className="hint">{t('In a real blackout, this page works offline once it has been opened: reports are kept on the phone with the time they were made and sent when the signal comes back, marked as late.')}</p>
         </div>
         <div style={{ display: 'grid', gap: 12, minWidth: 0 }}>
-          <h2 className="h3">{state ? `Live reports in ${STATES[state]}` : 'Live reports across India'}</h2>
+          <h2 className="h3">{state ? `Live reports in ${STATES[state]}` : t('Live reports across India')}</h2>
           {reg.loading && <div className="skel" style={{ height: 160 }} />}
           {!reg.loading && nearby.length === 0 && <div className="empty">No live reports{state ? ` in ${STATES[state]}` : ''}. Reports fade unless confirmed, so this list only ever shows what people are seeing now.</div>}
           {nearby.map((r) => (
