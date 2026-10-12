@@ -14,8 +14,10 @@ const ALLOW = new Set([
   'eth_newFilter', 'eth_getFilterChanges', 'eth_getFilterLogs', 'eth_uninstallFilter', 'eth_newBlockFilter',
 ])
 // reads that can be shared between visitors for a moment
-const CACHE_MS: Record<string, number> = { arkiv_query: 4000, eth_blockNumber: 1500, arkiv_getBlockTiming: 1500, arkiv_getEntityCount: 10000, eth_chainId: 3600_000, eth_getLogs: 1500, eth_getFilterChanges: 1500 }
+const CACHE_MS: Record<string, number> = { arkiv_query: 20_000, eth_blockNumber: 1500, arkiv_getBlockTiming: 1500, arkiv_getEntityCount: 10000, eth_chainId: 3600_000, eth_getLogs: 1500, eth_getFilterChanges: 1500 }
 const cache = new Map<string, { at: number; body: unknown }>()
+// when Arkiv refuses a read (a budget, a 5xx), the last good answer to the same read is served for this long
+const STALE_MS = 15 * 60_000
 const CACHE_MAX_BYTES = 200_000
 const ARKIV = '0x4400000000000000000000000000000000000044'
 const MAX_BATCH = 10
@@ -112,17 +114,25 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
     const hit = ck ? cache.get(ck) : undefined
     if (hit && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
     const { r, text } = await upstream(call, key)
-    let j: { result?: unknown; error?: unknown }
+    let j: { result?: unknown; error?: unknown; message?: unknown }
     try {
-      j = JSON.parse(text) as { result?: unknown; error?: unknown }
+      j = JSON.parse(text) as { result?: unknown; error?: unknown; message?: unknown }
     } catch {
       j = { error: { code: -32603, message: `Arkiv answered ${r.status}: ${text.slice(0, 160)}` } }
     }
+    // Arkiv's budget answers are not JSON-RPC shaped: {"error":"QUOTA_EXCEEDED","message":"quota exhausted"}.
+    // Passed through as they are, the string has no `message`, so clients report "RPC Request failed." and
+    // nothing else. Give them a proper error object that names the status and the reason.
+    if (typeof j.error === 'string' || (j.error && typeof j.error === 'object' && !('message' in (j.error as object))))
+      j = { error: { code: r.status === 429 ? -32005 : -32603, message: `Arkiv answered ${r.status}: ${typeof j.error === 'string' ? j.error : JSON.stringify(j.error).slice(0, 120)}${j.message ? ` (${String(j.message)})` : ''}` } }
     const body = 'result' in j ? { result: j.result } : { error: j.error ?? { code: -32603, message: `Arkiv answered ${r.status}` } }
     if (ck && 'result' in body && text.length <= CACHE_MAX_BYTES) {
       cache.set(ck, { at: Date.now(), body })
       if (cache.size > 500) cache.delete(cache.keys().next().value!)
     }
+    // a refused read with a recent good answer: serve that rather than nothing (a visitor's own fallback
+    // to Arkiv's keyless budget comes first in the page; this is what is left when every path is out)
+    if (ck && !('result' in body) && hit && Date.now() - hit.at < STALE_MS) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
     return { jsonrpc: '2.0', id: call.id, ...body }
   } catch (e) {
     return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32603, message: `Relay error: ${reason(e).slice(0, 160)}` } }
@@ -137,13 +147,26 @@ function reason(e: unknown): string {
 }
 
 const UPSTREAM_TIMEOUT_MS = 8000
+// the key's monthly quota answered QUOTA_EXCEEDED: reads go keyless (the relay's own anonymous budget) until then
+let keyOutUntil = 0
+const KEY_OUT_MS = 10 * 60_000
 /**
- * One call to Arkiv, bounded in time, tried twice: a dropped socket or a 5xx on the first try is
- * retried once after a short pause, so a blip on the node's side never reaches a visitor's screen.
- * A 429 is not retried: it means the key's budget, and the browser is told so it can go direct.
+ * One call to Arkiv. With the key first; if the key's monthly quota is spent (`QUOTA_EXCEEDED`, a 429)
+ * the same call goes out keyless once, on the relay's own anonymous budget, and the key is rested for
+ * ten minutes. A plain 429 is not retried: it is a budget, and the browser is told so it can go direct.
  */
 async function upstream(call: Call, key: string | undefined): Promise<{ r: Response; text: string }> {
   const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] })
+  const useKey = !!key && Date.now() > keyOutUntil
+  const first = await attempt(body, useKey ? key : undefined)
+  if (useKey && first.r.status === 429 && /QUOTA_EXCEEDED/.test(first.text)) {
+    keyOutUntil = Date.now() + KEY_OUT_MS
+    return attempt(body, undefined)
+  }
+  return first
+}
+/** The call itself, bounded in time and tried twice: a dropped socket or a 5xx is retried once after a short pause. */
+async function attempt(body: string, key: string | undefined): Promise<{ r: Response; text: string }> {
   let last: unknown
   for (let attempt = 0; attempt < 2; attempt++) {
     try {

@@ -96,21 +96,36 @@ function scheduleExpiry() {
 
 let watching = false
 let timer: number | undefined
+const IDLE_READ_MS = 90_000
 /** Follow Arkiv's entity events; any change to our entities triggers a (debounced) re-read. */
 function watch() {
   if (watching) return
   watching = true
   const ours = new Set<string>()
   // Re-read quickly for our own entities. A stranger's entity (other apps write constantly) only
-  // earns a light re-read, orders and reports, at most every 20 s, so an idle tab stays cheap.
+  // earns a light re-read, orders and reports, at most every 90 s and never while the tab is hidden:
+  // every arkiv_query costs 100 units of somebody's budget (the relay key's month, or a visitor's hour).
+  // The drill net is re-read only while a drill is on or the drill page is open.
   let lastRead = 0
+  let deferred = false
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && deferred) {
+      deferred = false
+      bump(false)
+    }
+  })
   const bump = (urgent = false) => {
     clearTimeout(timer)
-    const wait = urgent ? 700 : Math.max(700, 20_000 - (Date.now() - lastRead))
+    const wait = urgent ? 700 : Math.max(700, IDLE_READ_MS - (Date.now() - lastRead))
     timer = window.setTimeout(() => {
+      if (!urgent && document.visibilityState === 'hidden') {
+        deferred = true
+        return
+      }
       lastRead = Date.now()
       void refresh('live', !urgent)
-      void refresh('drill', !urgent)
+      const drillOn = snaps.drill.orders.length > 0 || snaps.drill.reports.length > 0 || location.pathname.startsWith('/drill')
+      if (urgent || drillOn) void refresh('drill', !urgent)
     }, wait)
   }
   const keysNow = () => {
