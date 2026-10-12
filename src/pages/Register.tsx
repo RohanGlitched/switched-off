@@ -94,7 +94,7 @@ export function RegisterPage() {
       <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? t('Reading the register from Arkiv…') : tf('{n} of {total} orders', { n: list.length, total: live.records.length })}{remote && remote.for === `${state}|${since}` ? <> · {t('query sent to Arkiv:')} <code className="num">{remote.query}</code>{remote.hidden ? <> · {tp(remote.hidden, '{n} corrected original hidden', '{n} corrected originals hidden')}</> : null}</> : null}</p>
       {live.error && !live.loading && (
         <p className="hint" style={{ color: 'var(--vermilion)', marginBottom: 16 }}>
-          {tf(MODE === 'direct' ? 'Arkiv didn’t answer your browser directly ({error}).' : 'Arkiv didn’t answer through this site’s relay ({error}).', { error: live.error.slice(0, 90) })}{' '}
+          {tf(MODE === 'direct' ? 'Arkiv didn’t answer your browser directly ({error}).' : 'Arkiv didn’t answer through this site’s relay ({error}).', { error: live.error.slice(0, 120) })}{' '}
           {MODE === 'direct' ? <button className="btn small" onClick={() => setMode('relay')}>{t('Read through the relay instead')}</button> : <button className="btn small" onClick={() => setMode('direct')}>{t('Read Arkiv directly from your browser')}</button>}
         </p>
       )}

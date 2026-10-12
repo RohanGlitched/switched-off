@@ -59,7 +59,24 @@ export const directClient = () => (direct ??= MODE === 'direct' ? pub : createPu
 let relayC: typeof pub | null = null
 /** This site's relay: the fallback when a direct read hits Arkiv's keyless budget. */
 export const relayClient = () => (relayC ??= MODE === 'relay' ? pub : createPublicClient({ chain: tiramisu, transport: http(RELAY, HTTP) }))
-const RELAY_DOWN = /budget|ANON|429|quota|rate ?limit|Arkiv answered|Method not relayed|only answers|only calls|timed out|timeout|HTTP request failed|Failed to fetch|NetworkError/i
+// Words that mean "this path is out", not "this read is wrong": the other path gets the same read. The relay
+// prefixes its own upstream failures with "Relay error" (Node's wording is "fetch failed", the browser's
+// "Failed to fetch"); "Too many calls" is its per-network pace; the rest are Arkiv's and viem's transport words.
+const RELAY_DOWN = /budget|ANON|429|quota|rate ?limit|Too many calls|Arkiv answered|Relay error|Method not relayed|only answers|only calls|timed out|timeout|took too long|HTTP request failed|Failed to fetch|fetch failed|NetworkError|ECONN|socket|terminated|aborted|unavailable|overloaded|internal error|FUNCTION_INVOCATION/i
+/**
+ * The useful part of an error, one line, for banners and toasts. viem's messages open with "RPC Request
+ * failed. URL: … Request body: {…}" and keep the reason for a "Details:" line at the end, so the first
+ * 80 characters of `message` say nothing; `details` (or that last line) is what a reader needs.
+ */
+export function errText(e: unknown): string {
+  const x = e as { details?: unknown; shortMessage?: unknown; message?: unknown } | null
+  const details = typeof x?.details === 'string' ? x.details.trim() : ''
+  if (details) return details.replace(/\s+/g, ' ')
+  const m = String(x?.message ?? e ?? '')
+  const tail = /Details:\s*([\s\S]+?)\s*(?:Version:[\s\S]*)?$/.exec(m)?.[1]?.trim()
+  const short = typeof x?.shortMessage === 'string' ? x.shortMessage.trim() : ''
+  return (tail || short || m.split('\n')[0] || m).replace(/\s+/g, ' ')
+}
 /**
  * Every read goes through here: the page's own path first (relay by default), and if that path is
  * out (its key's budget, a limit, a timeout) the same read goes the other way, once, and the pages
@@ -69,7 +86,7 @@ export async function viaFallback<T>(fn: (c: typeof pub) => Promise<T>): Promise
   try {
     return await fn(pub)
   } catch (e) {
-    if (!RELAY_DOWN.test(String((e as Error).message))) throw e
+    if (!RELAY_DOWN.test(`${String((e as Error).message)} ${errText(e)}`)) throw e
     if (MODE === 'relay') {
       relayFailed = true
       fellBackTo = 'direct'

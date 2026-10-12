@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
 import { Gazette } from '../components/Gazette'
-import { SEALED, allRecords, applyCorrections, blockToTime, currentBlock, extenders, orderByKey, sameDesk, syncClock, trustedCorrection, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
+import { SEALED, allRecords, applyCorrections, blockToTime, currentBlock, errText, extenders, orderByKey, sameDesk, syncClock, trustedCorrection, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
 import { confirmEmergency, confirmReport, keepAlive, withdrawReport } from '../lib/write'
 import { account } from '../lib/wallet'
 import { addrUrl, ago, fmtDate, fmtDateTime, left, short, txUrl } from '../lib/fmt'
@@ -177,11 +177,13 @@ export function humanError(err: unknown): string {
 
 /** The same message in English, for code that matches on its words. */
 export function humanErrorEn(err: unknown): string {
-  const m = String((err as Error)?.message ?? err)
-  if (/insufficient funds/i.test(m)) return 'This browser’s testnet wallet is out of gas. Try again in a minute: the gas tap refills it.'
-  if (/would not move the expiry later|not later/i.test(m)) return 'Someone just extended it further than this would. Nothing to do.'
-  if (/not.*owner|permission/i.test(m)) return 'Only the filer’s key can do that.'
-  if (/gas tap|top-up|topped up|top-ups|looks like it contains|address/i.test(m)) return m
-  if (/fetch|network|timeout/i.test(m)) return 'Arkiv didn’t answer in time. Your action was not written; try again.'
+  // match on the whole message (viem keeps the reason in its last line), show only the useful line
+  const whole = String((err as Error)?.message ?? err)
+  const m = errText(err)
+  if (/insufficient funds/i.test(whole)) return 'This browser’s testnet wallet is out of gas. Try again in a minute: the gas tap refills it.'
+  if (/would not move the expiry later|not later/i.test(whole)) return 'Someone just extended it further than this would. Nothing to do.'
+  if (/not.*owner|permission/i.test(whole)) return 'Only the filer’s key can do that.'
+  if (/gas tap|top-up|topped up|top-ups|looks like it contains|address/i.test(whole)) return m
+  if (/fetch|network|timeout|timed out|took too long|Relay error|Too many calls|Arkiv answered/i.test(whole)) return 'Arkiv didn’t answer in time. Your action was not written; try again.'
   return `Arkiv refused the write: ${m.slice(0, 140)}`
 }

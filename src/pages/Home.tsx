@@ -122,7 +122,7 @@ export function Home() {
               <Link to="/report" className="btn primary">{t('Is your internet off? Report it')}</Link>
               <Link to="/register" className="btn">{t('Open the register')}</Link>
             </div>
-            {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 80) })}</p>}
+            {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 120) })}</p>}
             {!live.loading && !live.error && live.orders.length === 0 && latest && (
               <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
                 <span><span className="hint">{t('No order on the register is in force right now. Latest on file:')}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>

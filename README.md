@@ -66,8 +66,9 @@ say so on the Why page:
   can edit costs. Personal data of private people never belongs on this register, testnet or not.
 - **Reads survive the relay.** Through the relay by default (Arkiv meters keyless reads per network); if it can't answer, the page
   reads Arkiv directly, and in direct mode it falls back to the relay; writes try both paths too. The relay forwards only simple
-  AND queries and puts the app clause in front of each (no brackets, OR or NOT can escape it), paces each network, and never sees
-  a key of yours.
+  AND queries and puts the app clause in front of each (no brackets, OR or NOT can escape it), paces each network, retries a
+  dropped connection to the node once within an 8 s bound, and never sees a key of yours. When a read still fails, the banner
+  shows the reason, not the request.
 - **The archive is read by its author.** The registrar's records are read with `$creator`, so no amount of junk written into the
   namespace can bury them or make a page read thousands of entities; community records are read with a page cap and labelled.
 - **A hostile entity can't take the page down.** Every payload field is typed and capped before it reaches a component, and

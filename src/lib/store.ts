@@ -1,7 +1,7 @@
 // Live view of the register: one load, then Arkiv's entity events keep it current.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { Hex } from 'viem'
-import { activeOrders, blockToTime, currentBlock, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
+import { activeOrders, blockToTime, currentBlock, errText, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
 export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] }; earlier?: boolean }
 export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean }
@@ -49,7 +49,7 @@ export async function refresh(net: Net, light = false) {
         void backfill(net)
       }
     } catch (e) {
-      snaps[net] = { ...snaps[net], loading: false, error: (e as Error).message || 'Arkiv did not answer.' }
+      snaps[net] = { ...snaps[net], loading: false, error: errText(e) || 'Arkiv did not answer.' }
     } finally {
       delete inflight[net]
       settlePending()

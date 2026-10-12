@@ -136,6 +136,13 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Also measured:** `eth_getLogs` answers at most 100,000 blocks per query (`query exceeds max block range 100000`, about 55 hours),
   so "who kept this record alive since it was written" must be read in windows; and the relay's own `Retry-After: 30` had the same
   effect on a paced visitor until the same change.
+- **Seen once more (12 Oct):** a visitor's map showed "Arkiv didn't answer just now (RPC Request failed. URL: … Request body: )".
+  The relay's own fetch to the node had dropped (Node says only `fetch failed`; the cause code sits in `error.cause`), the relay
+  passed that back as a JSON-RPC error, and two things on our side made it worse than it was: the fallback's word list knew the
+  browser's "Failed to fetch" but not Node's "fetch failed", so the read did not go direct; and the banner showed the first 80
+  characters of viem's message, which are the URL and "Request body:", never the reason viem keeps in `details`. Now the relay
+  bounds each upstream call (8 s) and retries a dropped socket or a 5xx once, every "Relay error" sends the read to the other path,
+  and banners show `details`.
 - **Repro:** a viem `http` transport with default retries against the public RPC after the hour's budget is spent; watch the network tab.
 - **Fix:** a `retry-after` that long is a "come back later", not a retry hint. Cap it (or say so in the docs next to the budget), and
   put the 100,000-block log cap in the JSON-RPC docs next to `eth_getLogs`.

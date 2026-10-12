@@ -111,12 +111,7 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
     const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
     const hit = ck ? cache.get(ck) : undefined
     if (hit && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
-    const r = await fetch(UPSTREAM, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', ...(key ? { 'x-api-key': key } : {}) },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] }),
-    })
-    const text = await r.text()
+    const { r, text } = await upstream(call, key)
     let j: { result?: unknown; error?: unknown }
     try {
       j = JSON.parse(text) as { result?: unknown; error?: unknown }
@@ -130,8 +125,44 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
     }
     return { jsonrpc: '2.0', id: call.id, ...body }
   } catch (e) {
-    return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32603, message: `Relay error: ${String((e as Error).message).slice(0, 160)}` } }
+    return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32603, message: `Relay error: ${reason(e).slice(0, 160)}` } }
   }
+}
+
+/** Node's fetch says only "fetch failed" and keeps the real reason (ECONNRESET, a DNS miss) in `cause`. */
+function reason(e: unknown): string {
+  const x = e as { message?: unknown; cause?: { message?: unknown; code?: unknown } } | null
+  const cause = x?.cause ? String(x.cause.code ?? x.cause.message ?? '') : ''
+  return [String(x?.message ?? e ?? 'unknown'), cause].filter(Boolean).join(': ')
+}
+
+const UPSTREAM_TIMEOUT_MS = 8000
+/**
+ * One call to Arkiv, bounded in time, tried twice: a dropped socket or a 5xx on the first try is
+ * retried once after a short pause, so a blip on the node's side never reaches a visitor's screen.
+ * A 429 is not retried: it means the key's budget, and the browser is told so it can go direct.
+ */
+async function upstream(call: Call, key: string | undefined): Promise<{ r: Response; text: string }> {
+  const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] })
+  let last: unknown
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch(UPSTREAM, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', ...(key ? { 'x-api-key': key } : {}) },
+        body,
+        signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      })
+      const text = await r.text()
+      if (r.status < 500 || attempt === 1) return { r, text }
+      last = new Error(`Arkiv answered ${r.status}`)
+    } catch (e) {
+      last = e
+      if (attempt === 1) throw e
+    }
+    await new Promise((f) => setTimeout(f, 250))
+  }
+  throw last
 }
 
 export default async function handler(req: Req, res: Res) {
