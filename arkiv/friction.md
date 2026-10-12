@@ -70,7 +70,7 @@ What went smoothly is documented with the same care at the end, because a lot of
 - **Measured later (11 Oct):** the 429 itself carries the answer in headers, `ratelimit: limit=10000, remaining=0, reset=3130` and
   `retry-after: 3130`, so the keyless budget is 10,000 units (100 queries) per network per roughly an hour. Three smaller things: the 429
   body is not JSON-RPC shaped (`{"error":"ANON_COST_LIMITED","message":…}`, no `jsonrpc` or `id`, so generic clients report "no result"
-  instead of the message); `Arkiv-Quota-Used-Percent` is listed in the CORS-exposed headers but not sent on a keyless read (see item 12: a key sees it, at 100); and because the budget is per
+  instead of the message); `Arkiv-Quota-Used-Percent` is listed in the CORS-exposed headers but not sent on a keyless read (see item 12: keyed reads carry it); and because the budget is per
   network, a judge who runs our documented `curl` after we spent the hour's budget sees it fail. The site, mirror and CLI now fall back
   to the relay when a direct read hits the budget, and say so.
 - **Design consequence:** the access-keys page rightly warns that a key in browser code can be read and spent by anyone. So a public site
@@ -153,8 +153,10 @@ What went smoothly is documented with the same care at the end, because a lot of
   refusal that a JSON-RPC client can read.
 - **Actual (12 Oct):** three days after the key was made, every keyed `arkiv_query` answered HTTP 429 with
   `{"error":"QUOTA_EXCEEDED","message":"quota exhausted"}` and `arkiv-quota-used-percent: 100`. Nothing before that told us how
-  much of the month was gone: the header is absent on a keyless read and we never saw a value below 100 on a keyed one, the Hub does not
-  show usage, and the quota's size and reset day are not written down. The body is the same non-JSON-RPC shape as item 5, so a
+  much of the month was gone: the header is absent on a keyless read, our relay never looked at it on keyed ones (it is there: after a
+  top-up it read `arkiv-quota-used-percent: 51`), the Hub does not show usage, and the quota's size and reset day are not written down.
+  Measured from the top-up: the default quota is about 100,000 units a month, that is 1,000 queries, which one idle browser tab at our
+  old cadence spent in under two hours. The body is the same non-JSON-RPC shape as item 5, so a
   JSON-RPC client that forwards `error` as it is (ours did) hands viem a string: no `message`, so the page said "RPC Request failed."
   and nothing else, and our fallback to a direct read never fired because the word "quota" was not in anything the client saw.
   `eth_*` methods kept working, so writes and the clock were unaffected; only reads died.
@@ -164,7 +166,7 @@ What went smoothly is documented with the same care at the end, because a lot of
   anonymous budget while the key is out, and serves its last good answer for up to fifteen minutes when every path is refused; the
   page reads at most every 90 s when idle, never while hidden, and re-reads the drill net only during a drill. Idle cost fell from
   about 72,000 units an hour per open tab to about 8,000.
-- **Fix (for Arkiv):** send `Arkiv-Quota-Used-Percent` on every keyed response (not only at 100), state the quota's size and reset
+- **Fix (for Arkiv):** show `Arkiv-Quota-Used-Percent` on the Hub's key page too (it is already in the headers), state the quota's size and reset
   day on the access-keys page, and shape budget refusals as JSON-RPC errors (`{"error":{"code":…,"message":…}}`) so every client
   shows the reason.
 
