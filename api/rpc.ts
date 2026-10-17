@@ -97,7 +97,7 @@ type Call = { jsonrpc: '2.0'; id: unknown; method: string; params?: unknown[] }
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
 
-async function one(call: Call, key: string | undefined): Promise<unknown> {
+async function one(call: Call, key: string | undefined, fresh = false): Promise<unknown> {
   try {
     if (!call || typeof call !== 'object' || typeof call.method !== 'string' || !ALLOW.has(call.method))
       return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32601, message: `Method not relayed: ${(call as Call | null)?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
@@ -112,7 +112,8 @@ async function one(call: Call, key: string | undefined): Promise<unknown> {
     const ttl = CACHE_MS[call.method]
     const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
     const hit = ck ? cache.get(ck) : undefined
-    if (hit && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
+    // a browser that has just written asks for a fresh read, or it would be shown the page before its own write
+    if (hit && !fresh && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
     const { r, text } = await upstream(call, key)
     let j: { result?: unknown; error?: unknown; message?: unknown }
     try {
@@ -193,7 +194,7 @@ export default async function handler(req: Req, res: Res) {
   // mirrors on other hosts (GitHub Pages, a saved file) may fall back to this relay
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'content-type')
+  res.setHeader('Access-Control-Allow-Headers', 'content-type, x-fresh')
   if (req.method === 'OPTIONS') return res.status(204).json(null)
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST JSON-RPC here, or use the Arkiv RPC directly: ' + UPSTREAM })
   let body: Call | Call[]
@@ -210,6 +211,7 @@ export default async function handler(req: Req, res: Res) {
     res.setHeader('Retry-After', '30')
     return res.status(429).json({ jsonrpc: '2.0', id: null, error: { code: -32005, message: `Too many calls from this network in a minute. Flip the site to "direct" or talk to ${UPSTREAM} yourself.` } })
   }
-  if (Array.isArray(body)) return res.status(200).json(await Promise.all(body.map((c) => one(c, key))))
-  return res.status(200).json(await one(body, key))
+  const fresh = req.headers['x-fresh'] === '1'
+  if (Array.isArray(body)) return res.status(200).json(await Promise.all(body.map((c) => one(c, key, fresh))))
+  return res.status(200).json(await one(body, key, fresh))
 }

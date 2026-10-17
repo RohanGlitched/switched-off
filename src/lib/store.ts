@@ -21,6 +21,7 @@ function settlePending() {
   if (keep.length) wire = [...keep.reverse(), ...wire].slice(0, 40)
 }
 const inflight: Partial<Record<Net, Promise<void>>> = {}
+const queued: Partial<Record<Net, { p: Promise<void>; heavy: boolean }>> = {}
 
 const recordsReadAt: Partial<Record<Net, number>> = {}
 /**
@@ -29,7 +30,19 @@ const recordsReadAt: Partial<Record<Net, number>> = {}
  * or at most every five minutes (`light` skips it).
  */
 export async function refresh(net: Net, light = false) {
-  if (inflight[net]) return inflight[net]
+  // a read already under way may have started before the caller's write landed: queue one more after it
+  if (inflight[net]) {
+    const q = (queued[net] ??= {
+      heavy: false,
+      p: inflight[net]!.then(() => {
+        const heavy = queued[net]!.heavy
+        delete queued[net]
+        return refresh(net, !heavy)
+      }),
+    })
+    q.heavy ||= !light
+    return q.p
+  }
   inflight[net] = (async () => {
     try {
       await syncClock()

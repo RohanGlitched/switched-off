@@ -51,7 +51,20 @@ export const ENDPOINT = MODE === 'direct' ? RPC : RELAY
 
 // No transport retries: Arkiv's 429 arrives with retry-after of up to ~1000 s and viem would wait it out
 // in silence. A failed read goes to the other path (below) instead.
-const HTTP = { batch: { wait: 30, batchSize: 10 }, retryCount: 0, timeout: 9000 } as const
+// The relay shares a query's answer between visitors for up to twenty seconds. Once this browser sends a
+// transaction, its reads skip that shared answer for a minute, so whoever just filed something sees it on
+// the next read (a drill emergency order only lives one minute).
+let freshUntil = 0
+const relayFetch = (input: string | URL | Request, init?: RequestInit) => {
+  if (typeof init?.body === 'string' && init.body.includes('eth_sendRawTransaction')) freshUntil = Date.now() + 60_000
+  if (Date.now() < freshUntil && String(input).startsWith(RELAY)) {
+    const headers = new Headers(init?.headers)
+    headers.set('x-fresh', '1')
+    init = { ...init, headers }
+  }
+  return fetch(input, init)
+}
+const HTTP = { batch: { wait: 30, batchSize: 10 }, retryCount: 0, timeout: 9000, fetchFn: relayFetch } as const
 export const pub = createPublicClient({ chain: tiramisu, transport: http(ENDPOINT, HTTP) })
 let direct: typeof pub | null = null
 /** Arkiv's public endpoint, straight from the browser: the fallback when the relay can't answer. */
@@ -117,7 +130,7 @@ export function eventsClient() {
 }
 export const pollingClient = () => pub
 /** Writes: the page's own path first, then the other one, so a paced relay or a spent keyless budget doesn't lose a report. */
-export const walletFor = (account: Account) => createWalletClient({ chain: tiramisu, transport: fallback([http(ENDPOINT, { retryCount: 1, timeout: 20_000 }), http(ENDPOINT === RPC ? RELAY : RPC, { retryCount: 1, timeout: 20_000 })]), account })
+export const walletFor = (account: Account) => createWalletClient({ chain: tiramisu, transport: fallback([http(ENDPOINT, { retryCount: 1, timeout: 20_000, fetchFn: relayFetch }), http(ENDPOINT === RPC ? RELAY : RPC, { retryCount: 1, timeout: 20_000, fetchFn: relayFetch })]), account })
 
 // ─── entity shapes ───────────────────────────────────────────────────────────
 
