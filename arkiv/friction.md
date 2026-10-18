@@ -179,8 +179,8 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
 ## 10. Sealing makes a privacy mistake permanent
 
 - **Expected:** a readonly entity handed to `0x…dEaD` is the point of the design: nobody can rewrite history.
-- **Actual:** it also means nobody can repair it. Nine of our 111 imported records quoted case titles and bench names in their `notes` or source titles
-  (judges, petitioners, a person named in a police operation). They are public court records, but the challenge rules say no real
+- **Actual:** it also means nobody can repair it. Ten of our 111 imported records (and then two of our own first corrections) quoted case titles and bench names in their `notes`,
+  source titles or links (judges, petitioners, one person named in news reporting). They are public court records, but the challenge rules say no real
   personal data, and our own schema says designations only. The records are sealed, so the fix is a registrar `correction` entity per
   record with name-free notes (`scripts/correct-names.ts`, sealed in the same transaction as it is created), and readers show the
   correction. The originals stay readable until they expire in 2028.

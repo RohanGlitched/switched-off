@@ -24,4 +24,4 @@ curl -s -X POST https://rpc.tiramisu.db-chain.testnet.arkiv.network -H 'content-
   -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"arkiv_query\",\"params\":[\"app = str('switched-off') AND type = str('record') AND net = str('live') AND \$creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e)\",{\"select\":{\"key\":true,\"owner\":true,\"expiresAt\":true},\"limit\":\"0xc8\"}]}"
 ```
 
-On 18 Oct 2026 (block 726,460) this returned 124 entities, every one owned by `0x…dead`.
+On 18 Oct 2026 (block 0xb2a3b) this returned 230 entities over two pages, every one owned by `0x…dead`: the 187 on the register and 43 earlier versions superseded by corrections. A second page needs the first page's `blockNumber` as `atBlock` with the cursor ([friction.md #13](friction.md#13-page-two-fails-once-a-new-block-lands-because-next-doesnt-pin-the-block)).

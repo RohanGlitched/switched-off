@@ -116,7 +116,7 @@ published judgments, which name petitioners and judges, and one person named in 
 then missed a name in the source links of 2 of its own entities. So **12 sealed entities on Arkiv carry a real person's name**
 (10 original records and 2 first-round corrections). Every name came from a public court record or a published article, but the
 challenge says no real personal data, and our own rule is designations, never names. Neither held. The names are not repeated
-in this repository's docs.
+in this repository's docs or code: the guard's list of names it has had to remove holds hashes (`knownName` in `src/lib/pii.ts`).
 
 **Why it can't be undone.** A sealed entity can't be edited (`readonly`) or deleted (only an owner can delete, and nobody holds
 the key for `0x…dEaD`), by us or anyone. This is friction item 10 ([friction.md](friction.md#10-sealing-makes-a-privacy-mistake-permanent)).

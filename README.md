@@ -29,7 +29,7 @@ Track: Arkiv Global Tour Stop, **Best Indian Use Case**
 | Work done 9–18 Oct only | [`docs/TIMELINE.md`](docs/TIMELINE.md) | No prior work. Baseline: the first commit, `254b8aa` (11 Oct), which holds what was built locally before it |
 | Evidence that survives entity expiry | [`arkiv/evidence.md`](arkiv/evidence.md), [/proof](https://switched-off.vercel.app/proof) | Creation and batch transactions, an expired order read back with `atBlock`, the video |
 | No real personal data on Arkiv | [schema.md: Personal data](arkiv/schema.md#personal-data-what-went-wrong-and-what-we-did) | We broke this on 11 Oct: 12 sealed entities quote a name from a public court record or article. Corrected, hidden by every reader, guarded against since; every key and its expiry is listed |
-| Tests | [`test/`](test/), CI badge above | 281 unit tests, no network; CI runs them and the build on every push |
+| Tests | [`test/`](test/), CI badge above | 285 unit tests, no network; CI runs them and the build on every push |
 | 1. Why India? | [Who it's for](#who-its-for-and-what-changes-for-them-on-day-one), [/why](https://switched-off.vercel.app/why) | Sourced facts in [`research/facts.md`](research/facts.md) |
 | 2. Why Arkiv? | [Why Arkiv](#why-arkiv-what-breaks-without-it), [Kept off Arkiv](#kept-off-arkiv-on-purpose) | Against Postgres, IPFS and a subgraph |
 | 3. How we use Arkiv | [Every Arkiv feature](#every-arkiv-feature-and-what-the-user-sees), [/proof](https://switched-off.vercel.app/proof) | Seven live checks from your browser; the write checks are simulations, nothing is signed |
