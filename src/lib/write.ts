@@ -24,7 +24,7 @@ export const RECORD_YEARS = { live: 2, drill: 0 } as const
 
 const sec = (ms: number) => Math.floor(ms / 1000)
 /** Arkiv lifetimes are whole blocks (2 s): round a duration in seconds up to the next block. */
-const life = (seconds: number) => ExpirationTime.fromBlocks(Math.max(1, Math.ceil(seconds / BLOCK_SECONDS)))
+export const life = (seconds: number) => ExpirationTime.fromBlocks(Math.max(1, Math.ceil(seconds / BLOCK_SECONDS)))
 
 export type ReportInput = { net: Net; state: string; district: string; carrier: string; status: Report['status']; note?: string; seenAt?: number; late?: boolean }
 
@@ -108,6 +108,9 @@ function orderPayload(o: OrderInput) {
   return jsonToPayload({ authority: o.authority, reason: o.reason, districts: o.districts, sources: o.sources, stateName: o.stateName, published: o.published ?? null, basis: o.basis, endStated: true })
 }
 
+/** When an order lapses in law (ms): its stated end, or for an unconfirmed emergency order at most one legal day after issue. */
+export const lapseOf = (o: Pick<OrderInput, 'net' | 'emergency' | 'issued' | 'ends'>) => (o.emergency ? Math.min(o.ends, o.issued + dayMs(o.net)) : o.ends)
+
 /**
  * Files an order and its permanent record in one transaction, and seals both in that same
  * transaction: the record is handed to 0x…dEaD so nobody can delete it, and so is a non-emergency
@@ -123,8 +126,7 @@ export async function fileOrder(o: OrderInput, opts: { withOrder?: boolean } = {
     if (why) throw new Error(`A source link must not carry ${why}: everything on the register is public and permanent. Cite the court or the outlet's section page instead.`)
   }
   await ensureGas()
-  const day = dayMs(o.net)
-  const lapse = o.emergency ? Math.min(o.ends, o.issued + day) : o.ends
+  const lapse = lapseOf(o)
   const live = (opts.withOrder ?? true) && lapse > Date.now() + 5_000
   const creates = [] as Parameters<typeof wallet.executeBatch>[0]['creates']
   if (live)

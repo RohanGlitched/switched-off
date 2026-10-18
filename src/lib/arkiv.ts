@@ -17,7 +17,7 @@ export const SEALED = '0x000000000000000000000000000000000000dEaD'
 const ARKIV_ADDRESS = '0x4400000000000000000000000000000000000044'
 /** The longest one order may run in law (15 days), with a day of slack for how dates are entered. */
 export const LAW_CAP_DAYS = 16
-const LAW_CAP_BLOCKS = BigInt((LAW_CAP_DAYS * 86_400) / 2)
+export const LAW_CAP_BLOCKS = BigInt((LAW_CAP_DAYS * 86_400) / 2)
 export const isRegistrar = (a?: string) => REGISTRARS.some((r) => r.address.toLowerCase() === (a ?? '').toLowerCase())
 
 /** "live" is the real register; "drill" is the sandbox where the law runs at one day per minute. */
@@ -192,7 +192,7 @@ export type Report = {
 
 // ─── reading ─────────────────────────────────────────────────────────────────
 
-type Raw = {
+export type Raw = {
   key: Hex
   owner?: Hex
   creator?: Hex
@@ -237,7 +237,7 @@ const sourceList = (v: unknown): Source[] =>
         .map((s) => ({ title: text(s.title, 200) || text(s.url, 200), url: /^https?:\/\//i.test(s.url) ? s.url.slice(0, 500) : '' }))
     : []
 
-function toOrder(e: Raw): Order {
+export function toOrder(e: Raw): Order {
   const a = e.attributes ?? {}
   const p = json<{ authority?: string; reason?: string; districts?: string[]; sources?: Source[]; stateName?: string; published?: boolean | null; basis?: string; notes?: string; endStated?: boolean }>(e, {})
   const scope = str(a.scope)
@@ -274,12 +274,12 @@ function toOrder(e: Raw): Order {
   }
 }
 
-function toRecord(e: Raw): Record_ {
+export function toRecord(e: Raw): Record_ {
   const o = toOrder(e)
   return { ...o, permissionless: !!e.creationFlags?.permissionlessExtension, sealed: (e.owner ?? '').toLowerCase() === SEALED.toLowerCase(), corrects: str(e.attributes?.corrects) }
 }
 
-function toReport(e: Raw): Report {
+export function toReport(e: Raw): Report {
   const a = e.attributes ?? {}
   const p = json<{ note?: string }>(e, {})
   return {
@@ -339,8 +339,10 @@ export const queryText = (type: string, net: Net, extra: string[] = []) => [`app
  * cap (15 days), so a stray or hostile filing dated years ahead can't darken the map.
  */
 export async function activeOrders(net: Net, atBlock?: bigint): Promise<Order[]> {
-  return (await all(base('order', net), atBlock)).map(toOrder).filter((o) => o.official || o.expiresAt - o.createdAt <= LAW_CAP_BLOCKS)
+  return (await all(base('order', net), atBlock)).map(toOrder).filter(withinLawCap)
 }
+/** An order darkens the map if the registrar filed it, or if it lives no longer than the law allows. */
+export const withinLawCap = (o: Order) => o.official || o.expiresAt - o.createdAt <= LAW_CAP_BLOCKS
 /**
  * The permanent register, every order ever transcribed. A correction replaces the record it names
  * in `corrects`, but only when the correction comes from the registrar or from whoever filed the

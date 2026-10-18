@@ -2,6 +2,8 @@
 
 # Switched Off
 
+[![CI](https://github.com/RohanGlitched/switched-off/actions/workflows/ci.yml/badge.svg)](https://github.com/RohanGlitched/switched-off/actions/workflows/ci.yml)
+
 **India's register of internet shutdowns, kept on Arkiv so that the record of a shutdown can't itself be switched off.**
 
 Live: **https://switched-off.vercel.app** · Mirror: **https://rohanglitched.github.io/switched-off/** · Track: Arkiv Global Tour Stop, **Best Indian Use Case**
@@ -95,6 +97,22 @@ node cli/switched-off.mjs reports     # live citizen reports
 
 Rebuild the archive import (needs a funded key in `.env.local`): `npx tsx scripts/seed-archive.ts --dry`, then without `--dry`.
 Rebuild the map: `python scripts/build-map.py` (Datameet shapefiles, see credits).
+
+### Tests
+
+`npm test` runs the unit suite in `test/` (Vitest, no network, nothing written to Arkiv); CI runs it and the build on every push.
+
+- **Personal-data guard:** phone numbers in every spacing, `+91`, Devanagari and full-width digits, Aadhaar, emails written out
+  ("name at gmail dot com"), UPI ids, honorifics, case titles and names in link slugs are caught; districts, carriers, dates
+  and order numbers pass, and so does every field and link of the archive import.
+- **Trust rules:** a stranger's correction can't hide a registrar record (the registrar's or the original filer's can), renewal
+  chains stay on one desk, and a community order darkens the map only within the law's cap.
+- **Hostile entities:** wrong types, huge strings, non-array districts, payloads that throw and `javascript:` source links all
+  come out as safe, capped values.
+- **The relay:** every query the app builds with the SDK is captured and passes the relay's grammar; OR, NOT, brackets, stray
+  quotes, `*`, over-long queries, bad limits, unknown options and other contracts' logs are refused and never forwarded.
+- **Lifetimes and the offline queue:** the 15-day cap, the 24-hour emergency lapse and the 6-hour report in whole 2-second
+  blocks, rounded up; queued reports keep the time they were seen, go out late, once, and survive a dropped connection.
 
 ## Reproducible evidence
 
