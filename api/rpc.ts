@@ -4,6 +4,8 @@
 // Transactions are signed in the visitor's browser; this relay only forwards the signed bytes.
 // Readers who don't want to trust it can flip the site to "direct" and talk to Arkiv themselves.
 
+import { parseTransaction, type Hex } from 'viem'
+
 const UPSTREAM = 'https://rpc.tiramisu.db-chain.testnet.arkiv.network'
 const ALLOW = new Set([
   'arkiv_query', 'arkiv_getEntityCount', 'arkiv_getBlockTiming', 'arkiv_getEntityNonce',
@@ -54,6 +56,25 @@ function paced(ip: string, n: number): boolean {
   if (hits.size > 5000) hits.delete(hits.keys().next().value!)
   return false
 }
+/**
+ * The key's month is the scarce thing, and anyone can ask for a read the cache can't answer (a fresh
+ * read, a new cursor or block). So each network gets a small number of keyed queries a minute and of
+ * cache-skipping fresh reads; past that, its reads go out on Arkiv's keyless budget (shared caches still
+ * answer them first). Normal browsing, a page of reads every few seconds, stays well inside both.
+ */
+const KEYED_PER_IP = 40
+const FRESH_PER_IP = 12
+const keyed = new Map<string, number[]>()
+const freshes = new Map<string, number[]>()
+function allow(map: Map<string, number[]>, ip: string, max: number): boolean {
+  const now = Date.now()
+  const list = (map.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
+  const ok = list.length < max
+  if (ok) list.push(now)
+  map.set(ip, list)
+  if (map.size > 5000) map.delete(map.keys().next().value!)
+  return ok
+}
 
 /**
  * The only query shape the relay forwards: a conjunction of simple comparisons, exactly as the SDK
@@ -102,6 +123,14 @@ export function refused(call: Call): string | null {
     const tx = (p[0] ?? {}) as { to?: string }
     if (typeof tx !== 'object' || tx === null || String(tx.to ?? '').toLowerCase() !== ARKIV) return 'This relay only calls the Arkiv contract.'
   }
+  // the relay forwards transactions to Arkiv's contract only, so it isn't a free RPC for anything else
+  if (call.method === 'eth_sendRawTransaction') {
+    try {
+      if (typeof p[0] !== 'string' || String(parseTransaction(p[0] as Hex).to ?? '').toLowerCase() !== ARKIV) return 'This relay only sends transactions to the Arkiv contract.'
+    } catch {
+      return 'Not a signed transaction.'
+    }
+  }
   if (call.method === 'eth_getTransactionByHash' || call.method === 'eth_getTransactionReceipt') {
     if (typeof p[0] !== 'string' || !HEX_WORD.test(p[0])) return 'Bad transaction hash.'
   }
@@ -112,7 +141,7 @@ export type Call = { jsonrpc: '2.0'; id: unknown; method: string; params?: unkno
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
 
-async function one(call: Call, key: string | undefined, fresh = false): Promise<unknown> {
+async function one(call: Call, key: string | undefined, fresh = false, ip = 'unknown'): Promise<unknown> {
   try {
     if (!call || typeof call !== 'object' || typeof call.method !== 'string' || !ALLOW.has(call.method))
       return { jsonrpc: '2.0', id: (call as Call | null)?.id ?? null, error: { code: -32601, message: `Method not relayed: ${(call as Call | null)?.method}. Talk to ${UPSTREAM} directly for anything else.` } }
@@ -129,7 +158,7 @@ async function one(call: Call, key: string | undefined, fresh = false): Promise<
     const hit = ck ? cache.get(ck) : undefined
     // a browser that has just written asks for a fresh read, or it would be shown the page before its own write
     if (hit && !fresh && Date.now() - hit.at < (ttl ?? 0)) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
-    const { r, text } = await upstream(call, key)
+    const { r, text } = await upstream(call, call.method === 'arkiv_query' && !allow(keyed, ip, KEYED_PER_IP) ? undefined : key)
     let j: { result?: unknown; error?: unknown; message?: unknown }
     try {
       j = JSON.parse(text) as { result?: unknown; error?: unknown; message?: unknown }
@@ -234,7 +263,7 @@ export default async function handler(req: Req, res: Res) {
     res.setHeader('Retry-After', '30')
     return res.status(429).json({ jsonrpc: '2.0', id: null, error: { code: -32005, message: `Too many calls from this network in a minute. Flip the site to "direct" or talk to ${UPSTREAM} yourself.` } })
   }
-  const fresh = req.headers['x-fresh'] === '1'
-  if (Array.isArray(body)) return res.status(200).json(await Promise.all(body.map((c) => one(c, key, fresh))))
-  return res.status(200).json(await one(body, key, fresh))
+  const fresh = req.headers['x-fresh'] === '1' && allow(freshes, ip, FRESH_PER_IP)
+  if (Array.isArray(body)) return res.status(200).json(await Promise.all(body.map((c) => one(c, key, fresh, ip))))
+  return res.status(200).json(await one(body, key, fresh, ip))
 }

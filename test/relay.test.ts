@@ -233,3 +233,15 @@ describe('how long a read is shared between visitors', () => {
   it('orders and reports in force for twenty seconds', () => expect(ttlOf(q("app = str('switched-off') AND type = str('report') AND net = str('live')"))).toBe(20_000))
   it('the block number for a moment', () => expect(ttlOf({ jsonrpc: '2.0', id: 1, method: 'eth_blockNumber', params: [] } as Call)).toBe(1500))
 })
+
+describe('transactions go to the Arkiv contract only', () => {
+  const sign = async (to: `0x${string}`) => {
+    const { privateKeyToAccount } = await import('viem/accounts')
+    const account = privateKeyToAccount('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d')
+    return account.signTransaction({ to, chainId: 7738577, nonce: 0, gas: 21000n, maxFeePerGas: 1n, maxPriorityFeePerGas: 1n, type: 'eip1559', value: 0n })
+  }
+  const tx = (raw: string) => ({ jsonrpc: '2.0', id: 1, method: 'eth_sendRawTransaction', params: [raw] }) as Call
+  it('a transaction to Arkiv is forwarded', async () => expect(refused(tx(await sign('0x4400000000000000000000000000000000000044')))).toBeNull())
+  it('a transaction anywhere else is refused', async () => expect(refused(tx(await sign('0x1111111111111111111111111111111111111111')))).toMatch(/only sends transactions to the Arkiv contract/))
+  it('junk is refused', () => expect(refused(tx('0xdeadbeef'))).toMatch(/Not a signed transaction/))
+})
