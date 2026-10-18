@@ -18,7 +18,22 @@ const CACHE_MS: Record<string, number> = { arkiv_query: 20_000, eth_blockNumber:
 const cache = new Map<string, { at: number; body: unknown }>()
 // when Arkiv refuses a read (a budget, a 5xx), the last good answer to the same read is served for this long
 const STALE_MS = 15 * 60_000
-const CACHE_MAX_BYTES = 200_000
+// The sealed archive is the heavy read (about 350 KB a page) and changes only when someone files an order,
+// so it is shared for five minutes; a read pinned to a past block can never change, so it is shared longer.
+// A browser that has just written still skips the cache (x-fresh). Memory is bounded by total bytes.
+const ARCHIVE_MS = 300_000
+const PINNED_MS = 900_000
+const CACHE_MAX_BYTES = 2_000_000
+const CACHE_TOTAL_BYTES = 40_000_000
+const sizes = new Map<string, number>()
+let cachedBytes = 0
+export function ttlOf(call: Call): number | undefined {
+  if (call.method !== 'arkiv_query') return CACHE_MS[call.method]
+  const opts = (call.params?.[1] ?? {}) as { atBlock?: unknown }
+  if (opts.atBlock !== undefined) return PINNED_MS
+  if (/\btype = str\('record'\)/.test(String(call.params?.[0] ?? ''))) return ARCHIVE_MS
+  return CACHE_MS.arkiv_query
+}
 const ARKIV = '0x4400000000000000000000000000000000000044'
 const MAX_BATCH = 10
 const MAX_LOG_RANGE = 400_000n
@@ -109,11 +124,11 @@ async function one(call: Call, key: string | undefined, fresh = false): Promise<
       const scoped = q.startsWith(APP_CLAUSE) ? q : `${APP_CLAUSE} AND ${q}`
       call = { ...call, params: [scoped, ...(call.params ?? []).slice(1)] }
     }
-    const ttl = CACHE_MS[call.method]
+    const ttl = ttlOf(call)
     const ck = ttl ? `${call.method}:${JSON.stringify(call.params ?? [])}` : ''
     const hit = ck ? cache.get(ck) : undefined
     // a browser that has just written asks for a fresh read, or it would be shown the page before its own write
-    if (hit && !fresh && Date.now() - hit.at < ttl) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
+    if (hit && !fresh && Date.now() - hit.at < (ttl ?? 0)) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
     const { r, text } = await upstream(call, key)
     let j: { result?: unknown; error?: unknown; message?: unknown }
     try {
@@ -128,8 +143,16 @@ async function one(call: Call, key: string | undefined, fresh = false): Promise<
       j = { error: { code: r.status === 429 ? -32005 : -32603, message: `Arkiv answered ${r.status}: ${typeof j.error === 'string' ? j.error : JSON.stringify(j.error).slice(0, 120)}${j.message ? ` (${String(j.message)})` : ''}` } }
     const body = 'result' in j ? { result: j.result } : { error: j.error ?? { code: -32603, message: `Arkiv answered ${r.status}` } }
     if (ck && 'result' in body && text.length <= CACHE_MAX_BYTES) {
+      cachedBytes += text.length - (sizes.get(ck) ?? 0)
+      cache.delete(ck)
       cache.set(ck, { at: Date.now(), body })
-      if (cache.size > 500) cache.delete(cache.keys().next().value!)
+      sizes.set(ck, text.length)
+      while ((cache.size > 500 || cachedBytes > CACHE_TOTAL_BYTES) && cache.size > 1) {
+        const old = cache.keys().next().value!
+        cache.delete(old)
+        cachedBytes -= sizes.get(old) ?? 0
+        sizes.delete(old)
+      }
     }
     // a refused read with a recent good answer: serve that rather than nothing (a visitor's own fallback
     // to Arkiv's keyless budget comes first in the page; this is what is left when every path is out)

@@ -2,7 +2,7 @@
 // anyone on the internet. Its grammar must accept every query the app itself sends and refuse
 // anything that could escape the `app = str('switched-off')` clause put in front of it.
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import handler, { QUERY, refused, type Call } from '../api/rpc'
+import handler, { QUERY, refused, ttlOf, type Call } from '../api/rpc'
 import { queryText } from '../src/lib/arkiv'
 
 const ARKIV = '0x4400000000000000000000000000000000000044'
@@ -224,4 +224,12 @@ describe('the relay handler', () => {
     expect(sent[1].headers['x-api-key']).toBeUndefined()
     expect(r.out.error?.message).toBe('Arkiv answered 429: QUOTA_EXCEEDED (quota exhausted)')
   })
+})
+
+describe('how long a read is shared between visitors', () => {
+  const q = (expr: string, opts: Record<string, unknown> = {}) => ({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [expr, opts] }) as Call
+  it('the sealed archive for five minutes', () => expect(ttlOf(q("app = str('switched-off') AND type = str('record') AND net = str('live')"))).toBe(300_000))
+  it('anything pinned to a block for fifteen, since it can never change', () => expect(ttlOf(q("app = str('switched-off') AND type = str('order') AND net = str('live')", { atBlock: '0x10' }))).toBe(900_000))
+  it('orders and reports in force for twenty seconds', () => expect(ttlOf(q("app = str('switched-off') AND type = str('report') AND net = str('live')"))).toBe(20_000))
+  it('the block number for a moment', () => expect(ttlOf({ jsonrpc: '2.0', id: 1, method: 'eth_blockNumber', params: [] } as Call)).toBe(1500))
 })
