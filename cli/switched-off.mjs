@@ -16,12 +16,13 @@ let via = RPC
 
 async function query(q, extra = {}) {
   const out = []
-  let cursor
+  // a cursor belongs to the block its first page was read at: later pages ask at that block (friction.md #13)
+  let cursor, block
   do {
     const r = await fetch(via, {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...(process.env.ARKIV_KEY ? { 'x-api-key': process.env.ARKIV_KEY } : {}) },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...extra, ...(cursor ? { cursor } : {}) }] }),
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...extra, ...(cursor ? { cursor, atBlock: extra.atBlock ?? block } : {}) }] }),
     })
     const j = await r.json()
     if (j.error || !j.result) {
@@ -35,6 +36,7 @@ async function query(q, extra = {}) {
     }
     out.push(...j.result.data)
     cursor = j.result.cursor
+    block ??= j.result.blockNumber
   } while (cursor)
   return out
 }

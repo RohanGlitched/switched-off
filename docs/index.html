@@ -61,15 +61,17 @@ async function read() {
   $('q').textContent = q
   $('status').textContent = 'asking Arkiv…'
   $('out').innerHTML = ''
-  let cursor, all = []
+  // a cursor belongs to the block its first page was read at: later pages ask at that block
+  let cursor, block, all = []
   try {
     do {
-      const r = await fetch(via, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...(cursor ? { cursor } : {}) }] }) })
+      const r = await fetch(via, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...(cursor ? { cursor, atBlock: block } : {}) }] }) })
       const j = await r.json()
       if (j.error) throw new Error(j.error.message || j.message || JSON.stringify(j.error))
       if (!j.result) throw new Error(j.message || 'no result')
       all = all.concat(j.result.data)
       cursor = j.result.cursor
+      block ??= j.result.blockNumber
     } while (cursor && all.length < 2000)
   } catch (e) {
     $('status').innerHTML = `<span class="err">Arkiv said: ${esc(e.message)}</span>`
