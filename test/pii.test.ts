@@ -62,13 +62,13 @@ describe("people's names", () => {
     'Kumari Sita Devi',
     'Smt. Sita Devi',
     'श्री रमेश कुमार',
-    'Justice Fatehdeep Singh issued notice',
+    'Justice Ramesh Kumar issued notice',
     "Hon'ble Ramesh Kumar",
   ])('honorific: %s', (t) => expect(personalData(t)).toMatch(/person's name/))
-  it.each(['Kumar J. ordered', 'per Kumar, J.', 'Bhuyan and Saikia JJ ordered restoration'])('judicial style: %s', caught)
-  it.each(['Ashlesh Biradar v. State of WB', 'Ramesh Kumar v State', 'Ramesh Kumar Vs. State', 'Ramesh Kumar & Ors. v. UoI', 'Ramesh Kumar versus Union'])('case title: %s', caught)
+  it.each(['Kumar J. ordered', 'per Kumar, J.', 'Kumar and Sharma JJ ordered restoration'])('judicial style: %s', caught)
+  it.each(['Ramesh Sharma v. State of WB', 'Ramesh Kumar v State', 'Ramesh Kumar Vs. State', 'Ramesh Kumar & Ors. v. UoI', 'Ramesh Kumar versus Union'])('case title: %s', caught)
   it.each(['petitioner Ramesh Kumar said', 'DM Ramesh Kumar ordered', 'collector Sita Devi signed'])('role and name: %s', caught)
-  it.each(['After the death of separatist leader S.A.S. Geelani', 'the search for Amritpal Singh'])('a name the archive has had to remove: %s', caught)
+  it.each(['After the death of a leader called Zzqcanary', 'the search for zzq canary'])('a name the archive has had to remove: %s', caught)
 })
 
 describe('what an order says must pass', () => {
@@ -96,7 +96,7 @@ describe('what an order says must pass', () => {
 describe('source links', () => {
   it('flags an email in a link', () => expect(linkProblem('mailto:raju@gmail.com')).toBe('an email address'))
   it('flags a name in a link slug', () => {
-    expect(linkProblem('https://news.example/2023/04/amritpal-singh-internet-ban')).toBe("a person's name in the link")
+    expect(linkProblem('https://news.example/2023/04/zzq-canary-internet-ban')).toBe("a person's name in the link")
     expect(linkProblem('https://news.example/mr-ramesh-kumar-dm-orders-ban')).toBe("a person's name in the link")
   })
   it('lets an ordinary source through', () => {

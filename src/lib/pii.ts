@@ -19,7 +19,27 @@ const ROLE_NAME = /\b(?:petitioner|respondent|complainant|accused|DM|SP|SDM|ADM|
 const JUDGE_STYLE = /\b(?:JJ?\.(?=\s|$|[,;)])|(?:CJ|JJ)(?=\s|$|[,;)])(?!\s+(?:Colony|bench|Bench)))/
 // Names that have already had to be removed from this archive, in text and in link slugs. A bare
 // "Firstname Lastname" can't be told from a place by a regex; this list grows as the register learns.
-const KNOWN = /geelani|amritpal|bhasin|gogoi|biradar|fatehdeep|uday[-\s]?pratap|rajendra[-\s]?krishna|ananda[-\s]?sen|shrivastava|bharadwaj|sandeep[-\s]?singh|saikia|bhuyan|anubha|choudhary/i
+// It holds hashes of the names, not the names: a guard against publishing names shouldn't publish them.
+// Each word, and each pair of neighbouring words run together ("first last" → "firstlast"), is hashed
+// and looked up. One entry is a made-up canary, "zzqcanary", so the tests can exercise the list.
+const KNOWN = new Set(['1vyoo7eadis', '285jj9vgro8', 'ls09gt83ry', 'qh4n60aafo', '10xrlh5l1gh', '28yimtr39n', '1ntilm73uwm', 'guhfyv2fze', 'undwfj2rty', '1piiiolpss5', 'l6l6uxngh3', '25rohf95izu', 'qba7ihekgt', 'ivxsfw4e71', 'xu0zewfifd', '3fu3fqhw47', '29ak8b7iy5r'])
+/** cyrb53, a small public-domain string hash: what the KNOWN list stores. */
+export function nameHash(word: string, seed = 0): string {
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed
+  for (let i = 0; i < word.length; i++) {
+    const ch = word.charCodeAt(i)
+    h1 = Math.imul(h1 ^ ch, 2654435761)
+    h2 = Math.imul(h2 ^ ch, 1597334677)
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36)
+}
+/** Whether a text or link names someone the register has already had to remove. */
+export function knownName(text: string): boolean {
+  const words = text.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').split(/[^\p{L}]+/u).filter(Boolean)
+  return words.some((w, i) => KNOWN.has(nameHash(w)) || (i + 1 < words.length && KNOWN.has(nameHash(w + words[i + 1]))))
+}
 
 const normalise = (t: string) => t.normalize('NFKC').replace(/\p{Nd}/gu, digitValue)
 function digitValue(ch: string): string {
@@ -36,13 +56,13 @@ export function personalData(text: string): string | null {
   if (DIGITS.test(t.replace(/https?:\/\/\S+/gi, ' ').replace(DATE_OR_TIME, ' '))) return 'a long number (a phone, Aadhaar or account number)'
   if (EMAIL.test(t) || EMAIL_SPELLED.test(t) || UPI.test(t)) return 'an email or UPI address'
   if (AADHAAR_WORD.test(t)) return 'an Aadhaar reference'
-  if (HONORIFIC.test(t.replace(HONORIFIC_PLACES, ' ')) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t) || KNOWN.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
+  if (HONORIFIC.test(t.replace(HONORIFIC_PLACES, ' ')) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t) || knownName(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
   return null
 }
 
 export const looksLikeEmail = (text: string) => EMAIL.test(normalise(text)) || EMAIL_SPELLED.test(normalise(text))
 /** A source link must not carry an email or a person's name in its slug. */
-export const linkProblem = (url: string): string | null => (looksLikeEmail(url) ? 'an email address' : KNOWN.test(url) || HONORIFIC.test(url.replace(/[-_/]/g, ' ')) ? "a person's name in the link" : null)
+export const linkProblem = (url: string): string | null => (looksLikeEmail(url) ? 'an email address' : knownName(url) || HONORIFIC.test(url.replace(/[-_/]/g, ' ')) ? "a person's name in the link" : null)
 
 export function assertNoPersonalData(...texts: (string | undefined | null)[]) {
   for (const t of texts) {

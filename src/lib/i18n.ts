@@ -402,10 +402,9 @@ const HI: Record<string, string> = {
   'Key {key}': 'कुंजी {key}',
   'Query a past block': 'किसी पुराने ब्लॉक पर क्वेरी करें',
   'Superseded by a correction': 'इसकी जगह अब सुधार है',
-  'The registrar filed a correction for this record (its notes or source titles quoted people’s names, or a date was wrong). The register shows the correction; this original is sealed and readonly, so it stays on Arkiv until it expires.':
-    'रजिस्ट्रार ने इस रिकॉर्ड का सुधार दर्ज किया है (इसके नोट्स या स्रोतों के शीर्षकों में लोगों के नाम थे, या कोई तारीख़ ग़लत थी)। रजिस्टर सुधार को दिखाता है; यह मूल रिकॉर्ड सील और केवल-पढ़ने वाला है, इसलिए समाप्त होने तक Arkiv पर रहेगा।',
+  'The registrar filed a correction for this record: its notes or sources quoted people’s names, or better sources improved its dates and links. The register shows the correction. This original is sealed and readonly, so it stays on Arkiv until it expires, but this site does not display its text.':
+    'रजिस्ट्रार ने इस रिकॉर्ड का सुधार दर्ज किया: इसके नोट्स या स्रोतों में लोगों के नाम थे, या बेहतर स्रोतों से इसकी तारीख़ें और लिंक सुधरे। रजिस्टर सुधार दिखाता है। यह मूल रिकॉर्ड सील और केवल-पठनीय है, इसलिए समाप्त होने तक Arkiv पर रहता है, पर यह साइट इसका पाठ नहीं दिखाती।',
   'Open the correction': 'सुधार खोलें',
-  'Show the original anyway': 'फिर भी मूल रिकॉर्ड दिखाएँ',
   'Citizen report on Arkiv': 'Arkiv पर नागरिक रिपोर्ट',
   'Permanent record on Arkiv': 'Arkiv पर स्थायी रिकॉर्ड',
   'Order in force on Arkiv': 'Arkiv पर लागू आदेश',

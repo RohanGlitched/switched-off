@@ -28,7 +28,6 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const now = useNow()
   const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
   const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex; renews?: { key: Hex; label: string }; renewedBy?: { key: Hex; label: string }[] }>({})
-  const [showOld, setShowOld] = useState(false)
   const t = useT()
   const load = () => syncClock().then(() => orderByKey(entityKey)).then((x) => {
     setE(x)
@@ -95,11 +94,11 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 16, minWidth: 0 }}>
-          {related.correctedBy && !showOld ? (
+          {related.correctedBy ? (
             <div className="panel" style={{ display: 'grid', gap: 10 }}>
               <h2 className="h3">{t('Superseded by a correction')}</h2>
-              <p className="mute" style={{ margin: 0 }}>{t('The registrar filed a correction for this record (its notes or source titles quoted people’s names, or a date was wrong). The register shows the correction; this original is sealed and readonly, so it stays on Arkiv until it expires.')}</p>
-              <div className="row"><Link to={`/e/${related.correctedBy}`} className="btn primary">{t('Open the correction')}</Link><button className="btn" onClick={() => setShowOld(true)}>{t('Show the original anyway')}</button></div>
+              <p className="mute" style={{ margin: 0 }}>{t('The registrar filed a correction for this record: its notes or sources quoted people’s names, or better sources improved its dates and links. The register shows the correction. This original is sealed and readonly, so it stays on Arkiv until it expires, but this site does not display its text.')}</p>
+              <div className="row"><Link to={`/e/${related.correctedBy}`} className="btn primary">{t('Open the correction')}</Link></div>
             </div>
           ) : isReport(e) ? <ReportCard r={e} /> : <Gazette o={e} live={!isRecord(e)} />}
         </div>
@@ -144,7 +143,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           <p className="hint" style={{ margin: 0 }}>{tx_('Reproduce: {code} on Tiramisu, or see {link}.', { code: <code>arkiv_getEntity("{short(e.key)}")</code>, link: <Link to="/data">{t('the exact queries')}</Link> })}</p>
         </div>
       </div>
-      {!isReport(e) && !(related.correctedBy && !showOld) && (
+      {!isReport(e) && !related.correctedBy && (
         <div style={{ display: 'grid', gap: 20, marginTop: 20 }}>
           <CitePanel o={e} />
           {e.net === 'live' && !orderOnFile(e) && (
