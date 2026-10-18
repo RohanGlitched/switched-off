@@ -12,6 +12,8 @@ import { witnessName, account, forgetKey } from '../lib/wallet'
 import { tf, tp, tr, tx, useT } from '../lib/i18n'
 
 import { personalData } from '../lib/pii'
+import { useMapState } from '../components/NightMap'
+import { RtiPanel } from '../components/Rti'
 
 export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const reg = useRegister(net)
@@ -44,6 +46,14 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const nearby = useMemo(() => reg.reports.filter((r) => !state || r.state === state).sort((a, b) => b.seen - a.seen).slice(0, 8), [reg.reports, state])
   const piiWarn = personalData(note)
   const [cooling, setCooling] = useState(false)
+  // a district reported dark (or about to be) with no order in force on the register: offer the RTI request for it
+  const map = useMapState(geo, reg.orders, reg.reports)
+  const dIndex = geo && state && district ? geo.districts.findIndex((d) => d.code === state && d.name === district) : -1
+  const darkReports = dIndex >= 0 ? map.flagged.get(dIndex) ?? [] : []
+  // only once the orders in force have been read: "no order" must mean Arkiv said so
+  const askForOrder = net === 'live' && !reg.loading && !reg.error && dIndex >= 0 && !map.off.has(dIndex) && (darkReports.length > 0 || status !== 'back')
+  const nowS = Math.floor(Date.now() / 1000)
+  const darkSince = darkReports.length ? Math.min(...darkReports.map((r) => r.seen)) : nowS
 
   const submit = async () => {
     if (!state || !district) return toast(tr('Pick your state and district first.'))
@@ -120,6 +130,18 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
               <p className="hint" style={{ margin: 0 }}>{tx('Filed as {key} in transaction {tx}, signed by {witness}.', { key: <Link to={`/e/${done.key}`}>{short(done.key)}</Link>, tx: <a href={txUrl(done.tx)}>{short(done.tx)}</a>, witness: witnessName(account.address) })}</p>
             )}
           </div>
+          {askForOrder && (
+            <RtiPanel
+              key={`${state}|${district}`}
+              state={state}
+              stateName={STATES[state] ?? state}
+              districts={[district]}
+              from={darkSince}
+              to={nowS}
+              why={darkReports.length ? tp(darkReports.length, '{n} live report says {district} has no internet, and no order covering it is on the register.', '{n} live reports say {district} has no internet, and no order covering it is on the register.', { district }) : tf('No order covering {district} is in force on the register.', { district })}
+              dark
+            />
+          )}
           <div className="panel" style={{ padding: 16, display: 'grid', gap: 8 }}>
             <b style={{ fontSize: 15 }}>{t('Your safety')}</b>
             <p className="hint" style={{ margin: 0 }}>{tf('Reports carry no name, number or location finer than a district. The only link between this phone and what it filed is the throwaway key in this browser ({witness}). Forget it before handing your phone to anyone; your reports stay on the register, but nothing on the phone points to them.', { witness: witnessName(account.address) })}</p>

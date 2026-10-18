@@ -237,6 +237,7 @@ export function Home() {
               </Link>
             ))}
             {nowMap.flagged.size === 0 && <div className="empty">{tx('No district is reported dark without an order right now. If yours is, {link}: it takes one tap and no sign-up.', { link: <Link to="/report">{t('say so')}</Link> })}</div>}
+            <p className="hint" style={{ margin: '4px 0 0' }}>{t('Open a district to confirm what people see there, and to draft a Right to Information request that asks the state for the order: written in your browser, in English or Hindi, sent by nobody but you.')}</p>
           </div>
         </div>
       </section>

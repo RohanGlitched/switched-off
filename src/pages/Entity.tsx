@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
 import { Gazette } from '../components/Gazette'
+import { CitePanel } from '../components/Cite'
+import { RtiPanel } from '../components/Rti'
+import { orderOnFile } from '../lib/cite'
 import { SEALED, allRecords, applyCorrections, blockToTime, currentBlock, errText, extenders, orderByKey, sameDesk, syncClock, trustedCorrection, type Order, type Record_, type Report, EXPLORER } from '../lib/arkiv'
 import { confirmEmergency, confirmReport, keepAlive, withdrawReport } from '../lib/write'
 import { account } from '../lib/wallet'
@@ -141,6 +144,24 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           <p className="hint" style={{ margin: 0 }}>{tx_('Reproduce: {code} on Tiramisu, or see {link}.', { code: <code>arkiv_getEntity("{short(e.key)}")</code>, link: <Link to="/data">{t('the exact queries')}</Link> })}</p>
         </div>
       </div>
+      {!isReport(e) && !(related.correctedBy && !showOld) && (
+        <div style={{ display: 'grid', gap: 20, marginTop: 20 }}>
+          <CitePanel o={e} />
+          {e.net === 'live' && !orderOnFile(e) && (
+            <RtiPanel
+              state={e.state}
+              stateName={e.stateName}
+              districts={e.districts}
+              from={e.starts}
+              // an order with no stated end: ask about the longest one order may run (15 days), never past today
+              to={e.ends || Math.min(e.starts + 15 * 86_400, Math.floor(Date.now() / 1000))}
+              orderId={e.orderId}
+              authority={e.authority}
+              why={e.published === false ? t('The order text was not published.') : t('No copy of the order itself is on file: only reports about it.')}
+            />
+          )}
+        </div>
+      )}
     </section>
   )
 }
