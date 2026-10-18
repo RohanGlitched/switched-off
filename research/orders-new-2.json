@@ -1,0 +1,214 @@
+[
+ {
+  "id": "dl-detention-centres-2026-10-10",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "North West (500 m around venues in Model Town, Bawana and Nizampur/Kanjhawala)",
+   "West (500 m around a stadium in Nangloi)",
+   "East (500 m around the Yamuna Sports Complex)",
+   "South (500 m around the Jasola Sports Complex, Sarita Vihar)",
+   "South West (500 m around community centres in Daulatpur and Pandwala Khurd, Chhawla)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-10-09",
+  "startsAt": "2026-10-10T12:00",
+  "endsAt": "2026-10-10T22:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Telecommunications Act, 2023 read with the Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, maintaining public order and preventing incitement at venues holding people detained during the 10 October march against the voter-roll revision (SIR).",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "MediaNama: Internet shutdown ordered around New Delhi's Jantar Mantar (updated 12 Oct with the detention-venue order)",
+    "url": "https://www.medianama.com/2026/10/223-internet-shutdown-new-delhi-jantar-mantar/"
+   },
+   {
+    "title": "MediaNama: Supreme Court orders unhindered internet access in Delhi",
+    "url": "https://www.medianama.com/2026/10/223-supreme-court-internet-shutdown-delhi/"
+   },
+   {
+    "title": "Newsy Today: MHA suspends mobile internet at Jantar Mantar and eight detention centres",
+    "url": "https://www.newsy-today.com/mha-suspends-mobile-internet-at-jantar-mantar-and-eight-detention-centres/"
+   }
+  ],
+  "notes": "Reported as approved by the Union Home Secretary on 9 Oct at Delhi Police's request and addressed to the Commissioner of Police, Delhi. Reports give 12:00-22:00, matching the reported ten hours; another outlet quotes '12 am-10 pm'. MediaNama said it had not seen the order itself. Separate from and overlapping the 4 km dl-janpath-2026-10-09 order. Venues given by locality. On 11 Oct the Supreme Court directed that internet facilities function unhindered. Districts are the census districts the eight venues fall in; the order covered only 500 m around each venue."
+ },
+ {
+  "id": "dl-jantar-mantar-2026-07-22",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "New Delhi (Central Delhi around Jantar Mantar)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-07-22",
+  "startsAt": "2026-07-22T18:00",
+  "endsAt": "2026-07-23T06:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": null,
+  "reasonStated": "Ongoing student protests at Jantar Mantar over exam paper leaks.",
+  "renewalOf": null,
+  "published": false,
+  "sources": [
+   {
+    "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 22 July 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-22-july-2026/"
+   },
+   {
+    "title": "Daily Pioneer: Plea against internet shutdown around Jantar Mantar withdrawn from Delhi HC",
+    "url": "https://www.dailypioneer.com/news/plea-against-internet-shutdown-around-jantar-mantar-withdrawn-from-delhi-hc"
+   },
+   {
+    "title": "SabrangIndia: Jantar Mantar offline, six internet shutdowns in a week",
+    "url": "https://sabrangindia.in/jantar-mantar-offline-six-internet-shutdowns-in-a-week/"
+   }
+  ],
+  "notes": "Pulse marks this unconfirmed and gives 18:00 22 Jul to 06:00 23 Jul. Order date and MHA authorship from PIL coverage, which says the orders covered about 1.5 km around Jantar Mantar. Unclear whether dl-jantar-mantar-2026-07-23 (09:30 start) renewed it."
+ },
+ {
+  "id": "dl-jantar-mantar-2026-07-23-1600",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "New Delhi (1.5 km radius of Jantar Mantar)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-07-23",
+  "startsAt": "2026-07-23T16:00",
+  "endsAt": "2026-07-24T00:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b), Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, public order and preventing incitement to offences during exam-leak protests.",
+  "renewalOf": "dl-jantar-mantar-2026-07-23",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV/2 dated 23 Jul 2026 (image via Internet Society Pulse)",
+    "url": "https://pulse.internetsociety.org/media/images/HN7ARzrb0AA4aeZ.width-1200.jpg"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 23 July 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-23-july-2026/"
+   },
+   {
+    "title": "Morung Express (IANS): Home Ministry orders suspension of mobile internet near Jantar Mantar",
+    "url": "https://morungexpress.com/home-ministry-orders-suspension-of-mobile-internet-services-near-jantar-mantar"
+   }
+  ],
+  "notes": "Order text: 16:00 to 24:00 on 23 July 2026, all technologies, approved by the Union Home Secretary, addressed to the Commissioner of Police, Delhi. Pulse labels this image the initial order, but its text is the first extension. Published = order copy circulated publicly, not gazetted."
+ },
+ {
+  "id": "dl-jantar-mantar-2026-07-24-0000",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "New Delhi (1.5 km radius of Jantar Mantar)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-07-23",
+  "startsAt": "2026-07-24T00:00",
+  "endsAt": "2026-07-24T12:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b), Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, public order and preventing incitement to offences during exam-leak protests.",
+  "renewalOf": "dl-jantar-mantar-2026-07-23-1600",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV/3 dated 23 Jul 2026 (image via Internet Society Pulse)",
+    "url": "https://pulse.internetsociety.org/media/images/Delhi_IS_240726_d3e84380-b32c-4627-b9bc-08fce.width-1200.png"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 23 July 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-23-july-2026/"
+   }
+  ],
+  "notes": "Order text: 0000 to 1200 hrs on 24 July 2026, approved by the Union Home Secretary."
+ },
+ {
+  "id": "dl-jantar-mantar-2026-07-24-1200",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "New Delhi (1.5 km radius of Jantar Mantar)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-07-24",
+  "startsAt": "2026-07-24T12:00",
+  "endsAt": "2026-07-25T00:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b), Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, public order and preventing incitement to offences during exam-leak protests.",
+  "renewalOf": "dl-jantar-mantar-2026-07-24-0000",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV dated 24 Jul 2026 (image via Internet Society Pulse)",
+    "url": "https://pulse.internetsociety.org/media/images/Delhi_IS_240726_d3e84380-b32c-4627-b9bc-08fce_VOzOnFw.width-1200.png"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 23 July 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-23-july-2026/"
+   }
+  ],
+  "notes": "Order text: 1200 to 2400 hrs on 24 July 2026. Pulse's table attaches this image to the wrong row."
+ },
+ {
+  "id": "dl-jantar-mantar-2026-07-25",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "New Delhi (1.5 km radius of Jantar Mantar)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-07-24",
+  "startsAt": "2026-07-25T00:00",
+  "endsAt": "2026-07-26T00:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b), Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, public order and preventing incitement to offences during exam-leak protests.",
+  "renewalOf": "dl-jantar-mantar-2026-07-24-1200",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV/2 dated 24 Jul 2026 (image via Internet Society Pulse)",
+    "url": "https://pulse.internetsociety.org/media/images/HOE6iZvakAAxG5A.width-1200.jpg"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 23 July 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-23-july-2026/"
+   }
+  ],
+  "notes": "Order text: 0000 to 2400 hrs on 25 July 2026. Services reportedly returned soon after the protest was called off on 25 Jul, so it may have been lifted early."
+ },
+ {
+  "id": "rj-jaipur-2026-06-08",
+  "state": "Rajasthan",
+  "stateCode": "IN-RJ",
+  "districts": [
+   "Jaipur (Jaipur North and Jaipur East police districts)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-06-07",
+  "startsAt": "2026-06-08T00:00",
+  "endsAt": null,
+  "issuingAuthority": "Divisional Commissioner, Jaipur",
+  "legalBasis": "Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017 (as reported)",
+  "reasonStated": "Prevent rumours and provocative content during an anti-encroachment demolition of religious structures in Jagatpura.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "India TV: Jaipur anti-encroachment drive, mobile internet and bulk SMS suspended",
+    "url": "https://www.indiatvnews.com/rajasthan/jaipur-anti-encroachment-drive-mobile-internet-and-bulk-sms-services-suspended-for-48-hours-2026-06-07-1043983"
+   },
+   {
+    "title": "Outlook: Jaipur internet shutdown before demolition in Jagatpura",
+    "url": "https://www.outlookindia.com/amp/story/national/jaipur-internet-shutdown-before-demolition-of-mosque-temples-in-jagatpura"
+   }
+  ],
+  "notes": "Mobile internet, social media, bulk SMS and MMS suspended; voice exempt. End disputed across reports (24 to 48 hours; midnight 8 Jun or midnight 9 Jun). The 2017 Rules citation may be misreported, since the 2024 Rules replaced them."
+ }
+]

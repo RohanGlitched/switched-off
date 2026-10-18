@@ -3,7 +3,7 @@
 // text field and link goes through the personal-data guard first, and an order_id already on the register
 // is skipped, so running it twice files nothing twice. An order still in force also gets an `order`
 // entity that dies on its lapse block. Afterwards the new orders are appended to research/orders-all.json.
-// Usage: npx tsx scripts/add-orders.ts [--dry]
+// Usage: npx tsx scripts/add-orders.ts [research/orders-new-2.json] [--dry]
 import fs from 'node:fs'
 import { createPublicClient, createWalletClient } from '@arkiv-network/sdk'
 import { tiramisu } from '@arkiv-network/sdk/chains'
@@ -30,7 +30,9 @@ const pub = createPublicClient({ chain: tiramisu, transport: http(RPC, { ...opts
 const wallet = createWalletClient({ chain: tiramisu, transport: http(RPC, { ...opts, retryCount: 0, timeout: 60_000 }), account })
 
 const old = JSON.parse(fs.readFileSync('research/orders-all.json', 'utf8')) as Src[]
-const fresh = JSON.parse(fs.readFileSync('research/orders-new.json', 'utf8')) as Src[]
+// the file of new orders: research/orders-new.json unless another is named
+const file = process.argv.slice(2).find((a) => a.endsWith('.json')) ?? 'research/orders-new.json'
+const fresh = JSON.parse(fs.readFileSync(file, 'utf8')) as Src[]
 
 // ids already in the research file were filed by an earlier run: leave them out
 const ids = new Set(old.map((o) => o.id))

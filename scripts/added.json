@@ -134,6 +134,46 @@
      "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
     }
    ]
+  },
+  {
+   "at": "2026-10-18T06:14:26.776Z",
+   "added": [
+    {
+     "id": "dl-detention-centres-2026-10-10",
+     "key": "0xc33b64c2f407d17cf790f82173690d250de6e3761031af29b9ad93e3d7a2e70b",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "dl-jantar-mantar-2026-07-22",
+     "key": "0x1cd8bbb5b97d22fe3300691ff6e3bc413a6a599fd41518d0dbd6b44a04a32859",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "dl-jantar-mantar-2026-07-23-1600",
+     "key": "0xb76839b8f9fcab1929b72912c1df41c41b0e9a8dfc947306a3c1731f38aae02d",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "dl-jantar-mantar-2026-07-24-0000",
+     "key": "0x179937a41725a31fc79782ae6e6207a214f9d983622a9473978777fa4ef33b80",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "dl-jantar-mantar-2026-07-24-1200",
+     "key": "0xac70af1f1e801cc5c6870e70228e2c38a9f7d43c6f2a4e3e402812710ffc5909",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "dl-jantar-mantar-2026-07-25",
+     "key": "0x55ee847d6b78d1245295870189493f5baa26901b4586b53afb90a672ec1ade8b",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    },
+    {
+     "id": "rj-jaipur-2026-06-08",
+     "key": "0xf5c4a4a6fabe7017d195828a1dab55b867798aed67097a4ddfdb29766e490a2b",
+     "tx": "0x95fa455891ba4939c5f5555a7ad0bb6e9ded4c68d41ddf1248742a9cf2c63847"
+    }
+   ]
   }
  ]
 }
