@@ -207,7 +207,9 @@ export type Raw = {
 const un = (v: unknown): unknown => (v && typeof v === 'object' && 'value' in (v as object) ? (v as { value: unknown }).value : v)
 const num = (v0: unknown) => {
   const v = un(v0)
-  return typeof v === 'bigint' ? Number(v) : typeof v === 'number' ? v : Number(v ?? 0) || 0
+  // a hostile str('1e999') would read as Infinity: dates and lifetimes need finite numbers
+  const n = typeof v === 'bigint' ? Number(v) : typeof v === 'number' ? v : Number(v ?? 0)
+  return Number.isFinite(n) ? n : 0
 }
 const str = (v0: unknown) => {
   const v = un(v0)

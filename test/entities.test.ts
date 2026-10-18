@@ -49,6 +49,7 @@ describe('malformed attributes', () => {
     expect(o).toMatchObject({ orderId: '', state: '', districts: [], scope: 'unknown', owner: '0x', creator: '0x', createdAt: 0n, expiresAt: 0n, readonly: false, official: false, published: null, renews: null })
   })
   it('a u64 bigint attribute becomes a number', () => expect(toOrder(raw({ attributes: { issued: u(1_700_000_000n) } })).issued).toBe(1_700_000_000))
+  it('numbers that are not finite read as 0', () => expect(toOrder(raw({ attributes: { issued: '1e999', starts: 'Infinity', ends: Number.NaN } }))).toMatchObject({ issued: 0, starts: 0, ends: 0 }))
   it('untagged values are read too', () => expect(toOrder(raw({ attributes: { order_id: 'plain', issued: 42 } }))).toMatchObject({ orderId: 'plain', issued: 42 }))
 })
 
