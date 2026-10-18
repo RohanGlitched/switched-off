@@ -98,6 +98,10 @@ export function Home() {
   const archive = useMemo(() => live.records.filter((r) => r.official && r.starts <= Date.now() / 1000 + 86_400).sort((a, b) => b.starts - a.starts), [live.records])
   const totals = useMemo(() => tally(archive), [archive])
   const latest = archive[0]
+  // with nothing in force, the headline is the record itself: every district any order on file has switched off
+  const everMap = useMapState(geo, archive as unknown as Order[], [])
+  const renewals = useMemo(() => archive.filter((r) => r.renews).length, [archive])
+  const quiet = !live.loading && live.orders.length === 0
 
   return (
     <>
@@ -109,26 +113,31 @@ export function Home() {
             <p className="lede">
               {t('India’s internet shutdown orders, filed on Arkiv the way the law says they work: each lives until it lapses, nobody can quietly edit or delete the record, and anyone can keep it alive. When the lights go out without a published order, people on the ground can say so, and their neighbours can confirm it.')}
             </p>
-            <div className="stats" role="group" aria-label={t('Right now')}>
-              <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
-              {live.loading || live.orders.length > 0 ? (
-                <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
-              ) : (
+            {quiet && archive.length ? (
+              <div className="stats" role="group" aria-label={t('On the register')}>
                 <div className="stat"><b>{archive.length}</b><span>{t('orders on file')}</span></div>
-              )}
-              <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>{t('live reports of no internet')}</span></div>
-            </div>
+                <div className="stat"><b>{geo ? everMap.off.size : '…'}</b><span>{t('districts switched off at least once')}</span></div>
+                <div className="stat"><b>{renewals}</b><span>{t('renewals on file')}</span></div>
+              </div>
+            ) : (
+              <div className="stats" role="group" aria-label={t('Right now')}>
+                <div className="stat"><b>{live.loading ? '…' : live.orders.length}</b><span>{t('orders in force now')}</span></div>
+                <div className="stat"><b>{live.loading ? '…' : nowMap.off.size}</b><span>{t('districts switched off')}</span></div>
+                <div className="stat"><b>{live.loading ? '…' : down.length}</b><span>{t('live reports of no internet')}</span></div>
+              </div>
+            )}
             <div className="row">
               <Link to="/report" className="btn primary">{t('Is your internet off? Report it')}</Link>
               <Link to="/register" className="btn">{t('Open the register')}</Link>
             </div>
             {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 120) })}</p>}
-            {!live.loading && !live.error && live.orders.length === 0 && latest && (
+            {!live.error && quiet && latest && (
               <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
-                <span><span className="hint">{t('No order on the register is in force right now. Latest on file:')}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
+                <span><span className="hint">{tf('Right now: no order on the register is in force, {n}. Latest on file:', { n: tp(down.length, '{n} live report of no internet', '{n} live reports of no internet') })}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
                 <span className="chip">{t('lapsed')}</span>
               </Link>
             )}
+            {live.snapshotBlock !== undefined && <p className="hint">{tf('The archive above is a copy read from Arkiv at block {n}; checking Arkiv live now.', { n: live.snapshotBlock.toString() })}</p>}
           </div>
           <div className="hero-map">
             <div style={{ position: 'relative' }}>

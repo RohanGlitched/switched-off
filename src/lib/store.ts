@@ -4,7 +4,7 @@ import type { Hex } from 'viem'
 import { activeOrders, blockToTime, currentBlock, errText, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
 export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] }; earlier?: boolean }
-export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean }
+export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean; /** set while the archive on screen is the bundled copy read at this block, before the live read lands */ snapshotBlock?: bigint }
 
 const empty: Snapshot = { orders: [], records: [], reports: [], loadedAt: 0, error: null, loading: true }
 const snaps: Record<Net, Snapshot> = { live: { ...empty }, drill: { ...empty } }
@@ -22,6 +22,23 @@ function settlePending() {
 }
 const inflight: Partial<Record<Net, Promise<void>>> = {}
 const queued: Partial<Record<Net, { p: Promise<void>; heavy: boolean }>> = {}
+
+// The sealed archive is a 350 KB read. While it is on its way, the first screen paints from
+// /snapshot.json: the same records as Arkiv returned them at one block (scripts/snapshot.ts), labelled
+// as such. Sealed records can't change, so the live read can only add newer filings to it.
+let preloading: Promise<void> | null = null
+function preload() {
+  preloading ??= fetch('/snapshot.json')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j: { block: string; records: Record_[] } | null) => {
+      if (!j || snaps.live.loadedAt || !Array.isArray(j.records)) return
+      const big = (v: unknown) => (typeof v === 'string' && /^\d+n$/.test(v) ? BigInt(v.slice(0, -1)) : 0n)
+      const recs = j.records.map((r) => ({ ...r, createdAt: big(r.createdAt), expiresAt: big(r.expiresAt) }))
+      snaps.live = { ...snaps.live, records: recs, snapshotBlock: big(`${j.block}n`) }
+      emit()
+    })
+    .catch(() => {})
+}
 
 const recordsReadAt: Partial<Record<Net, number>> = {}
 /**
@@ -48,7 +65,16 @@ export async function refresh(net: Net, light = false) {
       await syncClock()
       const before = snaps[net]
       const wantRecords = !light || !before.loadedAt || Date.now() - (recordsReadAt[net] ?? 0) > 300_000
-      const [o, p, r] = await Promise.all([activeOrders(net), liveReports(net), wantRecords ? records(net) : Promise.resolve(before.records)])
+      // On the live register the archive on screen is the snapshot until its own read lands, so what is in
+      // force now is read first, on its own, and shown the moment it arrives (one batched request would
+      // hold it back behind the 350 KB archive).
+      let o: Order[], p: Report[], r: Record_[]
+      if (net === 'live' && wantRecords && !before.loadedAt) {
+        ;[o, p] = await Promise.all([activeOrders(net), liveReports(net)])
+        snaps[net] = { ...snaps[net], orders: o, reports: p, loading: false, error: null }
+        emit()
+        r = await records(net)
+      } else [o, p, r] = await Promise.all([activeOrders(net), liveReports(net), wantRecords ? records(net) : Promise.resolve(before.records)])
       if (wantRecords) recordsReadAt[net] = Date.now()
       // an order that was on screen and is now gone past its expiry lapsed on Arkiv's clock: say so
       const head = currentBlock()
@@ -190,6 +216,7 @@ export function useRegister(net: Net): Snapshot {
     () => snaps[net],
   )
   useEffect(() => {
+    if (net === 'live' && !snaps.live.loadedAt) preload()
     if (!snaps[net].loadedAt) void refresh(net)
     watch()
   }, [net])
