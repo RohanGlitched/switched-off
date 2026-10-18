@@ -3,7 +3,7 @@
 // any server, and nothing typed into it is kept. Copy it or download it, then send it yourself.
 import { useId, useMemo, useState } from 'react'
 import { LEGAL, isoDay, rtiFileName, rtiLetter, rtiPortal, letterLang, type Lang } from '../lib/cite'
-import { getLang, tr, trIn, useT } from '../lib/i18n'
+import { tr, trIn, useLang, useT } from '../lib/i18n'
 import { CopyButton, downloadText } from './Cite'
 
 const unixOf = (day: string) => (day ? Math.floor(new Date(`${day}T00:00:00+05:30`).getTime() / 1000) : 0)
@@ -26,7 +26,10 @@ type Props = {
 export function RtiPanel({ state, stateName, districts, from, to, orderId, authority, why, dark }: Props) {
   const t = useT()
   const uid = useId()
-  const [lang, setLang] = useState<Lang>(letterLang(getLang()))
+  // the letter is in the site's language (Hindi or English) until the reader picks one here
+  const siteLang = useLang()
+  const [picked, setLang] = useState<Lang | null>(null)
+  const lang: Lang = picked ?? letterLang(siteLang)
   const [fromDay, setFromDay] = useState(isoDay(from))
   const [toDay, setToDay] = useState(isoDay(Math.max(from, to)))
   const [edited, setEdited] = useState<string | null>(null)

@@ -66,7 +66,7 @@ export function citationText(o: Order | Record_, opts: { t?: T; lang?: Lang } = 
     o.orderId ? fill(t, officialNumber(o.orderId) ? 'Order: {id}.' : 'Register entry: {id} (the order’s own number is not recorded).', { id: o.orderId }) : '',
     fill(t, 'In force: {when}; issued {issued}.', { when, issued: citeDate(o.issued, lang) || t('date not recorded') }),
     fill(t, 'What was cut: {scope}.', { scope: t(SCOPE[o.scope] ?? SCOPE.unknown) }),
-    fill(t, 'Legal basis: {basis}.', { basis: t(basisName(o)) }),
+    basisName(o) === BASIS_LABEL['not-stated'] ? t('Legal basis: not stated.') : fill(t, 'Legal basis: {basis}.', { basis: t(basisName(o)) }),
     t(o.published === true ? 'Order text: published.' : o.published === false ? 'Order text: not published.' : 'Order text: whether it was published is not known.'),
     o.net === 'drill' ? t('This is a drill entity, not the live register.') : '',
     fill(t, sealed ? 'Switched Off register, Arkiv Tiramisu entity {key}, created at block {block}, sealed.' : 'Switched Off register, Arkiv Tiramisu entity {key}, created at block {block}, not sealed.', { key: o.key, block: o.createdAt > 0n ? o.createdAt.toString() : '?' }),

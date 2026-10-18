@@ -7,7 +7,7 @@ import { loadGeo, type Geo } from '../lib/geo'
 import { useDrillOrders, useNow, useRegister } from '../lib/store'
 import { Link, go } from '../lib/router'
 import { tf, tp, tx, useT } from '../lib/i18n'
-import { fmtDate } from '../lib/fmt'
+import { fmtDate, fmtRange } from '../lib/fmt'
 import type { Order, Record_ } from '../lib/arkiv'
 
 export function Home() {
@@ -177,7 +177,7 @@ export function Home() {
             {live.error && <p className="hint" style={{ color: 'var(--vermilion)' }}>{tf('Arkiv didn’t answer just now ({error}). The map will retry on its own.', { error: live.error.slice(0, 120) })}</p>}
             {!live.error && quiet && latest && (
               <Link to={`/e/${latest.key}`} className="item" style={{ gridTemplateColumns: 'minmax(0,1fr) auto' }}>
-                <span><span className="hint">{tf('Right now: no order on the register is in force, {n}. Latest on file:', { n: tp(down.length, '{n} live report of no internet', '{n} live reports of no internet') })}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {fmtDate(latest.starts * 1000)}{latest.ends ? ` → ${fmtDate(latest.ends * 1000)}` : ''}</span>
+                <span><span className="hint">{tf('Right now: no order on the register is in force, {n}. Latest on file:', { n: tp(down.length, '{n} live report of no internet', '{n} live reports of no internet') })}</span><br /><b>{t(latest.stateName)}</b> · {latest.districts.slice(0, 2).join(', ')}{latest.districts.length > 2 ? '…' : ''} · {latest.ends ? fmtRange(latest.starts * 1000, latest.ends * 1000) : fmtDate(latest.starts * 1000)}</span>
                 <span className="chip">{t('lapsed')}</span>
               </Link>
             )}
