@@ -944,6 +944,9 @@ const HI: Record<string, string> = {
   '{n} districts dark at some point': 'किसी समय {n} ज़िले अंधेरे में',
   '{n} drill order, not counted': '{n} अभ्यास आदेश, गिना नहीं गया',
   '{n} drill orders, not counted': '{n} अभ्यास आदेश, गिने नहीं गए',
+  '{done} of {n} checks done…': '{n} में से {done} जाँचें पूरी…',
+  '{passed} of {n} checks hold · {left} not run': '{n} में से {passed} जाँचें सही · {left} नहीं चलीं',
+  '{passed} of {n} checks hold · {k} couldn’t run': '{n} में से {passed} जाँचें सही · {k} चल नहीं सकीं',
   // LiveWire
   'Drill: ': 'अभ्यास: ',
   "Order lapsed on Arkiv's clock: {state}, {place} relit. Nobody deleted it; its expiry block arrived.": 'Arkiv की घड़ी पर आदेश समाप्त: {state}, {place} में फिर रोशनी। किसी ने इसे मिटाया नहीं; बस इसका समाप्ति ब्लॉक आ गया।',

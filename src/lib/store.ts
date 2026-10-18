@@ -1,10 +1,10 @@
 // Live view of the register: one load, then Arkiv's entity events keep it current.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { Hex } from 'viem'
-import { activeOrders, blockToTime, currentBlock, errText, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
+import { activeOrders, blockToTime, currentBlock, errText, eventsClient, liveReports, pollingClient, recentEvents, recordsAndSuperseded, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
 export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] }; earlier?: boolean }
-export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean; /** set while the archive on screen is the bundled copy read at this block, before the live read lands */ snapshotBlock?: bigint; /** the head block when the records on screen were read from Arkiv */ recordsBlock?: bigint }
+export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean; /** set while the archive on screen is the bundled copy read at this block, before the live read lands */ snapshotBlock?: bigint; /** the head block when the records on screen were read from Arkiv */ recordsBlock?: bigint; /** originals a trusted correction replaced, hidden from the register (known once Arkiv has been read) */ superseded?: Record_[] }
 
 const empty: Snapshot = { orders: [], records: [], reports: [], loadedAt: 0, error: null, loading: true }
 const snaps: Record<Net, Snapshot> = { live: { ...empty }, drill: { ...empty } }
@@ -68,13 +68,14 @@ export async function refresh(net: Net, light = false) {
       // On the live register the archive on screen is the snapshot until its own read lands, so what is in
       // force now is read first, on its own, and shown the moment it arrives (one batched request would
       // hold it back behind the 350 KB archive).
-      let o: Order[], p: Report[], r: Record_[]
+      let o: Order[], p: Report[], rs: { list: Record_[]; superseded?: Record_[] }
       if (net === 'live' && wantRecords && !before.loadedAt) {
         ;[o, p] = await Promise.all([activeOrders(net), liveReports(net)])
         snaps[net] = { ...snaps[net], orders: o, reports: p, loading: false, error: null }
         emit()
-        r = await records(net)
-      } else [o, p, r] = await Promise.all([activeOrders(net), liveReports(net), wantRecords ? records(net) : Promise.resolve(before.records)])
+        rs = await recordsAndSuperseded(net)
+      } else [o, p, rs] = await Promise.all([activeOrders(net), liveReports(net), wantRecords ? recordsAndSuperseded(net) : Promise.resolve({ list: before.records, superseded: before.superseded })])
+      const r = rs.list
       if (wantRecords) recordsReadAt[net] = Date.now()
       // an order that was on screen and is now gone past its expiry lapsed on Arkiv's clock: say so
       const head = currentBlock()
@@ -82,7 +83,7 @@ export async function refresh(net: Net, light = false) {
       for (const old of before.orders)
         if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head + 6n)
           wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, lapsed: { drill: net === 'drill', state: old.stateName, districts: old.districts } }, ...wire].slice(0, 40)
-      snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false, recordsBlock: wantRecords ? currentBlock() : before.recordsBlock }
+      snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false, recordsBlock: wantRecords ? currentBlock() : before.recordsBlock, superseded: rs.superseded }
       if (!backfilled.has(net)) {
         backfilled.add(net)
         void backfill(net)
