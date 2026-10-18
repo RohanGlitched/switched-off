@@ -108,6 +108,65 @@ event, so the page also re-reads on a slow beat to drop lapsed orders on time.
 Reporter identity (keys are throwaway, generated in the browser), exact location (district only), the full text and PDF of
 orders (paraphrase + source links), and the presentation layer. See the Why page for the reasoning.
 
+## Personal data: what went wrong and what we did
+
+**What went wrong.** The archive import of 11 Oct 2026 was sealed the same evening (readonly, owned by `0x…dEaD`). After that
+we found that 10 of the 111 records quoted people's names in their notes, source titles or source links: case titles from
+published judgments, which name petitioners and judges, and one person named in news reporting. Our first round of corrections
+then missed a name in the source links of 2 of its own entities. So **12 sealed entities on Arkiv carry a real person's name**
+(10 original records and 2 first-round corrections). Every name came from a public court record or a published article, but the
+challenge says no real personal data, and our own rule is designations, never names. Neither held. The names are not repeated
+in this repository's docs.
+
+**Why it can't be undone.** A sealed entity can't be edited (`readonly`) or deleted (only an owner can delete, and nobody holds
+the key for `0x…dEaD`), by us or anyone. This is friction item 10 ([friction.md](friction.md#10-sealing-makes-a-privacy-mistake-permanent)).
+
+**What we did.**
+
+1. **Name-free registrar corrections, sealed in the transaction that created them** (keys predicted with `predictEntityKeys`,
+   [`scripts/correct-names.ts`](../scripts/correct-names.ts), pairs in [`scripts/corrections.json`](../scripts/corrections.json)):
+   tx `0x131f819faa99ab79c1effc929608e8df88ca673a71bd1040bf2ff77beb55519e` with 9 corrections (11 Oct, 21:38 IST) and
+   tx `0xdda960768b79430526cf9169233854162a676682fc836f0250ba0808601ddf70` with 3 (22:56 IST): one more original, found when the
+   guard was widened to link slugs, and the 2 first-round corrections that still had a name in a source link.
+2. **Every reader shows the correction instead.** The site ([`applyCorrections` in `src/lib/arkiv.ts`](../src/lib/arkiv.ts)),
+   the mirror ([`docs/index.html`](../docs/index.html)) and the CLI ([`cli/switched-off.mjs`](../cli/switched-off.mjs)) hide every
+   record that a trusted correction names in `corrects`, so after a correction of a correction only the last one shows. The entity page
+   of an original says "Superseded by a correction", links the correction, and shows the original only behind a
+   **"Show the original anyway"** button.
+3. **A personal-data guard before every write.** [`src/lib/pii.ts`](../src/lib/pii.ts) refuses phone numbers (any spacing,
+   `+91`, Devanagari and full-width digits), Aadhaar numbers and the word, emails (also spelled out) and UPI ids, honorifics,
+   case titles, judge styles, a role followed by a name, names the register has already had to remove, and links whose slug
+   carries a name. It runs in the forms and again inside `fileReport` and `fileOrder` right before the transaction is built
+   ([`src/lib/write.ts`](../src/lib/write.ts)); [`scripts/pii-check.ts`](../scripts/pii-check.ts) runs it over every field and
+   link of the archive import, and [`test/pii.test.ts`](../test/pii.test.ts) tests it.
+
+**The 12 entities, and when they expire.** Each was created with a 2-year lifetime. Expiry blocks were read on 18 Oct 2026 with one
+keyless `arkiv_query` (`app = str('switched-off') AND type = str('record') AND net = str('live') AND $creator = addr(0xA272…0E3e)`,
+selecting `key` and `expiresAt`); dates are counted at 2 s a block from block 726,460 (05:51:40 UTC, 18 Oct 2026).
+
+| Order | Entity carrying a name (sealed, readable by key) | Correction readers show now | Expires (block, ≈ IST) |
+|---|---|---|---|
+| `jk-2019-08-04` | `0xe27b2d373ccc263d0996d3855cd68f46965e5a981f7a5320849b19da3334a0ff` | `0xdddd61860460a25a9d71758d2203cda22067687ab95323956273f628891172bc` | 31,972,392 · 10 Oct 2028, 18:12 |
+| `jk-2020-01-14` | `0xe06147c70511813e7ab9a5df570aa2ad2b1ea9af9c8b35c15f363929227742df` | `0x158b82b932ac069428e334252142cd80dd8f0221a98264984e02cc199030b8f4` | 31,972,395 · 10 Oct 2028, 18:12 |
+| `as-caa-2019-12-11` | `0x6df9d884ed72b546ed204588bdb6369072ab4cf4a4b11a78a012e151779b8dd9` | `0x800901fa1853f716950a849e54e9a4b10db755be826e2194cde07b3b1984f783` | 31,972,392 · 10 Oct 2028, 18:12 |
+| `as-caa-2019-12-11` (first correction) | `0x3da097c9262951503a0c14ddd70697a36283374dab6d85aca10a2248a5966928` | `0x800901fa1853f716950a849e54e9a4b10db755be826e2194cde07b3b1984f783` | 31,978,578 · 10 Oct 2028, 21:38 |
+| `hr-farmers-2021-01-29` | `0x473eab727e77171697d9a02ee4608851352f9c596a5f689a1f98d30101e9ea13` | `0xf8ae2f1164fcc23389dff5c7de1720da81fe52aabb4e598a9a0f4ea9faa50817` | 31,972,397 · 10 Oct 2028, 18:12 |
+| `jk-2021-09-01` | `0xdd8cdfb829db2006fed5a8235022d30842f2796a743df9e76a2b7f95195c8fdd` | `0x3dd10f5f96762bea5c0f63533a6072e078bfbddebe41ef3e4befb619200db34f` | 31,972,397 · 10 Oct 2028, 18:12 |
+| `wb-madhyamik-2022-03-07` | `0x83856db4e34122265d4bc24b8a1ca7ec5fe73fe6a17b7866388bf3cd5f0029c9` | `0x00e667aace0196a1ab7c884f44712686c5d7c74a9073602710204bd768362963` | 31,972,400 · 10 Oct 2028, 18:13 |
+| `pb-statewide-2023-03-18` | `0xe795d4d88187d9a3bf019bf905573e24436cdfd8330fceebe8c46fa78c08a7ff` | `0x5424a2beeae63952181973d5f40a05fd9016c1c1db922873a7a26e2b00e453f0` | 31,972,400 · 10 Oct 2028, 18:13 |
+| `pb-statewide-2023-03-20` | `0xd439b64a215a9104397a798cacaf546d031eb4a6d8b80dc112be1776d9236107` | `0xd019fd2101b3fef27a9c2e7adb6392359b8098272e0b6a7912eb634f9a384e77` | 31,972,400 · 10 Oct 2028, 18:13 |
+| `pb-statewide-2023-03-20` (first correction) | `0x3b2459aa9d30f387f145dc9b8d2e1516f7f1841811aa5381e22f611644f863aa` | `0xd019fd2101b3fef27a9c2e7adb6392359b8098272e0b6a7912eb634f9a384e77` | 31,978,578 · 10 Oct 2028, 21:38 |
+| `hr-farmers-2024-02-11` | `0x38a605674827ceb89f970cdddc512c4f75c49ecee31d3cfda6dbe0fe33c79bd5` | `0x5dfbc58c8dfd3937abfedeb25ba0587cc61de891472861d9b6eb48501689a823` | 31,972,409 · 10 Oct 2028, 18:13 |
+| `jh-jgglcce-2024-09-21` | `0x4d9f712d17cf49ca13c2eb563c79f51692068d2dca079dd236d756b7ca9762a7` | `0x27c87a50d5543caa909fe2ffa7af4acc6fa89b5187ec6ddd6709c83637b73710` | 31,972,412 · 10 Oct 2028, 18:13 |
+
+These records also carry `permissionlessExtension`, so anyone can keep them alive past October 2028. We can't stop that, and we
+will not extend them ourselves. (The thirteenth registrar correction, `0x3f268a42…736a`, fixes a missing date on the Udaipur
+record and has nothing to do with names.)
+
+**What we would do on mainnet.** Run the guard over every field and link, then have a second person read each record before it
+is sealed; and seal only after a cooling-off period. Until it is sealed, a readonly record can still be deleted by its owner,
+so a mistake found in that window is deleted and refiled instead of living on beside its correction.
+
 ## On-chain evidence
 
 - Registrar (archive, registrar profile): `0xA2724EA69eA093677D8426E7FE20644EE90a0E3e`
@@ -119,6 +178,10 @@ orders (paraphrase + source links), and the presentation layer. See the Why page
   the former owner's delete was refused ("owned by 0x…dEaD, not 0xA272…") and a stranger's key extended a sealed record (`scripts/seal.ts --test`).
 - Correction: `0x3f268a4203917f33e963bffa50ab10f3ad9faad5bd2f03c179ba14c4f543736a` corrects the Udaipur record `0x5a55754b…667a0e`.
 - Nine name-free corrections created and sealed in one transaction, keys predicted with `predictEntityKeys`:
-  `0x131f819faa99ab79c1effc929608e8df88ca673a71bd1040bf2ff77beb55519e` (the pairs are in `scripts/corrections.json`).
+  `0x131f819faa99ab79c1effc929608e8df88ca673a71bd1040bf2ff77beb55519e`, and three more in
+  `0xdda960768b79430526cf9169233854162a676682fc836f0250ba0808601ddf70` (the pairs are in `scripts/corrections.json`; why they
+  were needed is in [Personal data](#personal-data-what-went-wrong-and-what-we-did)).
+- Every address that writes entities, with its role: [`wallets.md`](wallets.md). Each claim with its transaction and how to re-check
+  it: [`evidence.md`](evidence.md).
 - Archive import: 111 `record` entities in 12 `executeBatch` transactions on 11 Oct 2026, e.g.
   `0xb329d2e099e06b37160c5fa7222b66f997a00733d588b3ca717fbd3d8e9cab51`. All keys are in `scripts/seeded.json`.
