@@ -4,7 +4,7 @@ import type { Hex } from 'viem'
 import { activeOrders, blockToTime, currentBlock, errText, eventsClient, liveReports, pollingClient, recentEvents, records, syncClock, type Net, type Order, type Record_, type Report } from './arkiv'
 
 export type WireItem = { id: string; at: number; kind: 'created' | 'extended' | 'deleted' | 'patched' | 'transferred' | 'expired'; key: Hex; block: bigint; lapsed?: { drill: boolean; state: string; districts: string[] }; earlier?: boolean }
-export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean; /** set while the archive on screen is the bundled copy read at this block, before the live read lands */ snapshotBlock?: bigint }
+export type Snapshot = { orders: Order[]; records: Record_[]; reports: Report[]; loadedAt: number; error: string | null; loading: boolean; /** set while the archive on screen is the bundled copy read at this block, before the live read lands */ snapshotBlock?: bigint; /** the head block when the records on screen were read from Arkiv */ recordsBlock?: bigint }
 
 const empty: Snapshot = { orders: [], records: [], reports: [], loadedAt: 0, error: null, loading: true }
 const snaps: Record<Net, Snapshot> = { live: { ...empty }, drill: { ...empty } }
@@ -82,7 +82,7 @@ export async function refresh(net: Net, light = false) {
       for (const old of before.orders)
         if (!still.has(old.key.toLowerCase()) && old.expiresAt <= head + 6n)
           wire = [{ id: `expired-${old.key}`, at: Date.now(), kind: 'expired' as const, key: old.key, block: old.expiresAt, lapsed: { drill: net === 'drill', state: old.stateName, districts: old.districts } }, ...wire].slice(0, 40)
-      snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false }
+      snaps[net] = { orders: o, records: r, reports: p, loadedAt: Date.now(), error: null, loading: false, recordsBlock: wantRecords ? currentBlock() : before.recordsBlock }
       if (!backfilled.has(net)) {
         backfilled.add(net)
         void backfill(net)
