@@ -7,10 +7,13 @@ const DATE_OR_TIME = /\b\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\b|\b\d{4}-\d{2}-\d{2}\b|
 const EMAIL = /[^\s@]+\s*@\s*[^\s@]+\s*\.\s*[\p{L}\p{M}]{2,}/iu
 const EMAIL_SPELLED = /\b[\w.\-]{2,}\s*(?:\(at\)|\[at\]|\sat\s)\s*[\w\-]{2,}\s*(?:\(dot\)|\[dot\]|\sdot\s)\s*\p{L}{2,}\b/iu
 const UPI = /\b[\w.\-]{2,}@[a-z]{3,}\b(?![.\w])/i // a handle with no dot after the host is a UPI id, not a web address
-const AADHAAR_WORD = /\baadha?ar\b|आधार/i
+const AADHAAR_WORD = /\baadha?ar\b|आधार|আধাৰ|আধার|ਆਧਾਰ|ଆଧାର|آدھار/i
 // A person's name: an honorific (with or without a dot, any case) or a judicial style before a name,
 // a case title "X v. Y", or a role word followed by two capitalised words.
-const HONORIFIC = /(?:^|[\s(,;:])(?:shri|sri|smt|shrimati|kumari|sh|dr|mr|mrs|ms|prof|justice|hon'?ble|advocate|adv|श्री|श्रीमती|कुमारी|डॉ|न्यायमूर्ति)\.?\s+[\p{L}][\p{L}'\-]+/iu
+// Indic names carry vowel signs, which are combining marks, so a name is letters and marks. Districts whose
+// names begin with an honorific are places, not people, and are set aside first.
+const HONORIFIC_PLACES = /\b(?:sri|shri)\s+(?:ganganagar|muktsar\s+sahib|anandpur\s+sahib|fatehgarh\s+sahib|potti\s+sriramulu\s+nellore|vijaya\s+puram|sathya\s+sai)\b/giu
+const HONORIFIC = /(?:^|[\s(,;:])(?:shri|sri|smt|shrimati|kumari|sh|dr|mr|mrs|ms|prof|justice|hon'?ble|advocate|adv|श्री|श्रीमती|कुमारी|डॉ|न्यायमूर्ति|শ্ৰীমতী|শ্রীমতী|শ্ৰী|শ্রী|ডঃ|ਸ਼੍ਰੀਮਤੀ|ਸ਼੍ਰੀ|ਸ੍ਰੀ|ਡਾ|ଶ୍ରୀମତୀ|ଶ୍ରୀ|ଡଃ|جناب|محترمہ|محترم|ڈاکٹر)\.?\s+[\p{L}][\p{L}\p{M}'\-]+/iu
 const CASE = /\b[\p{Lu}][\p{L}'\-]+(?:\s+(?:[\p{Lu}][\p{L}'\-]+|&|and|Ors\.?|Anr\.?))*\s+(?:[vV]\.?|[vV][sS]\.?|versus)\s+[\p{Lu}]/u
 const ROLE_NAME = /\b(?:petitioner|respondent|complainant|accused|DM|SP|SDM|ADM|collector|magistrate|officer)\s+[\p{Lu}][\p{L}'\-]+\s+[\p{Lu}][\p{L}'\-]+/u
 const JUDGE_STYLE = /\b(?:JJ?\.(?=\s|$|[,;)])|(?:CJ|JJ)(?=\s|$|[,;)])(?!\s+(?:Colony|bench|Bench)))/
@@ -22,7 +25,7 @@ const normalise = (t: string) => t.normalize('NFKC').replace(/\p{Nd}/gu, digitVa
 function digitValue(ch: string): string {
   // any script's decimal digit to ASCII: the code point minus its script's zero
   const cp = ch.codePointAt(0)!
-  for (const zero of [0x30, 0x660, 0x6f0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6, 0xd66, 0xe50, 0xff10]) if (cp >= zero && cp <= zero + 9) return String(cp - zero)
+  for (const zero of [0x30, 0x660, 0x6f0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6, 0xd66, 0xe50, 0xabf0, 0xff10]) if (cp >= zero && cp <= zero + 9) return String(cp - zero)
   return ch
 }
 
@@ -33,7 +36,7 @@ export function personalData(text: string): string | null {
   if (DIGITS.test(t.replace(/https?:\/\/\S+/gi, ' ').replace(DATE_OR_TIME, ' '))) return 'a long number (a phone, Aadhaar or account number)'
   if (EMAIL.test(t) || EMAIL_SPELLED.test(t) || UPI.test(t)) return 'an email or UPI address'
   if (AADHAAR_WORD.test(t)) return 'an Aadhaar reference'
-  if (HONORIFIC.test(t) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t) || KNOWN.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
+  if (HONORIFIC.test(t.replace(HONORIFIC_PLACES, ' ')) || CASE.test(t) || ROLE_NAME.test(t) || JUDGE_STYLE.test(t) || KNOWN.test(t)) return "a person's name (use the designation, and cite a case without the parties' names)"
   return null
 }
 

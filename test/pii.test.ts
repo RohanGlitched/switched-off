@@ -129,3 +129,10 @@ describe('the whole archive passes', () => {
     expect(bad).toEqual([])
   })
 })
+
+describe('the scripts reports are written in', () => {
+  it.each(['श्री राम आए थे', 'श्रीमती गीता', 'ਸ਼੍ਰੀ ਰਾਮ', 'শ্রী রাম', 'শ্ৰী ৰাম', 'ଶ୍ରୀ ରାମ', 'جناب احمد صاحب', 'ڈاکٹر احمد'])('a name after an honorific: %s', caught)
+  it.each(['꯹꯸꯷꯶꯵꯴꯳꯲꯱꯰', '۹۸۷۶۵۴۳۲۱۰', '৯৮৭৬৫৪৩২১০', '੯੮੭੬੫੪੩੨੧੦', '୯୮୭୬୫୪୩୨୧୦'])('a phone number in its own digits: %s', (t) => expect(personalData(t)).toMatch(/long number/))
+  it.each(['আধার নম্বর', 'ਆਧਾਰ ਕਾਰਡ', 'آدھار نمبر', 'ଆଧାର'])('an Aadhaar reference: %s', (t) => expect(personalData(t)).toMatch(/Aadhaar/))
+  it.each(['मोबाइल डेटा सुबह से बंद', 'শ্রীনগরে ইন্টারনেট বন্ধ', 'سری نگر میں موبائل ڈیٹا بند ہے', 'ਮੋਬਾਈਲ ਡਾਟਾ ਬੰਦ', 'Sri Ganganagar: no data since 6 pm', 'Sri Muktsar Sahib broadband down', 'Srinagar mobile data off'])('ordinary words and place names pass: %s', clean)
+})
