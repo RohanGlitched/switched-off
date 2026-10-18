@@ -47,12 +47,12 @@ function paced(ip: string, n: number): boolean {
  * app clause that is put in front of it.
  */
 const TERM = String.raw`\$?[A-Za-z_][A-Za-z0-9_.-]*\s*(?:=|!=|>=|<=|>|<)\s*(?:str\('[^'()\\]*'\)|u64\(\d{1,20}\)|i32\(-?\d{1,10}\)|key\(0x[0-9a-fA-F]{64}\)|addr\(0x[0-9a-fA-F]{40}\)|true|false|-?\d{1,20})`
-const QUERY = new RegExp(String.raw`^\s*(?:${TERM})(?:\s+AND\s+(?:${TERM}))*\s*$`)
+export const QUERY = new RegExp(String.raw`^\s*(?:${TERM})(?:\s+AND\s+(?:${TERM}))*\s*$`)
 const HEX = /^0x[0-9a-fA-F]{1,16}$/
 const HEX_WORD = /^0x[0-9a-fA-F]{64}$/
 
 /** Why a call is refused, or null. The key is spent only on this app's own reads and on Arkiv's contract. */
-function refused(call: Call): string | null {
+export function refused(call: Call): string | null {
   const p = call.params ?? []
   if (!Array.isArray(p)) return 'Params must be an array.'
   if (call.method === 'arkiv_query') {
@@ -93,7 +93,7 @@ function refused(call: Call): string | null {
   return null
 }
 
-type Call = { jsonrpc: '2.0'; id: unknown; method: string; params?: unknown[] }
+export type Call = { jsonrpc: '2.0'; id: unknown; method: string; params?: unknown[] }
 type Req = { method?: string; body?: unknown; headers: Record<string, string | string[] | undefined> }
 type Res = { status: (n: number) => Res; json: (b: unknown) => void; setHeader: (k: string, v: string) => void }
 
