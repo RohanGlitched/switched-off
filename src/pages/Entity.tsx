@@ -14,7 +14,7 @@ import { refresh, useNow } from '../lib/store'
 import { Link } from '../lib/router'
 import { STATES } from '../lib/geo'
 import { toast } from '../components/Toast'
-import { tf, tp, tr, tx as tx_, useT } from '../lib/i18n'
+import { tf, tp, tr, tx as tx_, useLang, useT } from '../lib/i18n'
 
 type Any = Order | Record_ | Report
 const isReport = (e: Any): e is Report => 'carrier' in e
@@ -47,6 +47,12 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
       })
   })
   useEffect(() => void load(), [entityKey])
+  // the tab names the record ("Manipur, 3 May 2023 · Switched Off"), not the word "Entity"
+  const lang = useLang()
+  useEffect(() => {
+    const what = !e || e === 'loading' ? t('Record') : 'carrier' in e ? `${e.district}, ${t(STATES[e.state] ?? e.state)}` : `${t(e.stateName)}, ${fmtDate(e.starts * 1000)}`
+    document.title = `${what} · Switched Off`
+  }, [e, lang, t])
 
   const act = async (fn: () => Promise<Hex>, done: string) => {
     setBusy(true)

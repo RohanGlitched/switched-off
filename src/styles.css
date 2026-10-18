@@ -91,13 +91,21 @@ p { margin: 0 0 12px; }
 .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--restored); box-shadow: 0 0 0 0 rgba(143, 227, 197, 0.6); animation: pulse 2s infinite; }
 .pulse.off { background: var(--vermilion); animation: none; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 7px rgba(143, 227, 197, 0); } 100% { box-shadow: 0 0 0 0 rgba(143, 227, 197, 0); } }
-@media (max-width: 960px) {
+/* the full menu needs ~1200px beside the brand and the chain chip: below that it folds into Menu */
+@media (max-width: 1199px) {
   .nav { display: none; position: absolute; top: 60px; left: 0; right: 0; flex-direction: column; background: var(--night); border-bottom: 1px solid var(--line); padding: 10px var(--gutter) 16px; }
   .nav.open { display: flex; }
   .nav a { padding: 12px; font-size: 17px; }
   .menu-btn { display: inline-flex; align-items: center; }
+}
+@media (max-width: 960px) {
   .top .chain { display: none; }
 }
+.chain .sw-label { color: var(--faint); }
+.back-link { padding-top: 24px; font-size: 15px; }
+.back-link a { text-decoration: none; }
+.back-link a:hover { text-decoration: underline; }
+.back-link + section.wrap { padding-top: 16px !important; }
 
 /* ─── buttons, chips, fields ──────────────────────────────────────────── */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--night-2); color: var(--text); font-weight: 600; font-size: 15px; text-decoration: none; cursor: pointer; transition: background .15s, border-color .15s, transform .1s; white-space: nowrap; }

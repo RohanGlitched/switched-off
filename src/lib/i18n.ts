@@ -20,7 +20,7 @@ let lang: Lang = (() => {
   }
 })()
 try {
-  document.documentElement.lang = lang
+  document.documentElement.lang = shownLang()
 } catch {
   /* no document */
 }
@@ -32,7 +32,7 @@ export function setLang(l: Lang) {
   } catch {
     /* ignore */
   }
-  document.documentElement.lang = l
+  document.documentElement.lang = shownLang()
   subs.forEach((f) => f())
 }
 export const useLang = () => useSyncExternalStore((f) => (subs.add(f), () => subs.delete(f)), () => lang)
@@ -44,6 +44,13 @@ export const locale = () => (lang === 'en' || (lang !== 'hi' && !onReportForm())
 export const dirOf = (l: Lang) => (l === 'ur' ? 'rtl' : 'ltr')
 
 const onReportForm = () => typeof location !== 'undefined' && location.pathname.startsWith('/report')
+/**
+ * The language this page is actually shown in, for <html lang>: the other languages cover the report
+ * form only, so every other page is in English when one of them is chosen.
+ */
+export function shownLang(): Lang {
+  return lang === 'en' || lang === 'hi' || onReportForm() ? lang : 'en'
+}
 const missing = new Set<string>()
 /** Translate outside React (event handlers, toasts, formatters): the same dictionary as useT. */
 export function tr(s: string): string {
@@ -913,6 +920,9 @@ const HI: Record<string, string> = {
   'Pravasi Legal Cell v. Union of India, order of 20 Mar 2023': 'प्रवासी लीगल सेल बनाम भारत संघ, 20 मार्च 2023 का आदेश',
   'This is a draft, not legal advice. Fees, payment methods and portals differ by state; check the state’s RTI rules before sending.': 'यह एक मसौदा है, क़ानूनी सलाह नहीं। शुल्क, भुगतान के तरीक़े और पोर्टल हर राज्य में अलग हैं; भेजने से पहले राज्य के RTI नियम देख लें।',
   // UX fixes, 18 Oct
+  '← Back to the register': '← रजिस्टर पर वापस',
+  reads: 'पढ़ रहे हैं',
+  'Record': 'रिकॉर्ड',
   'DRILL': 'अभ्यास',
   'Drill order (a sandbox, not a real shutdown)': 'अभ्यास आदेश (एक सैंडबॉक्स, असली बंदी नहीं)',
   '{place}: a drill order (a sandbox, not a real shutdown)': '{place}: अभ्यास आदेश (एक सैंडबॉक्स, असली बंदी नहीं)',

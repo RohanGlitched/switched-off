@@ -14,7 +14,7 @@ import { WhyPage } from './pages/Why'
 import { FilePage } from './pages/File'
 import { ProofPage } from './pages/Proof'
 import { ToastHost } from './components/Toast'
-import { setLang, tx, useLang, useT } from './lib/i18n'
+import { setLang, shownLang, tx, useLang, useT } from './lib/i18n'
 import { MODE, setMode } from './lib/arkiv'
 
 const NAV = [
@@ -34,9 +34,10 @@ export function App() {
   const t = useT()
   const lang = useLang()
   useEffect(() => setOpen(false), [path])
-  // one title per page, in the reader's language
+  // one title per page, in the reader's language (a record page names its own: state and date)
   useEffect(() => {
-    const name = route === '/' ? '' : route === '/register' ? t('Register of orders') : route === '/report' ? t('Report no internet') : route === '/drill' ? t('Run a drill') : route === '/data' ? t('Data and mirrors') : route === '/why' ? t('Why this exists') : route === '/file' ? t('File a published order') : route === '/proof' ? t('Proof') : route.startsWith('/e/') ? t('Entity') : t('Page not found')
+    if (route.startsWith('/e/')) return
+    const name = route === '/' ? '' : route === '/register' ? t('Register of orders') : route === '/report' ? t('Report no internet') : route === '/drill' ? t('Run a drill') : route === '/data' ? t('Data and mirrors') : route === '/why' ? t('Why this exists') : route === '/file' ? t('File a published order') : route === '/proof' ? t('Proof') : t('Page not found')
     document.title = name ? `${name} · Switched Off` : t("Switched Off: India's internet shutdown register")
   }, [route, lang, t])
   // reports saved offline go out from any page, the moment the signal returns
@@ -46,15 +47,23 @@ export function App() {
     on()
     return () => window.removeEventListener('online', on)
   }, [])
+  // the language the page is shown in: the report form's extra languages stop at the report form
   useEffect(() => {
-    document.documentElement.lang = lang
+    document.documentElement.lang = shownLang()
+  }, [lang, route])
+  useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     window.addEventListener('keydown', esc)
     return () => window.removeEventListener('keydown', esc)
   }, [lang])
   const page = route === '/' ? <Home />
     : route === '/register' ? <RegisterPage />
-    : route.startsWith('/e/') ? <EntityPage entityKey={route.slice(3) as `0x${string}`} />
+    : route.startsWith('/e/') ? (
+      <>
+        <div className="wrap back-link"><Link to="/register">{t('← Back to the register')}</Link></div>
+        <EntityPage entityKey={route.slice(3) as `0x${string}`} />
+      </>
+    )
     : route === '/report' ? <ReportPage net={new URLSearchParams(path.split('?')[1] ?? '').get('drill') ? 'drill' : 'live'} />
     : route === '/drill' ? <DrillPage />
     : route === '/data' ? <DataPage />
@@ -99,7 +108,8 @@ function ChainBadge() {
     <span className="chain" title={t("Every read and write on this site goes to Arkiv's Tiramisu testnet")}>
       <span className={`pulse${ok === false ? ' off' : ''}`} aria-hidden="true" />
       {ok === false ? t('Arkiv unreachable') : ok ? tx('Arkiv Tiramisu · block {n}', { n: <span className="num">{currentBlock().toString()}</span> }) : t('Connecting to Arkiv…')}
-      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} role="switch" aria-checked={MODE === 'direct'} aria-label={MODE === 'direct' ? t('Reading Arkiv directly (press to use the relay)') : t('Reading through the relay (press to read Arkiv directly)')} title={MODE === 'direct' ? t('Your browser talks to Arkiv directly. Switch back to the shared, cached relay.') : t('Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.')}>{MODE === 'direct' ? t('direct') : t('via relay')}</button>
+      <span className="sw-label" aria-hidden="true">· {t('reads')}</span>
+      <button className="lang" style={{ minHeight: 28, padding: '2px 8px', fontSize: 12 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')} role="switch" aria-checked={MODE === 'direct'} aria-label={MODE === 'direct' ? t('Reading Arkiv directly (press to use the relay)') : t('Reading through the relay (press to read Arkiv directly)')} title={MODE === 'direct' ? t('Your browser talks to Arkiv directly. Switch back to the shared, cached relay.') : t('Reads go through this site’s cached relay. Switch to talk to Arkiv directly, with no Switched Off server in between.')}>{MODE === 'direct' ? t('direct') : t('via relay')} ⇄</button>
     </span>
   )
 }
