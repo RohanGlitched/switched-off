@@ -2,7 +2,7 @@
 // letter is written in this browser from what the register knows; it is never sent to Arkiv or to
 // any server, and nothing typed into it is kept. Copy it or download it, then send it yourself.
 import { useId, useMemo, useState } from 'react'
-import { LEGAL, isoDay, rtiFileName, rtiLetter, rtiPortal, type Lang } from '../lib/cite'
+import { LEGAL, isoDay, rtiFileName, rtiLetter, rtiPortal, letterLang, type Lang } from '../lib/cite'
 import { getLang, tr, trIn, useT } from '../lib/i18n'
 import { CopyButton, downloadText } from './Cite'
 
@@ -26,7 +26,7 @@ type Props = {
 export function RtiPanel({ state, stateName, districts, from, to, orderId, authority, why, dark }: Props) {
   const t = useT()
   const uid = useId()
-  const [lang, setLang] = useState<Lang>(getLang())
+  const [lang, setLang] = useState<Lang>(letterLang(getLang()))
   const [fromDay, setFromDay] = useState(isoDay(from))
   const [toDay, setToDay] = useState(isoDay(Math.max(from, to)))
   const [edited, setEdited] = useState<string | null>(null)

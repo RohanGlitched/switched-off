@@ -6,7 +6,7 @@ import { Link, param } from '../lib/router'
 import { STATES } from '../lib/geo'
 import { fmtDate, scopeLabel, scopeName } from '../lib/fmt'
 import { getLang, tf, tr, tx, useT, tp } from '../lib/i18n'
-import { SITE, citationText, curlForQuery, exportName, registerCsv, registerJson, type ExportMeta } from '../lib/cite'
+import { SITE, citationText, curlForQuery, exportName, registerCsv, registerJson, letterLang, type ExportMeta } from '../lib/cite'
 import { CopyButton, downloadText } from '../components/Cite'
 
 export function RegisterPage() {
@@ -139,7 +139,7 @@ export function RegisterPage() {
               <Link to={`/e/${r.key}`} style={{ textDecoration: 'none' }} aria-label={tf('Open the record for {state}', { state: r.stateName })}>
                 <Gazette o={r} live={forceKeys.has(`${r.orderId}|${r.official ? 'registrar' : r.creator.toLowerCase()}`)} compact />
               </Link>
-              <CopyButton className="btn small" text={() => citationText(r, { t: tr, lang: getLang() })} label={t('Copy citation')} what={tf('citation for {state}, {date}', { state: tr(r.stateName), date: fmtDate(r.starts * 1000) })} />
+              <CopyButton className="btn small" text={() => citationText(r, { t: tr, lang: letterLang(getLang()) })} label={t('Copy citation')} what={tf('citation for {state}, {date}', { state: tr(r.stateName), date: fmtDate(r.starts * 1000) })} />
             </div>
           ))}
         </div>

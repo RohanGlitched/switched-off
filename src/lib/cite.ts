@@ -13,6 +13,8 @@ const id: T = (s) => s
 const fill = (t: T, template: string, vars: Record<string, string | number>) => t(template).replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m))
 
 export type Lang = 'en' | 'hi'
+/** Citations and letters are written in English or Hindi; any other interface language gets English. */
+export const letterLang = (l: string): Lang => (l === 'hi' ? 'hi' : 'en')
 const IST = 'Asia/Kolkata'
 /** "14 Jan 2020" in IST, or the Hindi form; empty for an unknown date. */
 export const citeDate = (unix: number, lang: Lang = 'en') => (unix > 0 ? new Date(unix * 1000).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: IST }) : '')

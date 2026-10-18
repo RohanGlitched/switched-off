@@ -3,7 +3,7 @@
 // returned; nothing is written anywhere.
 import { useId, useState } from 'react'
 import type { Order, Record_ } from '../lib/arkiv'
-import { citationText, curlForKey, permalink } from '../lib/cite'
+import { citationText, curlForKey, letterLang, permalink } from '../lib/cite'
 import { getLang, tr, useT } from '../lib/i18n'
 import { toast } from './Toast'
 
@@ -78,7 +78,7 @@ export function CitePanel({ o }: { o: Order | Record_ }) {
   const t = useT()
   const lang = getLang()
   const link = permalink(o.key)
-  const cite = citationText(o, { t: tr, lang })
+  const cite = citationText(o, { t: tr, lang: letterLang(lang) })
   const curl = curlForKey(o.key)
   return (
     <section className="panel" id="cite" aria-labelledby="cite-h" style={{ display: 'grid', gap: 14, minWidth: 0 }}>
