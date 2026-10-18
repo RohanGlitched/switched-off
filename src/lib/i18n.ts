@@ -748,7 +748,8 @@ const HI: Record<string, string> = {
   'The map’s dark districts and “orders in force now”. An order entity exists only until its lapse block, so no date filter is needed: being alive is being in force.':
     'नक्शे के बंद ज़िले और “आदेश अभी लागू”। आदेश की एंटिटी सिर्फ़ अपने समाप्ति ब्लॉक तक रहती है, इसलिए तारीख़ के फ़िल्टर की ज़रूरत नहीं: मौजूद होना ही लागू होना है।',
   'The whole archive': 'पूरा संग्रह',
-  'The register page and the year-by-year table. Readonly records anyone can extend.': 'रजिस्टर वाला पेज और साल-दर-साल की तालिका। केवल-पढ़ने वाले रिकॉर्ड, जिनकी अवधि कोई भी बढ़ा सकता है।',
+  'The register page and the year-by-year table: every record the registrar filed, readonly and sealed. It is more than 200 records, so it comes in pages: send the cursor back with the first page’s blockNumber as atBlock, or page two is refused (friction.md #13). Corrections are applied by the reader: a record that another registrar record names in its corrects attribute is replaced by that correction, which is why the register shows fewer orders than this query returns.':
+    'रजिस्टर पेज और साल-दर-साल तालिका: रजिस्ट्रार का दर्ज हर रिकॉर्ड, केवल-पठनीय और सील। ये 200 से ज़्यादा रिकॉर्ड हैं, इसलिए पन्नों में आते हैं: कर्सर के साथ पहले पन्ने का blockNumber atBlock के रूप में वापस भेजें, वरना दूसरा पन्ना अस्वीकार होता है (friction.md #13)। सुधार पढ़ने वाला लागू करता है: जिस रिकॉर्ड का नाम रजिस्ट्रार का कोई दूसरा रिकॉर्ड अपने corrects गुण में लेता है, उसकी जगह वह सुधार दिखता है; इसीलिए रजिस्टर में इस क्वेरी से कम आदेश दिखते हैं।',
   'Every order ever filed for Manipur': 'मणिपुर के लिए अब तक दर्ज हर आदेश',
   'Filter by state code on an attribute, not by reading payloads.': 'राज्य कोड से एट्रिब्यूट पर छाँटें, पेलोड पढ़कर नहीं।',
   'Live citizen reports': 'नागरिकों की ताज़ा रिपोर्टें',

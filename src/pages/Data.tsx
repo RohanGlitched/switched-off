@@ -10,7 +10,7 @@ const q = (expr: string, extra = '') =>
   -H 'content-type: application/json' \\
   -d "{\\"jsonrpc\\":\\"2.0\\",\\"id\\":1,\\"method\\":\\"arkiv_query\\",\\"params\\":[\\"${expr}\\",{\\"select\\":{\\"key\\":true,\\"attributes\\":true,\\"payload\\":true,\\"expiresAt\\":true,\\"owner\\":true,\\"creator\\":true,\\"creationFlags\\":true}${extra}}]}"`
 
-const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?: string }[] = [
+const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?: string; after?: string }[] = [
   {
     title: 'Orders in force right now',
     claim: 'The map’s dark districts and “orders in force now”. An order entity exists only until its lapse block, so no date filter is needed: being alive is being in force.',
@@ -19,9 +19,16 @@ const QUERIES: { title: string; claim: string; expr: string; sdk: string; extra?
   },
   {
     title: 'The whole archive',
-    claim: 'The register page and the year-by-year table. Readonly records anyone can extend.',
-    expr: "app = str('switched-off') AND type = str('record') AND net = str('live')",
-    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live')])).fetch() // walk .next() past 200`,
+    claim: 'The register page and the year-by-year table: every record the registrar filed, readonly and sealed. It is more than 200 records, so it comes in pages: send the cursor back with the first page’s blockNumber as atBlock, or page two is refused (friction.md #13). Corrections are applied by the reader: a record that another registrar record names in its corrects attribute is replaced by that correction, which is why the register shows fewer orders than this query returns.',
+    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND \\$creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e)",
+    extra: `,\\"limit\\":\\"0xc8\\"`,
+    sdk: `const q = () => pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live')])).createdBy('0xA2724EA69eA093677D8426E7FE20644EE90a0E3e').limit(200)
+let page = await q().fetch()
+// a cursor belongs to its first page's block: walk at that block, or page two is refused (friction.md #13)
+if (page.hasNextPage()) page = await q().atBlock(page.blockNumber).fetch()
+for (;;) { use(page.entities); if (!page.hasNextPage()) break; page = await page.next() }`,
+    after: `# page two: the same request plus the cursor and the first page's block
+# "params":["…",{…,"limit":"0xc8","cursor":"<result.cursor>","atBlock":"<result.blockNumber>"}]`,
   },
   {
     title: 'Every order ever filed for Manipur',
@@ -65,7 +72,8 @@ export function DataPage() {
           <div key={x.title} className="panel" style={{ display: 'grid', gap: 10 }}>
             <h2 className="h3">{t(x.title)}</h2>
             <p className="mute" style={{ margin: 0 }}>{t(x.claim)}</p>
-            <pre className="code">{q(x.expr, x.extra)}</pre>
+            <pre className="code">{q(x.expr, x.extra)}{x.after ? `
+${x.after}` : ''}</pre>
             <pre className="code" style={{ opacity: 0.85 }}>{`// @arkiv-network/sdk 0.8.1\n${x.sdk}`}</pre>
           </div>
         ))}
