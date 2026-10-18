@@ -46,7 +46,7 @@ export function ProofPage() {
     { id: 'delete', title: 'Nobody can delete the archive, not even us.', claim: 'Our registrar filed this record. We ask Arkiv to let the registrar delete it.', run: () => tryDelete(need(pick)) },
     { id: 'shorten', title: 'Nobody can cut a record’s life short.', claim: 'We ask Arkiv to bring the record’s expiry a day forward.', run: () => tryShorten(need(pick)) },
     { id: 'extend', title: 'Anyone can keep it alive.', claim: 'A brand-new address, with no link to us, asks to extend the record by a day.', run: () => tryStrangerExtend(need(pick)) },
-    { id: 'flags', title: 'Every record is readonly, open to extension and sealed.', claim: 'The flags and owner of every record in the archive, as Arkiv returns them.', run: async () => flagsOf(live.records) },
+    { id: 'flags', title: 'Every record is readonly, open to extension and sealed.', claim: 'The flags and owner of every record in the archive, as Arkiv returns them.', run: async () => flagsOf(live.records, live.superseded) },
     { id: 'lapse', title: 'A lapsed order is gone now and on record at its own block.', claim: 'A drill order filed on 11 Oct to live 30 blocks. We ask for it today, and at the block it was filed.', run: lapsedButOnRecord },
     { id: 'batch', title: 'One transaction, many operations.', claim: 'The nine name-free corrections were created and handed to 0x…dEaD in a single transaction. We read its receipt.', run: oneTransaction },
     { id: 'events', title: 'Arkiv pushes changes as they happen.', claim: 'We open Arkiv’s WebSocket for eight seconds and count the entity events it sends.', run: () => listen(8, ours) },
@@ -65,6 +65,9 @@ export function ProofPage() {
   }
   const done = checks.filter((c) => typeof results[c.id] === 'object' && 'ok' in (results[c.id] as object))
   const passed = done.filter((c) => (results[c.id] as Verdict).ok).length
+  // finished includes a check that couldn't run; while any is still asking, the count says so
+  const finished = checks.filter((c) => results[c.id] && results[c.id] !== 'running').length
+  const running = checks.some((c) => results[c.id] === 'running')
 
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px', display: 'grid', gap: 36 }}>
@@ -74,7 +77,17 @@ export function ProofPage() {
         <p className="lede">{t('Each button below asks the network, from your browser, whether something this site claims is true right now. The write checks are simulations: Arkiv runs the transaction as that address and answers, but nothing is signed or sent, so press them all.')}</p>
         <div className="row">
           <button className="btn primary" onClick={() => void runAll()}>{t('Run every check')}</button>
-          {done.length > 0 && <span className="chip num" role="status">{tf('{passed} of {n} checks hold', { passed, n: done.length })}</span>}
+          {(running || done.length > 0) && (
+            <span className="chip num" role="status">
+              {running
+                ? tf('{done} of {n} checks done…', { done: finished, n: checks.length })
+                : finished < checks.length
+                  ? tf('{passed} of {n} checks hold · {left} not run', { passed, n: done.length, left: checks.length - finished })
+                  : done.length === checks.length
+                    ? tf('{passed} of {n} checks hold', { passed, n: checks.length })
+                    : tf('{passed} of {n} checks hold · {k} couldn’t run', { passed, n: checks.length, k: finished - done.length })}
+            </span>
+          )}
           {pick && <Link to={`/e/${pick.key}`} className="chip">{tf('Record under test: {state}, {date}', { state: t(pick.stateName), date: new Date(pick.starts * 1000).toISOString().slice(0, 10) })}</Link>}
         </div>
       </div>

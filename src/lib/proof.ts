@@ -83,16 +83,32 @@ export async function tryStrangerExtend(r: Record_): Promise<Verdict> {
   }
 }
 
-/** The flags every record was created with, as Arkiv reports them, and who owns and filed each one. */
-export function flagsOf(records: Record_[]): Verdict {
+/**
+ * The flags every record was created with, as Arkiv reports them, and who owns and filed each one.
+ * `records` is the register as shown (each correction in place of the original it replaced);
+ * `superseded` are those replaced originals, still on Arkiv, when the page knows them.
+ */
+export function flagsOf(records: Record_[], superseded?: Record_[]): Verdict {
   const official = records.filter((r) => r.official)
   const n = official.length
   const ro = official.filter((r) => r.readonly).length
   const pe = official.filter((r) => r.permissionless).length
   const sealed = official.filter((r) => r.sealed).length
+  const old = (superseded ?? []).filter((r) => r.official)
+  const oldOk = old.filter((r) => r.readonly && r.permissionless && r.sealed).length
   return {
-    ok: n > 0 && ro === n && pe === n && sealed === n,
-    observed: [`${n} records filed by the registrar ($creator ${REGISTRARS[0].address})`, `${ro} of ${n} created readonly`, `${pe} of ${n} open to anyone's extension`, `${sealed} of ${n} owned by ${SEALED}`],
+    ok: n > 0 && ro === n && pe === n && sealed === n && oldOk === old.length,
+    observed: [
+      `${n} records on the register, filed by the registrar ($creator ${REGISTRARS[0].address}): every current registrar record; superseded originals are counted separately`,
+      `${ro} of ${n} created readonly`,
+      `${pe} of ${n} open to anyone's extension`,
+      `${sealed} of ${n} owned by ${SEALED}`,
+      ...(superseded === undefined
+        ? ['superseded originals (replaced by a correction, hidden from the register): not read yet on this page']
+        : old.length
+          ? [oldOk === old.length ? `${old.length} superseded originals (replaced by a correction, hidden from the register), also readonly, open to extension and sealed` : `${oldOk} of ${old.length} superseded originals readonly, open to extension and sealed`]
+          : []),
+    ],
     call: `arkiv_query "app = str('${APP}') AND type = str('record') AND net = str('live')" + createdBy(registrar)\nselect: owner, creator, creationFlags`,
   }
 }
@@ -147,7 +163,15 @@ export function listen(seconds: number, ours: Set<string>): Promise<Verdict> {
       stop?.()
       resolve({
         ok: all > 0,
-        observed: [`${all} entity events from ${blocks.size} blocks in ${seconds} s`, `${mine} of them about this register`, ...extra],
+        observed: [
+          all > 0 ? `Socket live: ${all} entity events from ${blocks.size} blocks in ${seconds} s` : `No entity events in ${seconds} s`,
+          mine > 0
+            ? `${mine} of them from this register`
+            : all > 0
+              ? 'none from this register in that window (other apps on Arkiv write constantly; a filing here shows up the same way)'
+              : '',
+          ...extra,
+        ].filter(Boolean),
         call: `eth_subscribe over wss (watchEntityEvents), no filter: Arkiv sends every app's events (friction.md #6)`,
       })
     }

@@ -360,7 +360,14 @@ export const withinLawCap = (o: Order) => o.official || o.expiresAt - o.createdA
  * original: a stranger's "correction" can't hide a record.
  */
 export async function records(net: Net, atBlock?: bigint): Promise<Record_[]> {
-  return applyCorrections((await recordsOfficialAndCommunity(base('record', net), atBlock)).map(toRecord))
+  return (await recordsAndSuperseded(net, atBlock)).list
+}
+/** The register as `records` shows it, and the originals that trusted corrections replaced (still on Arkiv, sealed). */
+export async function recordsAndSuperseded(net: Net, atBlock?: bigint): Promise<{ list: Record_[]; superseded: Record_[] }> {
+  const raw = (await recordsOfficialAndCommunity(base('record', net), atBlock)).map(toRecord)
+  const list = applyCorrections(raw)
+  const shown = new Set(list.map((r) => r.key.toLowerCase()))
+  return { list, superseded: raw.filter((r) => !shown.has(r.key.toLowerCase())) }
 }
 export function applyCorrections(rs: Record_[]): Record_[] {
   const byKey = new Map(rs.map((r) => [r.key.toLowerCase(), r]))

@@ -20,7 +20,7 @@ let lang: Lang = (() => {
   }
 })()
 try {
-  document.documentElement.lang = lang
+  document.documentElement.lang = shownLang()
 } catch {
   /* no document */
 }
@@ -32,7 +32,7 @@ export function setLang(l: Lang) {
   } catch {
     /* ignore */
   }
-  document.documentElement.lang = l
+  document.documentElement.lang = shownLang()
   subs.forEach((f) => f())
 }
 export const useLang = () => useSyncExternalStore((f) => (subs.add(f), () => subs.delete(f)), () => lang)
@@ -44,6 +44,13 @@ export const locale = () => (lang === 'en' || (lang !== 'hi' && !onReportForm())
 export const dirOf = (l: Lang) => (l === 'ur' ? 'rtl' : 'ltr')
 
 const onReportForm = () => typeof location !== 'undefined' && location.pathname.startsWith('/report')
+/**
+ * The language this page is actually shown in, for <html lang>: the other languages cover the report
+ * form only, so every other page is in English when one of them is chosen.
+ */
+export function shownLang(): Lang {
+  return lang === 'en' || lang === 'hi' || onReportForm() ? lang : 'en'
+}
 const missing = new Set<string>()
 /** Translate outside React (event handlers, toasts, formatters): the same dictionary as useT. */
 export function tr(s: string): string {
@@ -912,6 +919,43 @@ const HI: Record<string, string> = {
     '2023 में सुप्रीम कोर्ट ने हर राज्य और केंद्र शासित प्रदेश को ऑनलाइन RTI पोर्टल चलाने का निर्देश दिया। अभी सबने ऐसा नहीं किया है; यहाँ दिए गए पोर्टल खोलकर जाँचे गए हैं।',
   'Pravasi Legal Cell v. Union of India, order of 20 Mar 2023': 'प्रवासी लीगल सेल बनाम भारत संघ, 20 मार्च 2023 का आदेश',
   'This is a draft, not legal advice. Fees, payment methods and portals differ by state; check the state’s RTI rules before sending.': 'यह एक मसौदा है, क़ानूनी सलाह नहीं। शुल्क, भुगतान के तरीक़े और पोर्टल हर राज्य में अलग हैं; भेजने से पहले राज्य के RTI नियम देख लें।',
+  // UX fixes, 18 Oct
+  '← Back to the register': '← रजिस्टर पर वापस',
+  reads: 'पढ़ रहे हैं',
+  'Record': 'रिकॉर्ड',
+  'Legal basis: not stated': 'क़ानूनी आधार: नहीं बताया गया',
+  'Legal basis: not stated.': 'क़ानूनी आधार: नहीं बताया गया।',
+  'DRILL': 'अभ्यास',
+  'Drill order (a sandbox, not a real shutdown)': 'अभ्यास आदेश (एक सैंडबॉक्स, असली बंदी नहीं)',
+  '{place}: a drill order (a sandbox, not a real shutdown)': '{place}: अभ्यास आदेश (एक सैंडबॉक्स, असली बंदी नहीं)',
+  '{place}: switched off by a drill order': '{place}: अभ्यास आदेश से बंद',
+  'History, not now': 'इतिहास, अभी का नहीं',
+  '{n} district switched off at some point in the last 12 months': 'पिछले 12 महीनों में किसी समय {n} ज़िला बंद रहा',
+  '{n} districts switched off at some point in the last 12 months': 'पिछले 12 महीनों में किसी समय {n} ज़िले बंद रहे',
+  'Checking what is in force now…': 'अभी क्या लागू है, जाँच रहे हैं…',
+  'No order is in force today.': 'आज कोई आदेश लागू नहीं है।',
+  'A drill order is running in {states}: a sandbox, not a real shutdown, and not counted below.': '{states} में एक अभ्यास आदेश चल रहा है: यह एक सैंडबॉक्स है, असली बंदी नहीं, और नीचे की गिनती में शामिल नहीं।',
+  'Watch it on the drill page': 'इसे अभ्यास पेज पर देखें',
+  'Switched off by an order on file (history)': 'दर्ज आदेश से बंद (इतिहास)',
+  'Map of India, history not now: {n} district switched off at some point in the last 12 months.': 'भारत का नक्शा, इतिहास, अभी का नहीं: पिछले 12 महीनों में किसी समय {n} ज़िला बंद रहा।',
+  'Map of India, history not now: {n} districts switched off at some point in the last 12 months.': 'भारत का नक्शा, इतिहास, अभी का नहीं: पिछले 12 महीनों में किसी समय {n} ज़िले बंद रहे।',
+  'Last 12 months': 'पिछले 12 महीने',
+  '{n} order on file': '{n} आदेश दर्ज',
+  '{n} orders on file': '{n} आदेश दर्ज',
+  '{n} district dark at some point': 'किसी समय {n} ज़िला अंधेरे में',
+  '{n} districts dark at some point': 'किसी समय {n} ज़िले अंधेरे में',
+  '{n} drill order, not counted': '{n} अभ्यास आदेश, गिना नहीं गया',
+  '{n} drill orders, not counted': '{n} अभ्यास आदेश, गिने नहीं गए',
+  '{done} of {n} checks done…': '{n} में से {done} जाँचें पूरी…',
+  '{passed} of {n} checks hold · {left} not run': '{n} में से {passed} जाँचें सही · {left} नहीं चलीं',
+  '{passed} of {n} checks hold · {k} couldn’t run': '{n} में से {passed} जाँचें सही · {k} चल नहीं सकीं',
+  '{n} records written to the archive': 'संग्रह में {n} रिकॉर्ड लिखे गए',
+  'Someone paid to keep {n} records alive': 'किसी ने {n} रिकॉर्ड जीवित रखने के लिए भुगतान किया',
+  '{n} suspension orders filed': '{n} निलंबन आदेश दर्ज',
+  '{n} emergency orders confirmed': '{n} आपात आदेशों की पुष्टि',
+  '{n} reports filed': '{n} रिपोर्टें दर्ज',
+  '{n} reports confirmed': '{n} रिपोर्टों की पुष्टि',
+  '{n} changes to register entities': 'रजिस्टर की एंटिटी में {n} बदलाव',
   // LiveWire
   'Drill: ': 'अभ्यास: ',
   "Order lapsed on Arkiv's clock: {state}, {place} relit. Nobody deleted it; its expiry block arrived.": 'Arkiv की घड़ी पर आदेश समाप्त: {state}, {place} में फिर रोशनी। किसी ने इसे मिटाया नहीं; बस इसका समाप्ति ब्लॉक आ गया।',

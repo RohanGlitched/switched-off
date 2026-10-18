@@ -122,11 +122,12 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
                 </select>
               </label>
             </div>
-            <label className="field">{t('Network')}
-              <div className="seg" role="group" aria-label={t('Network')}>
+            <div className="field">
+              <span id="report-network">{t('Network')}</span>
+              <div className="seg" role="group" aria-labelledby="report-network">
                 {carriers.map((c) => <button key={c} aria-pressed={carrier === c} onClick={() => setCarrier(c)}>{carrierName(c)}</button>)}
               </div>
-            </label>
+            </div>
             <label className="field">{t('What you see (optional, 140 characters)')}
               <textarea className="input" rows={2} maxLength={140} value={note} onChange={(e) => setNote(e.target.value)} placeholder={t('Mobile data gone since morning; broadband still working')} aria-invalid={!!piiWarn} aria-describedby="note-hint" />
               {piiWarn ? <span id="note-hint" className="hint" role="alert" style={{ color: 'var(--vermilion)' }}>{tf('That looks like {what}. Remove it: reports are public and permanent.', { what: t(piiWarn.startsWith("a person's name") ? "a person's name (reports never need a name)" : piiWarn) })}</span> : <span id="note-hint" className="hint">{t('Never include names, phone numbers or exact addresses.')}</span>}

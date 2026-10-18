@@ -2,7 +2,7 @@
 // reaches the end, the entity is gone and the districts light up again.
 import { blockToTime, type Order, type Record_ } from '../lib/arkiv'
 import { dayMs } from '../lib/write'
-import { fmtDate, fmtDateTime, left, scopeName } from '../lib/fmt'
+import { fmtDate, fmtDateTime, fmtRange, left, scopeName } from '../lib/fmt'
 import { useNow } from '../lib/store'
 import { REGISTRARS } from '../lib/registrars'
 import { ErrorBoundary } from './ErrorBoundary'
@@ -40,7 +40,7 @@ function GazetteInner({ o, live, compact }: { o: Order | Record_; live?: boolean
         <small style={{ fontStyle: 'italic' }}>{t('Unofficial transcription, not the Gazette of India')}</small>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
-        <h3>{t(o.stateName)}{!official && <span className="chip" style={{ marginLeft: 8, fontSize: 11, verticalAlign: 'middle' }}>{t('community')}</span>}</h3>
+        <h3>{t(o.stateName)}{!official && o.net !== 'drill' && <> <span className="chip" style={{ marginLeft: 4, fontSize: 11, verticalAlign: 'middle' }}>{t('community')}</span></>}</h3>
         <span className={`stamp${lapsed ? ' lapsed' : ''}`}>{t(lapsed ? 'LAPSED' : emergencyPending ? 'EMERGENCY' : isOrder ? 'IN FORCE' : 'ARCHIVED')}</span>
       </div>
       <p className="meta" style={{ margin: '4px 0 8px' }}>
@@ -55,12 +55,12 @@ function GazetteInner({ o, live, compact }: { o: Order | Record_; live?: boolean
       {!compact && o.reason && <p className="serif" style={{ fontSize: 17, lineHeight: 1.4, margin: '0 0 10px' }}>“{o.reason}”</p>}
       <div className="lifebar" aria-hidden="true"><i style={{ width: `${(lapsed ? 1 : used) * 100}%` }} /></div>
       <div className="meta row" style={{ justifyContent: 'space-between', gap: 6 }}>
-        <span>{fmtDate(o.starts * 1000)} → {o.ends ? fmtDate(o.ends * 1000) : t('end not stated')}</span>
+        <span>{o.ends ? fmtRange(o.starts * 1000, o.ends * 1000) : `${fmtDate(o.starts * 1000)} → ${t('end not stated')}`}</span>
         <span className="num"><b style={{ color: 'var(--ink)' }}>{lapsed ? (o.ends ? tf('Lapsed {date}', { date: fmtDate(Math.min(lapseAt, o.ends * 1000)) }) : t('Lapsed')) : tf('Lapses in {time}', { time: left(lapseAt - now) })}</b></span>
       </div>
       {!compact && (
         <div className="meta" style={{ marginTop: 10, display: 'grid', gap: 4 }}>
-          {o.basis && <span>{tf('Under: {basis}', { basis: t(BASIS_LABEL[o.basis] ?? o.basis) })}</span>}
+          {o.basis && <span>{(BASIS_LABEL[o.basis] ?? o.basis) === BASIS_LABEL['not-stated'] ? t('Legal basis: not stated') : tf('Under: {basis}', { basis: t(BASIS_LABEL[o.basis] ?? o.basis) })}</span>}
           {emergencyPending && !lapsed && <span style={{ color: 'var(--seal)' }}>{tf('Issued in an emergency: lapses at {time} unless the competent authority confirms it.', { time: fmtDateTime(lapseAt) })}</span>}
           {o.published === false && <span style={{ color: 'var(--seal)' }}>{t('The order text was not published.')}</span>}
           {o.published == null && <span>{t('Whether the order text was published: not known.')}</span>}

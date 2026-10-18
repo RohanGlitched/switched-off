@@ -6,6 +6,8 @@ export const fmtDate = (ms: number) =>
   ms ? new Date(ms).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric', timeZone: IST }) : '—'
 export const fmtDateTime = (ms: number) =>
   ms ? new Date(ms).toLocaleString(locale(), { day: 'numeric', month: 'short', ...(new Date(ms).getFullYear() !== new Date().getFullYear() ? { year: 'numeric' } : {}), hour: '2-digit', minute: '2-digit', ...(getLang() === 'hi' ? { hourCycle: 'h23' as const } : {}), timeZone: IST }) + ' IST' : '—'
+/** "3 May 2023 → 18 May 2023", or one date with times when both ends fall on the same day (IST). */
+export const fmtRange = (a: number, b: number) => (fmtDate(a) === fmtDate(b) ? `${fmtDate(a)}, ${fmtTime(a)}–${fmtTime(b)}` : `${fmtDate(a)} → ${fmtDate(b)}`)
 export const fmtTime = (ms: number) => new Date(ms).toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit', ...(getLang() === 'hi' ? { hourCycle: 'h23' as const } : {}), timeZone: IST })
 
 /** "3d 4h", "47m 10s", "lapsed" (in Hindi: "3 दिन 4 घंटे") */
