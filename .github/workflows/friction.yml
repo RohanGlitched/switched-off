@@ -1,0 +1,58 @@
+name: Friction re-check
+
+# Re-runs every read-only check in arkiv/friction.md against the installed SDK, the live Tiramisu
+# node and the docs, once a day. No secrets: the write checks report SKIPPED here.
+# Each check reports a state (STILL / CHANGED / ERROR / SKIPPED); the job only fails if the script
+# itself crashes, so an Arkiv outage shows up as ERROR rows, not a red run.
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  friction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Re-check every friction item (read-only)
+        run: npm run friction
+
+      - name: Summary table
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs");
+            if (!fs.existsSync("arkiv/friction-check.json")) { console.log("no friction-check.json"); process.exit(0); }
+            const r = JSON.parse(fs.readFileSync("arkiv/friction-check.json", "utf8"));
+            const esc = (s) => String(s).replace(/\|/g, "\\|");
+            const lines = [
+              `### Arkiv friction re-check · SDK ${r.sdkVersion} · viem ${r.viemVersion} · Node ${r.node} · block ${r.blockNumber}`,
+              "",
+              `${r.counts.STILL} still · ${r.counts.CHANGED} changed · ${r.counts.ERROR} error · ${r.counts.SKIPPED} skipped · ${r.rpcRequests} RPC requests`,
+              "",
+              "| # | state | title | observed |",
+              "|---|---|---|---|",
+              ...r.checks.map((c) => `| ${c.id} | ${c.state} | ${esc(c.title)} | ${esc(c.observed.slice(0, 200))} |`),
+            ];
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+          '
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: friction-check
+          path: arkiv/friction-check.json
+          if-no-files-found: warn
