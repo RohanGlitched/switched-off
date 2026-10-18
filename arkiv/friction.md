@@ -116,10 +116,11 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   whatever it selects (`Arkiv-Cost: 100` response header), and the separate 600 requests/60 s per IP limit (`RateLimit` header).
   `eth_*` methods kept working, so writes were unaffected.
 - **Measured later (11 Oct):** the 429 itself carries the answer in headers, `ratelimit: limit=10000, remaining=0, reset=3130` and
-  `retry-after: 3130`, so the keyless budget is 10,000 units (100 queries) per network per roughly an hour. Three smaller things: the 429
+  `retry-after: 3130`, so the keyless budget is 10,000 units (100 queries) per client IP per roughly an hour. Three smaller things: the 429
   body is not JSON-RPC shaped (`{"error":"ANON_COST_LIMITED","message":…}`, no `jsonrpc` or `id`, so generic clients report "no result"
   instead of the message); `Arkiv-Quota-Used-Percent` is listed in the CORS-exposed headers but not sent on a keyless read (see item 12: keyed reads carry it); and because the budget is per
-  network, a judge who runs our documented `curl` after we spent the hour's budget sees it fail. The site, mirror and CLI now fall back
+  IP, everyone behind one address (an office, a campus or a mobile carrier's NAT) shares one hour's budget, so a documented `curl` can
+  fail for a reader who has done nothing. The site, mirror and CLI now fall back
   to the relay when a direct read hits the budget, and say so.
 - **Design consequence:** the access-keys page rightly warns that a key in browser code can be read and spent by anyone. So a public site
   either puts every visitor on the keyless budget or runs a proxy. We run a small allowlisted relay with a 4-second shared cache, plus a
@@ -188,8 +189,9 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   listed with their corrections and expiry dates in [schema.md](schema.md#personal-data-what-went-wrong-and-what-we-did).
 - **Repro:** read any of the corrected records' originals by key (listed in `scripts/corrections.json` once filed) and compare.
 - **Fix (for us):** a name check in the personal-data guard before every write, run over the import too (`scripts/pii-check.ts`).
-- **Fix (for Arkiv):** none wanted; this is the trade-off working as designed. A note in the docs next to `changeOwnership` that a transfer
-  to a burn address is irreversible for *content* as well as ownership would save someone else the lesson.
+- **Fix (for Arkiv):** the behaviour is right; the docs are where it bit. A note next to `changeOwnership` (and in the creation-flags
+  guide) that a transfer to a burn address with `readonly` makes the *content* irreversible too, not only the ownership, would save the
+  next team the lesson. A cooling-off pattern (seal only after N blocks, while the owner can still delete) belongs in the same note.
 - **Checked by:** friction-check `10` (the first corrected original in `scripts/corrections.json` is live and owned by
   `0x…dEaD`, so only a correction entity can repair it). STILL, as designed.
 
@@ -211,6 +213,8 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   bounds each upstream call (8 s) and retries a dropped socket or a 5xx once, every "Relay error" sends the read to the other path,
   and banners show `details`.
 - **Repro:** a viem `http` transport with default retries against the public RPC after the hour's budget is spent; watch the network tab.
+- **Whose friction:** the hang is viem's default (`retryCount: 3`, obeying `retry-after`) meeting Arkiv's very long `retry-after`;
+  Arkiv's part is the length of that header on a budget refusal.
 - **Fix:** a `retry-after` that long is a "come back later", not a retry hint. Cap it (or say so in the docs next to the budget), and
   put the 100,000-block log cap in the JSON-RPC docs next to `eth_getLogs`.
 - **Checked by:** friction-check `11-viem` (offline: against a local server that answers 429 with `retry-after: 1`, viem's
@@ -255,9 +259,12 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   `cursor belongs to a different query, block or select — start a new page-through`. The node ties a cursor to the block the
   first page was read at. `fetchPage` in `src/query/queryBuilder.ts` (0.8.1) sends the same request again with only the cursor
   added, so when no `atBlock` was set and a block has landed since page one (every 2 s on Tiramisu), the node refuses it.
-  The `-32005` message ("exceeds defined limit") points at the wrong cause; only `data.message` says what happened.
+  The `-32005` message ("exceeds defined limit") points at the wrong cause; only `data.message` says what happened. The SDK's own
+  `for await (const e of query)` iterator (`queryBuilder.ts`, about line 186) walks with `next()` and breaks the same way. The
+  JSDoc on `cursor()` already says a cursor "is bound to the query, block and selection it came from", so the node is consistent;
+  the gap is that `next()`, which the same JSDoc says "carries the cursor for you", doesn't carry the block.
 - **Repro:** any query with more than 200 matches and no `.atBlock(…)`: fetch page one, wait 3 s, call `next()`.
-- **Cost to us:** it broke the archive read on the live site and our snapshot script the moment 33 newer orders and 30
+- **Cost to us:** it broke the archive read on the live site and our snapshot script the moment 43 newer orders and 30
   corrections were filed; we found it within minutes because the snapshot script threw.
 - **Fix (for us):** `pages()` in `src/lib/arkiv.ts` reads page one at the newest block (so a write this browser just made is
   in it, and visitors share the relay's cached answer); only when there is a second page does it start again pinned to the
