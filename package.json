@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "friction": "tsx scripts/friction-check.ts",
+    "snapshot": "tsx scripts/snapshot.ts"
   },
   "dependencies": {
     "@arkiv-network/sdk": "^0.8.1",
