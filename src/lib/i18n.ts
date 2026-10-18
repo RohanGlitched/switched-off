@@ -39,16 +39,18 @@ export const useLang = () => useSyncExternalStore((f) => (subs.add(f), () => sub
 /** The current language, read at call time (for plain functions such as the date formatters). */
 export const getLang = () => lang
 /** The locale for dates and numbers in the current language. */
-export const locale = () => (lang === 'en' ? 'en-IN' : `${lang}-IN`)
+export const locale = () => (lang === 'en' || (lang !== 'hi' && !onReportForm()) ? 'en-IN' : `${lang}-IN`)
 /** Urdu is written right to left. */
 export const dirOf = (l: Lang) => (l === 'ur' ? 'rtl' : 'ltr')
 
+const onReportForm = () => typeof location !== 'undefined' && location.pathname.startsWith('/report')
 const missing = new Set<string>()
 /** Translate outside React (event handlers, toasts, formatters): the same dictionary as useT. */
 export function tr(s: string): string {
   if (lang === 'en') return s
-  // the other languages cover the report form and the menu; the rest of the site stays in English
-  if (lang !== 'hi') return MORE[lang][s] ?? s
+  // the other languages cover the report form (and the menu above it); elsewhere the page stays wholly
+  // English rather than mixing scripts in one sentence
+  if (lang !== 'hi') return onReportForm() ? MORE[lang][s] ?? s : s
   const h = HI[s]
   if (h === undefined && import.meta.env.DEV && !missing.has(s)) {
     missing.add(s)
