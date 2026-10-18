@@ -13,7 +13,7 @@ name. The whole site in Hindi or English; the report form also in Urdu, Bengali,
 
 **Live:** https://switched-off.vercel.app · **Proof:** [/proof](https://switched-off.vercel.app/proof) · **Mirror:** https://rohanglitched.github.io/switched-off/ ·
 **Video (2:52):** https://youtu.be/W042WqAoYN0 · **Devfolio:** https://devfolio.co/projects/switched-off-e27e ·
-Track: Arkiv Global Tour Stop, **Best Indian Use Case**
+Tracks: Arkiv Global Tour Stop, **Best Indian Use Case** and Censorship Resistance
 
 ## For judges: where everything is
 
@@ -29,7 +29,7 @@ Track: Arkiv Global Tour Stop, **Best Indian Use Case**
 | Work done 9–18 Oct only | [`docs/TIMELINE.md`](docs/TIMELINE.md) | No prior work. Baseline: the first commit, `254b8aa` (11 Oct), which holds what was built locally before it |
 | Evidence that survives entity expiry | [`arkiv/evidence.md`](arkiv/evidence.md), [/proof](https://switched-off.vercel.app/proof) | Creation and batch transactions, an expired order read back with `atBlock`, the video |
 | No real personal data on Arkiv | [schema.md: Personal data](arkiv/schema.md#personal-data-what-went-wrong-and-what-we-did) | We broke this on 11 Oct: 12 sealed entities quote a name from a public court record or article. Corrected, hidden by every reader, guarded against since; every key and its expiry is listed |
-| Tests | [`test/`](test/), CI badge above | 285 unit tests, no network; CI runs them and the build on every push |
+| Tests | [`test/`](test/), CI badge above | 288 unit tests, no network; CI runs them and the build on every push |
 | 1. Why India? | [Who it's for](#who-its-for-and-what-changes-for-them-on-day-one), [/why](https://switched-off.vercel.app/why) | Sourced facts in [`research/facts.md`](research/facts.md) |
 | 2. Why Arkiv? | [Why Arkiv](#why-arkiv-what-breaks-without-it), [Kept off Arkiv](#kept-off-arkiv-on-purpose) | Against Postgres, IPFS and a subgraph |
 | 3. How we use Arkiv | [Every Arkiv feature](#every-arkiv-feature-and-what-the-user-sees), [/proof](https://switched-off.vercel.app/proof) | Seven live checks from your browser; the write checks are simulations, nothing is signed |
@@ -83,7 +83,9 @@ tagged like ours, which the readers handle with the [trust rules](#trust-rules-w
 - **The full text and PDF of each order.** A short paraphrase of the stated reason and links to where the government or the press
   published it.
 - **The map, translations and site code.** Presentation, on a static host and in this repository; the data doesn't depend on them.
-- **The relay's cache and the gas tap.** Conveniences on our server. Direct mode, the mirror and the CLI don't use them.
+- **The relay's cache, the first-paint snapshot and the gas tap.** Conveniences on our server. `public/snapshot.json` is a copy of
+  the sealed archive as Arkiv returned it at one block, shown labelled with that block for the second or two until the live read
+  replaces it. Direct mode, the mirror and the CLI use none of them.
 
 ## Every Arkiv feature and what the user sees
 
@@ -118,7 +120,7 @@ Each of these is checked against the network on [/proof](https://switched-off.ve
 
 - **A live map of India at night.** About 4,000 lights, one cluster per district. A suspension order in force switches its
   districts off. A district people report as dark with no published order behind it burns red.
-- **The register.** 187 sourced orders from 2019 to 2026 (111 imported on 11 Oct; 76 more from 2025–26 researched and added on 18 Oct, and 30 registrar corrections from better sources) (Manipur, Jammu and Kashmir, Haryana, Punjab, Rajasthan, Delhi and
+- **The register.** 187 sourced orders from 2019 to 2026 (111 imported on 11 Oct; 76 more from 2025–26 researched and added on 18 Oct, and 36 registrar corrections from better sources) (Manipur, Jammu and Kashmir, Haryana, Punjab, Rajasthan, Delhi and
   more), each printed as a page of the Gazette with its authority, stated reason, renewal chain and sources.
 - **Reports from the ground.** No sign-up, no name, a throwaway key in the browser. Reports fade in six hours unless a neighbour
   confirms them. Made offline, they wait on the phone and go out when the signal returns, marked late.
