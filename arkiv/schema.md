@@ -183,5 +183,6 @@ so a mistake found in that window is deleted and refiled instead of living on be
   were needed is in [Personal data](#personal-data-what-went-wrong-and-what-we-did)).
 - Every address that writes entities, with its role: [`wallets.md`](wallets.md). Each claim with its transaction and how to re-check
   it: [`evidence.md`](evidence.md).
+- Newer orders, 18 Oct 2026: 26 `record` entities from 2025–26, each batch created and sealed to `0x…dEaD` in one transaction (`scripts/add-orders.ts`, keys in `scripts/added.json`): `0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569`, `0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d`, `0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0`.
 - Archive import: 111 `record` entities in 12 `executeBatch` transactions on 11 Oct 2026, e.g.
   `0xb329d2e099e06b37160c5fa7222b66f997a00733d588b3ca717fbd3d8e9cab51`. All keys are in `scripts/seeded.json`.

@@ -25,7 +25,7 @@ const ALIAS: Record<string, string> = {
   'leh ladakh': 'leh', 'leh-ladakh': 'leh', baramulla: 'baramula', budgam: 'badgam', shopian: 'shupiyan', bandipora: 'bandipore', poonch: 'punch',
   // West Bengal, Bihar, Assam, Arunachal (spellings and post-2011 districts)
   'cooch behar': 'koch bihar', darjeeling: 'darjiling', howrah: 'haora', hooghly: 'hugli', 'west champaran': 'pashchim champaran', 'east champaran': 'purba champaran',
-  charaideo: 'sivasagar', 'itanagar capital region': 'papum pare', itanagar: 'papum pare', ferozepur: 'firozpur',
+  charaideo: 'sivasagar', 'west karbi anglong': 'karbi anglong', unakoti: 'north tripura', 'itanagar capital region': 'papum pare', itanagar: 'papum pare', ferozepur: 'firozpur',
   // Delhi orders name protest sites, not districts (2011 district they fall in)
   bawana: 'north west', jaffarabad: 'north east', mustafabad: 'north east', seelampur: 'north east', 'jamia nagar': 'south', 'shaheen bagh': 'south', 'mandi house': 'new delhi',
   'walled city areas of north and central districts': 'central',

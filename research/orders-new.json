@@ -1,0 +1,629 @@
+[
+  {
+    "id": "br-jamui-2025-02-16",
+    "state": "Bihar",
+    "stateCode": "IN-BR",
+    "districts": [
+      "Jamui (Jhajha area)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": "2025-02-16",
+    "endsAt": "2025-02-18",
+    "issuingAuthority": "District Magistrate, Jamui",
+    "legalBasis": null,
+    "reasonStated": "Preventive measure to stop rumours and control communal unrest after a clash during a religious procession.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Bihar, 16 February 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-bihar-india-16-february-2025/"
+      }
+    ],
+    "notes": "48 hours from 16 Feb 2025. Pulse links an order copy archived by SFLC.in. Services covered not stated. Exact start time not confirmed (Pulse time labels are unreliable)."
+  },
+  {
+    "id": "wb-sainthia-2025-03-14",
+    "state": "West Bengal",
+    "stateCode": "IN-WB",
+    "districts": [
+      "Birbhum (Sainthia: Hatora, Mathpalsa, Harisara, Dariyapur and Fulur gram panchayats)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-03-14",
+    "endsAt": "2025-03-17T08:00",
+    "issuingAuthority": "Principal Secretary, Home and Hill Affairs Department, Government of West Bengal",
+    "legalBasis": "Telecommunications Act, 2023",
+    "reasonStated": "Maintain public order and prevent incitement to offences after local violence.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in West Bengal, 14 March 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-west-bengal-india-14-march-2025/"
+      }
+    ],
+    "notes": "Mobile internet and voice-over-internet services. Reported as a four-day order ending 08:00 on 17 Mar. Pulse quotes the order text."
+  },
+  {
+    "id": "jk-doda-2025-04-05",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda (Gandoh and Bhaderwah areas)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-04-04",
+    "startsAt": "2025-04-05T02:00",
+    "endsAt": "2025-04-05T23:59",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Protests triggered by a social media post.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 5 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-5-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-03(TSTS) of 2025, dated 4 Apr (as listed by Pulse). Order copies archived by SFLC.in."
+  },
+  {
+    "id": "jk-bhaderwah-2025-04-06",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda (Bhaderwah town)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-04-05",
+    "startsAt": null,
+    "endsAt": "2025-04-06T20:00",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Continued tension after protests over a social media post.",
+    "renewalOf": "jk-doda-2025-04-05",
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 5 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-5-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-04(TSTS) of 2025, dated 5 Apr; extended the suspension for Bhaderwah town only until 20:00 on 6 Apr. Start presumably on expiry of the previous order; not confirmed."
+  },
+  {
+    "id": "jk-kishtwar-2025-04-13",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Chatroo area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-04-13",
+    "startsAt": "2025-04-13T16:00",
+    "endsAt": "2025-04-14T23:59",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-05(TSTS) of 2025. Covers 2G/3G/4G/5G mobile data and public Wi-Fi."
+  },
+  {
+    "id": "jk-kishtwar-2025-04-14",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Chatroo area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-04-14",
+    "startsAt": "2025-04-15T00:00",
+    "endsAt": "2025-04-15T23:59",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+    "renewalOf": "jk-kishtwar-2025-04-13",
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-06(TSTS) of 2025 (extension). Start taken as expiry of the previous order."
+  },
+  {
+    "id": "jk-kishtwar-2025-04-15",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Chatroo area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-04-15",
+    "startsAt": "2025-04-16T00:00",
+    "endsAt": "2025-04-17T23:59",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+    "renewalOf": "jk-kishtwar-2025-04-14",
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-07(TSTS) of 2025 (extension). Start taken as expiry of the previous order."
+  },
+  {
+    "id": "jk-doda-2025-04-24",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-04-24",
+    "endsAt": "2025-04-25",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "Maintenance of public order after a militant attack elsewhere in the territory.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 24 April 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-24-april-2025/"
+      }
+    ],
+    "notes": "Government Order No. Home-10(TSTS) of 2025; Pulse hosts the order PDF and says orders were issued on 26 Apr (possibly the publication date). Exact times unclear."
+  },
+  {
+    "id": "pb-faridkot-2025-05-08",
+    "state": "Punjab",
+    "stateCode": "IN-PB",
+    "districts": [
+      "Faridkot"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-05-08T22:00",
+    "endsAt": "2025-05-09",
+    "issuingAuthority": "Deputy Commissioner, Faridkot",
+    "legalBasis": null,
+    "reasonStated": "Prevent the spread of rumours on social media amid India-Pakistan military tension.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Punjab, 8 May 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-punjab-india-8-may-2025/"
+      }
+    ],
+    "notes": "Pulse: no official order made public. End reported as 9 May; exact time unconfirmed."
+  },
+  {
+    "id": "or-bhadrak-2025-06-12",
+    "state": "Odisha",
+    "stateCode": "IN-OR",
+    "districts": [
+      "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": "2025-06-12",
+    "endsAt": null,
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Local unrest after a group clash.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+      }
+    ],
+    "notes": "24-hour order, then a 12-hour extension ending 18:00 on 13 Jun. Start date inferred from that (36 hours before 18:00 on 13 Jun); exact start not confirmed."
+  },
+  {
+    "id": "or-bhadrak-2025-06-13",
+    "state": "Odisha",
+    "stateCode": "IN-OR",
+    "districts": [
+      "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": null,
+    "endsAt": "2025-06-13T18:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Continuing local unrest after a group clash.",
+    "renewalOf": "or-bhadrak-2025-06-12",
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+      }
+    ],
+    "notes": "12-hour extension ending 18:00 on 13 Jun."
+  },
+  {
+    "id": "hr-bhiwani-charkhi-dadri-2025-08-19",
+    "state": "Haryana",
+    "stateCode": "IN-HR",
+    "districts": [
+      "Bhiwani",
+      "Charkhi Dadri"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-08-19T11:00",
+    "endsAt": "2025-08-21T11:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Haryana",
+    "legalBasis": "Rule 3, Telecommunications (Temporary Suspension of Services) Rules, 2024, under s.20 of the Telecommunications Act, 2023",
+    "reasonStated": "Risk of tension, protests, damage to property and disturbance of peace, and of inflammatory content and fake news spreading, after a teacher's death.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Haryana, August 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-august-2025/"
+      }
+    ],
+    "notes": "Mobile internet (2G to 5G) and SMS services suspended; voice calls not reported as affected."
+  },
+  {
+    "id": "hr-bhiwani-charkhi-dadri-2025-08-21",
+    "state": "Haryana",
+    "stateCode": "IN-HR",
+    "districts": [
+      "Bhiwani",
+      "Charkhi Dadri"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-08-21T11:00",
+    "endsAt": "2025-08-22",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Haryana",
+    "legalBasis": null,
+    "reasonStated": "Continued risk of tension, protests and disturbance of peace.",
+    "renewalOf": "hr-bhiwani-charkhi-dadri-2025-08-19",
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Haryana, August 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-august-2025/"
+      }
+    ],
+    "notes": "Reported 24-hour extension; end time on 22 Aug not confirmed."
+  },
+  {
+    "id": "as-baksa-2025-10-15",
+    "state": "Assam",
+    "stateCode": "IN-AS",
+    "districts": [
+      "Baksa"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-10-15",
+    "endsAt": "2025-10-17",
+    "issuingAuthority": "Additional Chief Secretary, Home and Political Department, Government of Assam",
+    "legalBasis": null,
+    "reasonStated": "Apprehended public unrest during the transfer of prisoners in a high-profile death case.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Assam, October 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-assam-india-october-2025/"
+      }
+    ],
+    "notes": "Whole district. Order had no stated end; a restoration notification on 17 Oct said there was no further apprehension of unrest. Voice, fixed telephone and broadband unaffected."
+  },
+  {
+    "id": "tr-kamalpur-2025-10-23",
+    "state": "Tripura",
+    "stateCode": "IN-TR",
+    "districts": [
+      "Dhalai (Kamalpur subdivision)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-10-23",
+    "endsAt": null,
+    "issuingAuthority": "District Magistrate, Dhalai",
+    "legalBasis": null,
+    "reasonStated": "Curb rumours and mobilisation through social media after clashes during a strike.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Tripura, October 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-tripura-india-october-2025/"
+      }
+    ],
+    "notes": "24 hours from the evening of 23 Oct, alongside Section 163 prohibitory orders. Pulse: no official order made public."
+  },
+  {
+    "id": "or-malkangiri-2025-12-08",
+    "state": "Odisha",
+    "stateCode": "IN-OR",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": null,
+    "startsAt": "2025-12-08T18:00",
+    "endsAt": "2025-12-09T18:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+    "legalBasis": "Section 20, Telecommunications Act, 2023",
+    "reasonStated": "Prevent the spread of inflammatory and motivated messages amid local unrest.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-december-2025/"
+      }
+    ],
+    "notes": "Covers social media, mobile data, ISP internet and broadband dial-up. Pulse says it was extended six times until 12:00 on 15 Dec; the first extension (to 12:00 on 10 Dec) covered social media access. Extensions not yet entered as separate orders."
+  },
+  {
+    "id": "rj-hanumangarh-2025-12-16",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Hanumangarh (district headquarters)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-12-16T11:00",
+    "endsAt": "2025-12-17T12:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Prevent rumours ahead of a farmers' gathering against an ethanol plant on 17 December.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Rajasthan, Hanumangarh, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-hanumangarh-india-december-2025/"
+      }
+    ],
+    "notes": "25 hours from 11:00 on 16 Dec; end computed. Pulse: no official order made public."
+  },
+  {
+    "id": "as-karbi-anglong-2025-12-23",
+    "state": "Assam",
+    "stateCode": "IN-AS",
+    "districts": [
+      "Karbi Anglong",
+      "West Karbi Anglong"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-12-23",
+    "startsAt": "2025-12-23",
+    "endsAt": "2025-12-28T08:00",
+    "issuingAuthority": "Commissioner and Secretary, Home and Political Department, Government of Assam",
+    "legalBasis": "Indian Telegraph Act and related rules (as reported)",
+    "reasonStated": "Prevent rumours, inflammatory messages and misinformation on social media that could aggravate local unrest.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Assam, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-assam-india-december-2025/"
+      }
+    ],
+    "notes": "No set end in the order; restoration reported from 08:00 on 28 Dec. Voice and fixed broadband continued. The Telegraph Act citation may be misreported (replaced by the Telecommunications Act, 2023)."
+  },
+  {
+    "id": "rj-chomu-2025-12-26",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Jaipur (Chomu town)"
+    ],
+    "scope": "all-internet",
+    "issuedAt": null,
+    "startsAt": "2025-12-26",
+    "endsAt": null,
+    "issuingAuthority": "Divisional Commissioner, Jaipur",
+    "legalBasis": null,
+    "reasonStated": "Prevent rumours and worsening of the situation after local unrest.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
+      }
+    ],
+    "notes": "24 hours, on the Commissioner of Police's request. Mobile and broadband. Exact start time unconfirmed."
+  },
+  {
+    "id": "rj-chomu-2025-12-27",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Jaipur (Chomu town)"
+    ],
+    "scope": "all-internet",
+    "issuedAt": null,
+    "startsAt": "2025-12-27",
+    "endsAt": "2025-12-28T07:00",
+    "issuingAuthority": "Divisional Commissioner, Jaipur",
+    "legalBasis": null,
+    "reasonStated": "Continued risk of rumours after local unrest.",
+    "renewalOf": "rj-chomu-2025-12-26",
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
+      }
+    ],
+    "notes": "Extension until 07:00 on 28 Dec."
+  },
+  {
+    "id": "tr-unakoti-2026-01-10",
+    "state": "Tripura",
+    "stateCode": "IN-TR",
+    "districts": [
+      "Unakoti"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-01-10",
+    "endsAt": null,
+    "issuingAuthority": "District Magistrate, Unakoti",
+    "legalBasis": null,
+    "reasonStated": "Precaution after communal clashes in Kumarghat subdivision.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Tripura, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-tipura-india-january-2026/"
+      }
+    ],
+    "notes": "48 hours. Pulse: no official order made public; Pulse records the outage until 13 Jan."
+  },
+  {
+    "id": "or-sundargarh-2026-01-15",
+    "state": "Odisha",
+    "stateCode": "IN-OR",
+    "districts": [
+      "Sundargarh (Sundargarh town)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": "2026-01-15T18:00",
+    "endsAt": "2026-01-16T18:00",
+    "issuingAuthority": "Collector, Sundargarh",
+    "legalBasis": null,
+    "reasonStated": "Local unrest after a group clash.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-january-2026/"
+      }
+    ],
+    "notes": "24 hours from 18:00; restored on 16 Jan after a law-and-order review (possibly before the computed end). Services covered not stated."
+  },
+  {
+    "id": "jk-kishtwar-2026-01-29",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Singhpora, Chingam and Chatroo areas)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-01-29",
+    "endsAt": "2026-01-30",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": null,
+    "reasonStated": "In the interest of the sovereignty and integrity of India, amid local unrest.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-january-2026/"
+      }
+    ],
+    "notes": "Order copy published by a news agency. Times not confirmed."
+  },
+  {
+    "id": "jk-doda-2026-07-17",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": null,
+    "startsAt": "2026-07-17",
+    "endsAt": "2026-07-21",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Protests over a fatal incident.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Doda, Jammu and Kashmir, 17 July 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-doda-jammu-and-kashmir-india-17-july-2026/"
+      }
+    ],
+    "notes": "Landline, mobile and broadband suspended across the district; services resumed on 21 Jul. No official order published. Issuing authority and any daily renewals unknown."
+  },
+  {
+    "id": "dl-central-2026-07-20",
+    "state": "Delhi",
+    "stateCode": "IN-DL",
+    "districts": [
+      "New Delhi (parts of Central Delhi near Jantar Mantar and Parliament)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-07-20",
+    "endsAt": "2026-07-20",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Not stated; imposed during a youth protest march to Parliament.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 20 July 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-20-july-2026/"
+      }
+    ],
+    "notes": "Directions to Airtel, Jio and Vi; reportedly confirmed by Delhi Police. No order made public (IFF statement). Pulse lists about eight hours; its attribution of the order is doubtful, so authority left null."
+  },
+  {
+    "id": "pb-phagwara-2026-09-27",
+    "state": "Punjab",
+    "stateCode": "IN-PB",
+    "districts": [
+      "Kapurthala (Phagwara: in and around a private university campus)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-09-27",
+    "endsAt": "2026-09-28",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Maintain calm and prevent escalation during campus protests over an alleged sexual assault and alleged inaction by the university.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended around a university in Punjab, 28 September 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-lovely-professional-university-india-28-september-2026/"
+      }
+    ],
+    "notes": "Pulse: no public version of the order. Radius reported informally as about 3 km. Times unconfirmed."
+  }
+]

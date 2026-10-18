@@ -1,0 +1,139 @@
+{
+ "batches": [
+  {
+   "at": "2026-10-18T06:07:29.495Z",
+   "added": [
+    {
+     "id": "br-jamui-2025-02-16",
+     "key": "0x924cad96d8474430eec6f00a6af77b32ca8686ca75adb2acaa739b348975e199",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "wb-sainthia-2025-03-14",
+     "key": "0x6052239e66bc14609e62ce897fb444d34068df4c320e28581d195e83d2d1e0cf",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-doda-2025-04-05",
+     "key": "0x44f1b2ddf2e6c612b547d6e0b50110d108d8809c11ef55a245e6a377e22a9811",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-bhaderwah-2025-04-06",
+     "key": "0xce407c7b103d5a2949b258835853eb7b3325f7044e2ec561e5a0696e01ebbafd",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-kishtwar-2025-04-13",
+     "key": "0xa6fe9acee9c5f9f95d37c2dd5920466a1ef4d88bf9d493d57564e9f02f084f88",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-kishtwar-2025-04-14",
+     "key": "0x1b6eaa294cacb64cf67e00f2e38a5410c1065fefaa0bd3a55188a32d877531cc",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-kishtwar-2025-04-15",
+     "key": "0x1ef7779199da6ac41dcd0485446d479ac3c9ee974c3930189147275211b388f5",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "jk-doda-2025-04-24",
+     "key": "0xa65f5b9c3545a703c690a381b0b1865e987875ba5e7e85a48ae86cd48695a45d",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "pb-faridkot-2025-05-08",
+     "key": "0xc858f703e3dbddd9e44e2a8334e281679f14a6ffd8604a1eb92131fafb092f78",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "or-bhadrak-2025-06-12",
+     "key": "0x738afbccfe8b78e9f4f79c16517ddca80cc0564974e75d188020a4dc6b94e982",
+     "tx": "0x0d344ff085e90aeb992dcf5a18bd0d2d39f1eef853dcfdc7396e7f0b85d32569"
+    },
+    {
+     "id": "or-bhadrak-2025-06-13",
+     "key": "0x6f94840d693fb49209b5fb5b0527a3585feb0ce78d1af0b99cabacf67606174a",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "hr-bhiwani-charkhi-dadri-2025-08-19",
+     "key": "0x03a6828ce50ca89b770e5a5244cc9b5d1d15f5fb39ea3dfc5fa68681daefd627",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "hr-bhiwani-charkhi-dadri-2025-08-21",
+     "key": "0x7602a58693432704f8cb9ab404de3ee1aa8edb90281a8d7de195cc321f45aa89",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "as-baksa-2025-10-15",
+     "key": "0x144e79ecda689e9cfac5afad2406891cbb36c3f8d7377f3d1b56e064ec3aa189",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "tr-kamalpur-2025-10-23",
+     "key": "0xb932fea42ab2150ef74b3f1ae6041490fc5c332c61851beae3b082daa1861f0d",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "or-malkangiri-2025-12-08",
+     "key": "0xda7ca2597bbc3d80dbe0c6a59096416ed4a49b1505532042f16293c21a3f6da5",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "rj-hanumangarh-2025-12-16",
+     "key": "0xf3c0b1f1cc63aedfaaa4c536b301409a784268ecf6f0a5f6994fbcaa2778e146",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "as-karbi-anglong-2025-12-23",
+     "key": "0xfa1af67cf51b6c27c6493d465caa2bbf535e16427ca2f1cb819597bb61e9f20a",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "rj-chomu-2025-12-26",
+     "key": "0x9fb348f717f206caaf42947ff11277482c6622fe0c58f7105978e60b48e5028e",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "rj-chomu-2025-12-27",
+     "key": "0x0625f722432a293de234b4338156b63e1dbe89fb674331764d536eef1a62833b",
+     "tx": "0x352b444bb36ba635cb35644180e230d1ea61cc8bbba8452311f9dbc166b9784d"
+    },
+    {
+     "id": "tr-unakoti-2026-01-10",
+     "key": "0xa4bc8060673618d06e5f7f8f61acfe97c70ed34b4b0f6adf18c61992b10fe8b1",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    },
+    {
+     "id": "or-sundargarh-2026-01-15",
+     "key": "0x91cf5eee3367f0f8fbe5c2cf51d3629d03e52e38337a3eea00d92dd0bbdbea8e",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    },
+    {
+     "id": "jk-kishtwar-2026-01-29",
+     "key": "0x686de0094951af264830992333310d431ef399d27fe22fa0be0495c715aa4257",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    },
+    {
+     "id": "jk-doda-2026-07-17",
+     "key": "0x3b626d73f3f1c1456cf051d7b87e264e7242e9ac130772fc82a7a1c63fe78ba6",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    },
+    {
+     "id": "dl-central-2026-07-20",
+     "key": "0xf0409458bc10e4cb7c97bedb8d632fe9434734d8a2db88dcf83982a95777c31a",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    },
+    {
+     "id": "pb-phagwara-2026-09-27",
+     "key": "0x516f3fffedaa1e1f58c03ea0a5c3f19b6359b076b1de3225c396b2b3335f7535",
+     "tx": "0xd1d45d0defc36da8aa010d7ee225d03f4f614e575c3f65e4a6db3a4ff9b28aa0"
+    }
+   ]
+  }
+ ]
+}

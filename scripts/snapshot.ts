@@ -6,6 +6,13 @@
 import fs from 'node:fs'
 import { currentBlock, records, syncClock } from '../src/lib/arkiv'
 
+// keyless reads share a small per-network budget: with ARKIV_KEY in .env.local, this script's reads use the key
+const key = fs.existsSync('.env.local') ? /^ARKIV_KEY=(.*)$/m.exec(fs.readFileSync('.env.local', 'utf8'))?.[1]?.trim() : undefined
+if (key) {
+  const plain = globalThis.fetch
+  globalThis.fetch = (input, init) => (String(input).includes('arkiv.network') ? plain(input, { ...init, headers: { ...Object.fromEntries(new Headers(init?.headers)), 'x-api-key': key } }) : plain(input, init))
+}
+
 await syncClock()
 const block = currentBlock()
 const list = await records('live')

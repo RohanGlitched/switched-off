@@ -7,8 +7,9 @@
 
 **India's register of internet shutdowns, kept on Arkiv so that the record of a shutdown can't itself be switched off.**
 A map of India at night where every district under a suspension order goes dark and relights at the block the order lapses;
-111 sourced orders from 2019 to 2026, sealed so that nobody (us included) can edit or delete them and anyone can keep them alive;
-and one-tap "no internet here" reports from a throwaway browser key, with no sign-up and no name. In Hindi or English.
+137 sourced orders from 2019 to 2026 across 19 states and territories, sealed so that nobody (us included) can edit or delete
+them and anyone can keep them alive; and one-tap "no internet here" reports from a throwaway browser key, with no sign-up and no
+name. The whole site in Hindi or English; the report form also in Urdu, Bengali, Assamese, Punjabi and Odia.
 
 **Live:** https://switched-off.vercel.app · **Proof:** [/proof](https://switched-off.vercel.app/proof) · **Mirror:** https://rohanglitched.github.io/switched-off/ ·
 **Video (2:52):** https://youtu.be/W042WqAoYN0 · **Devfolio:** https://devfolio.co/projects/switched-off-e27e ·
@@ -117,7 +118,7 @@ Each of these is checked against the network on [/proof](https://switched-off.ve
 
 - **A live map of India at night.** About 4,000 lights, one cluster per district. A suspension order in force switches its
   districts off. A district people report as dark with no published order behind it burns red.
-- **The register.** 111 sourced orders from 2019 to 2026 (Manipur, Jammu and Kashmir, Haryana, Punjab, Rajasthan, Delhi and
+- **The register.** 137 sourced orders from 2019 to 2026 (111 imported on 11 Oct, 26 more from 2025–26 added on 18 Oct) (Manipur, Jammu and Kashmir, Haryana, Punjab, Rajasthan, Delhi and
   more), each printed as a page of the Gazette with its authority, stated reason, renewal chain and sources.
 - **Reports from the ground.** No sign-up, no name, a throwaway key in the browser. Reports fade in six hours unless a neighbour
   confirms them. Made offline, they wait on the phone and go out when the signal returns, marked late.

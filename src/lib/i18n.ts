@@ -715,8 +715,8 @@ const HI: Record<string, string> = {
   'The site, mirror and CLI default to Arkiv’s public RPC. Each takes another endpoint (?rpc= in the mirror, ARKIV_RPC for the CLI), so anyone running an Arkiv node can serve the register without asking anyone.':
     'साइट, मिरर और CLI डिफ़ॉल्ट रूप से Arkiv का सार्वजनिक RPC इस्तेमाल करते हैं। हर एक दूसरा एंडपॉइंट भी ले सकता है (मिरर में ?rpc=, CLI के लिए ARKIV_RPC), इसलिए Arkiv नोड चलाने वाला कोई भी, किसी से पूछे बिना, रजिस्टर उपलब्ध करा सकता है।',
   'The register is only as complete as its transcribers': 'रजिस्टर उतना ही पूरा है, जितना उसे दर्ज करने वाले बनाते हैं',
-  '111 orders are on file; Access Now counted 116 shutdowns in India in 2023 alone. The File an order page lets anyone add the rest, labelled as community transcriptions.':
-    '111 आदेश दर्ज हैं; Access Now ने अकेले 2023 में भारत में 116 इंटरनेट बंदियाँ गिनीं। “आदेश दर्ज करें” पेज से कोई भी बाक़ी आदेश जोड़ सकता है, जो सामुदायिक प्रतिलिपि के रूप में दिखते हैं।',
+  '137 orders are on file; Access Now counted 116 shutdowns in India in 2023 alone. The File an order page lets anyone add the rest, labelled as community transcriptions.':
+    '137 आदेश दर्ज हैं; Access Now ने अकेले 2023 में भारत में 116 इंटरनेट बंदियाँ गिनीं। “आदेश दर्ज करें” पेज से कोई भी बाक़ी आदेश जोड़ सकता है, जो सामुदायिक प्रतिलिपि के रूप में दिखते हैं।',
   'Reporting needs a signal, and a key': 'रिपोर्ट के लिए सिग्नल चाहिए, और एक कुंजी',
   'During a mobile-data cut, people on broadband or Wi-Fi can still report, and the offline queue sends reports when the signal returns. The gas tap runs on this site; a mirror can read the register but not fund new keys. Your browser key links your phone to your reports until you forget it (button on the Report page).':
     'मोबाइल डेटा बंद होने पर भी ब्रॉडबैंड या वाई-फ़ाई वाले लोग रिपोर्ट कर सकते हैं, और ऑफ़लाइन कतार सिग्नल लौटने पर रिपोर्टें भेज देती है। गैस टैप इसी साइट पर चलता है; मिरर रजिस्टर पढ़ सकता है, पर नई कुंजियों को गैस नहीं दे सकता। आपकी ब्राउज़र कुंजी आपके फ़ोन को आपकी रिपोर्टों से तब तक जोड़ती है, जब तक आप उसे भुला न दें (रिपोर्ट पेज पर बटन है)।',
