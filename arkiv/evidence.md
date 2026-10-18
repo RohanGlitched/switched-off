@@ -26,7 +26,7 @@ which also outlives every entity in it: https://youtu.be/W042WqAoYN0 (2:52).
 
 ## Queries
 
-Each keyless `arkiv_query` costs 100 units of a budget of about 100 queries an hour per IP (friction item 5). If it is spent, the
+Each keyless `arkiv_query` costs 100 units of a keyless budget of about 100 queries an hour (friction item 5). If it is spent, the
 site's relay answers the same JSON-RPC at `https://switched-off.vercel.app/api/rpc`.
 
 ```bash

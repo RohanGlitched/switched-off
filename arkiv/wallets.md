@@ -17,7 +17,7 @@ Two scripts write with other keys, outside the app's namespace or without creati
 - `npm run friction -- --write` writes short-lived check entities under `app = "switched-off-friction"` (not the register's `app`)
   with `FRICTION_KEY` or the registrar's key, and deletes them again. Readers never see them.
 
-Check the registrar's records yourself (one keyless call; it costs 100 units of the per-IP keyless budget):
+Check the registrar's records yourself (one keyless call; it costs 100 units of the keyless budget):
 
 ```bash
 curl -s -X POST https://rpc.tiramisu.db-chain.testnet.arkiv.network -H 'content-type: application/json' \
