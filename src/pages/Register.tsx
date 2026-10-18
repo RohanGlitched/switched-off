@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Gazette } from '../components/Gazette'
-import { MODE, recordsWhere, setMode, type Record_ } from '../lib/arkiv'
+import { MODE, currentBlock, queryText, recordsWhere, setMode, type Record_ } from '../lib/arkiv'
 import { useRegister } from '../lib/store'
 import { Link, param } from '../lib/router'
 import { STATES } from '../lib/geo'
-import { scopeLabel, scopeName } from '../lib/fmt'
-import { tf, tx, useT, tp } from '../lib/i18n'
+import { fmtDate, scopeLabel, scopeName } from '../lib/fmt'
+import { getLang, tf, tr, tx, useT, tp } from '../lib/i18n'
+import { SITE, citationText, curlForQuery, exportName, registerCsv, registerJson, type ExportMeta } from '../lib/cite'
+import { CopyButton, downloadText } from '../components/Cite'
 
 export function RegisterPage() {
   const live = useRegister('live')
@@ -17,13 +19,13 @@ export function RegisterPage() {
   const [since, setSince] = useState(param('since') ?? '')
   // state and "since" go to Arkiv as a typed query (equality on state, a u64 range on issued);
   // the free-text search runs in the browser because reason text lives in the payload, not an attribute
-  const [remote, setRemote] = useState<{ for: string; list: Record_[]; query: string; hidden: number } | null>(null)
+  const [remote, setRemote] = useState<{ for: string; list: Record_[]; query: string; hidden: number; block: bigint } | null>(null)
   useEffect(() => {
     const key = `${state}|${since}`
     if (!state && !since) return setRemote(null)
     let alive = true
     void recordsWhere('live', { state: state || undefined, since: since ? Math.floor(new Date(`${since}-01-01T00:00:00+05:30`).getTime() / 1000) : undefined })
-      .then((r) => alive && setRemote({ for: key, ...r }))
+      .then((r) => alive && setRemote({ for: key, ...r, block: currentBlock() }))
       .catch(() => alive && setRemote(null))
     return () => {
       alive = false
@@ -53,6 +55,24 @@ export function RegisterPage() {
       .filter((r) => !ql || `${r.stateName} ${r.districts.join(' ')} ${r.reason} ${r.authority}`.toLowerCase().includes(ql))
       .sort((a, b) => b.starts - a.starts)
   }, [live.records, remote, state, since, q, scope, show, forceKeys])
+  // what a download says about itself: the query Arkiv answered, the block, and what the browser filtered after
+  const usingRemote = !!remote && remote.for === `${state}|${since}`
+  const exportMeta = (): ExportMeta => {
+    const filters = [
+      ...(usingRemote ? [] : [state ? `state = ${state}` : '', since ? `issued ${since} or later` : '']),
+      scope ? `scope = ${scope}` : '',
+      show === 'force' ? 'in force now only' : '',
+      q ? `search: ${q}` : '',
+    ].filter(Boolean)
+    return usingRemote
+      ? { query: remote!.query, block: remote!.block, readAt: Date.now(), filters, from: 'arkiv' }
+      : { query: queryText('record', 'live'), block: live.recordsBlock ?? live.snapshotBlock ?? currentBlock(), readAt: live.recordsBlock ? live.loadedAt : 0, filters, from: live.recordsBlock ? 'arkiv' : 'snapshot' }
+  }
+  const save = (ext: 'csv' | 'json') => {
+    const m = exportMeta()
+    downloadText(exportName(ext, m, state || undefined), ext === 'csv' ? 'text/csv' : 'application/json', ext === 'csv' ? registerCsv(list, m) : registerJson(list, m))
+  }
+  const viewUrl = `${SITE}/register${location.search}`
   const statesOnFile = useMemo(() => [...new Set(live.records.map((r) => r.state))].sort((a, b) => (STATES[a] ?? a).localeCompare(STATES[b] ?? b)), [live.records])
 
   return (
@@ -98,14 +118,29 @@ export function RegisterPage() {
           {MODE === 'direct' ? <button className="btn small" onClick={() => setMode('relay')}>{t('Read through the relay instead')}</button> : <button className="btn small" onClick={() => setMode('direct')}>{t('Read Arkiv directly from your browser')}</button>}
         </p>
       )}
+      {!live.loading && list.length > 0 && (
+        <div className="panel" role="region" aria-label={t('Download or cite this view')} style={{ display: 'grid', gap: 10, marginBottom: 20, padding: 16 }}>
+          <b style={{ fontSize: 15 }}>{tp(list.length, 'Download this {n} order', 'Download these {n} orders')}</b>
+          <div className="row" style={{ gap: 10 }}>
+            <button type="button" className="btn small primary" onClick={() => save('csv')}>{t('CSV')}</button>
+            <button type="button" className="btn small" onClick={() => save('json')}>{t('JSON')}</button>
+            <CopyButton text={viewUrl} label={t('Copy link to this view')} what={t('link to this view')} />
+            <CopyButton text={() => curlForQuery(exportMeta().query)} label={t('Copy the query as curl')} what={t('the query as curl')} />
+          </div>
+          <p className="hint" style={{ margin: 0 }}>{t('Made in your browser from what Arkiv returned, with your filters applied. Each row has the entity key, creator, owner, expiry block and source links; the first line says the exact query and the block it was read at.')}</p>
+        </div>
+      )}
       {live.loading ? (
         <div className="grid3">{[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="skel" style={{ height: 300 }} />)}</div>
       ) : list.length ? (
         <div className="grid3">
           {list.map((r) => (
-            <Link key={r.key} to={`/e/${r.key}`} style={{ textDecoration: 'none' }} aria-label={tf('Open the record for {state}', { state: r.stateName })}>
-              <Gazette o={r} live={forceKeys.has(`${r.orderId}|${r.official ? 'registrar' : r.creator.toLowerCase()}`)} compact />
-            </Link>
+            <div key={r.key} style={{ display: 'grid', gap: 8, alignContent: 'start', minWidth: 0 }}>
+              <Link to={`/e/${r.key}`} style={{ textDecoration: 'none' }} aria-label={tf('Open the record for {state}', { state: r.stateName })}>
+                <Gazette o={r} live={forceKeys.has(`${r.orderId}|${r.official ? 'registrar' : r.creator.toLowerCase()}`)} compact />
+              </Link>
+              <CopyButton className="btn small" text={() => citationText(r, { t: tr, lang: getLang() })} label={t('Copy citation')} what={tf('citation for {state}, {date}', { state: tr(r.stateName), date: fmtDate(r.starts * 1000) })} />
+            </div>
           ))}
         </div>
       ) : (

@@ -57,6 +57,8 @@ export function tr(s: string): string {
   }
   return h ?? s
 }
+/** Translate into a given language, whatever the page is in (a Hindi letter from the English page). */
+export const trIn = (l: Lang, s: string): string => (l === 'hi' ? HI[s] ?? s : s)
 /** A template with `{name}` placeholders: the Hindi entry may put them in any order. */
 export function tf(template: string, vars: Record<string, string | number>): string {
   return tr(template).replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m))
@@ -812,6 +814,102 @@ const HI: Record<string, string> = {
   'Filed by the Switched Off registrar': 'Switched Off रजिस्ट्रार द्वारा दर्ज',
   'Filed by a community transcriber': 'एक सामुदायिक प्रतिलिपिकार द्वारा दर्ज',
   'Source:': 'स्रोत:',
+  // Cite and RTI
+  'Copy': 'कॉपी करें',
+  'Copied ✓': 'कॉपी हो गया ✓',
+  'Copied.': 'कॉपी हो गया।',
+  'Copied:': 'कॉपी हुआ:',
+  'Couldn’t copy. Select the text and copy it yourself.': 'कॉपी नहीं हो सका। पाठ चुनकर ख़ुद कॉपी करें।',
+  'Cite this order': 'इस आदेश का हवाला दें',
+  'For a petition, a news story or a letter: the link, a citation that says where the record lives on Arkiv, and one command that reads it back from the network without this site.':
+    'याचिका, ख़बर या पत्र के लिए: लिंक, एक हवाला जो बताता है कि रिकॉर्ड Arkiv पर कहाँ है, और एक कमांड जो इस साइट के बिना उसे सीधे नेटवर्क से दोबारा पढ़ती है।',
+  'Permalink': 'स्थायी लिंक',
+  'Citation': 'हवाला',
+  'Re-read it from Arkiv': 'इसे Arkiv से दोबारा पढ़ें',
+  'Runs in any shell with curl. Arkiv answers with the entity as stored: its payload comes back hex-encoded JSON, its owner, creator and expiry block as they are on the chain.':
+    'curl वाले किसी भी शेल में चलती है। Arkiv एंटिटी को वैसे ही लौटाता है जैसे वह दर्ज है: उसका पेलोड हेक्स-एन्कोडेड JSON में, और उसका मालिक, बनाने वाला और समाप्ति ब्लॉक वैसे जैसे चेन पर हैं।',
+  '{from} to {to}': '{from} से {to} तक',
+  'from {from}, end not stated': '{from} से, समाप्ति नहीं बताई गई',
+  'Internet suspension order: {state}, {districts}.': 'इंटरनेट निलंबन आदेश: {state}, {districts}।',
+  'Issuing authority: {authority}.': 'जारी करने वाला प्राधिकारी: {authority}।',
+  'not recorded': 'दर्ज नहीं',
+  'districts not recorded': 'ज़िले दर्ज नहीं',
+  'date not recorded': 'तारीख़ दर्ज नहीं',
+  'Order: {id}.': 'आदेश: {id}।',
+  'Register entry: {id} (the order’s own number is not recorded).': 'रजिस्टर प्रविष्टि: {id} (आदेश की अपनी संख्या दर्ज नहीं है)।',
+  'In force: {when}; issued {issued}.': 'लागू: {when}; जारी {issued}।',
+  'What was cut: {scope}.': 'क्या बंद किया गया: {scope}।',
+  'Legal basis: {basis}.': 'क़ानूनी आधार: {basis}।',
+  'Order text: published.': 'आदेश का पाठ: प्रकाशित।',
+  'Order text: not published.': 'आदेश का पाठ: प्रकाशित नहीं।',
+  'Order text: whether it was published is not known.': 'आदेश का पाठ: प्रकाशित हुआ या नहीं, पता नहीं।',
+  'This is a drill entity, not the live register.': 'यह अभ्यास की एंटिटी है, असली रजिस्टर नहीं।',
+  'Switched Off register, Arkiv Tiramisu entity {key}, created at block {block}, sealed.': 'Switched Off रजिस्टर, Arkiv Tiramisu एंटिटी {key}, ब्लॉक {block} पर बनी, सील।',
+  'Switched Off register, Arkiv Tiramisu entity {key}, created at block {block}, not sealed.': 'Switched Off रजिस्टर, Arkiv Tiramisu एंटिटी {key}, ब्लॉक {block} पर बनी, सील नहीं।',
+  'Filed by the Switched Off registrar ({creator}).': 'Switched Off रजिस्ट्रार ({creator}) द्वारा दर्ज।',
+  'Filed by a community transcriber ({creator}), not the registrar.': 'एक सामुदायिक प्रतिलिपिकार ({creator}) द्वारा दर्ज, रजिस्ट्रार द्वारा नहीं।',
+  'Sources:': 'स्रोत:',
+  'Sources: none recorded.': 'स्रोत: कोई दर्ज नहीं।',
+  'Download or cite this view': 'यह दृश्य डाउनलोड करें या उसका हवाला दें',
+  'Download this {n} order': 'यह {n} आदेश डाउनलोड करें',
+  'Download these {n} orders': 'ये {n} आदेश डाउनलोड करें',
+  'CSV': 'CSV',
+  'JSON': 'JSON',
+  'Copy link to this view': 'इस दृश्य का लिंक कॉपी करें',
+  'link to this view': 'इस दृश्य का लिंक',
+  'Copy the query as curl': 'क्वेरी को curl के रूप में कॉपी करें',
+  'the query as curl': 'curl के रूप में क्वेरी',
+  'Made in your browser from what Arkiv returned, with your filters applied. Each row has the entity key, creator, owner, expiry block and source links; the first line says the exact query and the block it was read at.':
+    'आपके ब्राउज़र में, Arkiv के लौटाए डेटा से, आपके फ़िल्टर लगाकर बनी। हर पंक्ति में एंटिटी कुंजी, बनाने वाला, मालिक, समाप्ति ब्लॉक और स्रोतों के लिंक हैं; पहली पंक्ति सटीक क्वेरी और वह ब्लॉक बताती है जिस पर इसे पढ़ा गया।',
+  'Copy citation': 'हवाला कॉपी करें',
+  'citation for {state}, {date}': '{state}, {date} का हवाला',
+  'No copy of the order itself is on file: only reports about it.': 'आदेश की अपनी कोई प्रति दर्ज नहीं है: केवल उसके बारे में ख़बरें।',
+  '{n} live report says {district} has no internet, and no order covering it is on the register.': '{n} ताज़ा रिपोर्ट कहती है कि {district} में इंटरनेट नहीं है, और रजिस्टर में उसे कवर करने वाला कोई आदेश नहीं है।',
+  '{n} live reports say {district} has no internet, and no order covering it is on the register.': '{n} ताज़ा रिपोर्टें कहती हैं कि {district} में इंटरनेट नहीं है, और रजिस्टर में उसे कवर करने वाला कोई आदेश नहीं है।',
+  'No order covering {district} is in force on the register.': 'रजिस्टर में {district} को कवर करने वाला कोई आदेश लागू नहीं है।',
+  'Open a district to confirm what people see there, and to draft a Right to Information request that asks the state for the order: written in your browser, in English or Hindi, sent by nobody but you.':
+    'किसी ज़िले को खोलकर वहाँ लोग जो देख रहे हैं उसकी पुष्टि करें, और राज्य से आदेश माँगने के लिए सूचना के अधिकार का आवेदन तैयार करें: आपके ब्राउज़र में, अंग्रेज़ी या हिंदी में लिखा, और आपके सिवा कोई उसे नहीं भेजता।',
+  'Right to Information': 'सूचना का अधिकार',
+  'Ask for the order': 'आदेश माँगें',
+  'Anyone in India can ask the state for it under the Right to Information Act, 2005. This drafts the request: a copy of every suspension order, the review committee’s record of its review, and when each order was published.':
+    'भारत का कोई भी नागरिक सूचना का अधिकार अधिनियम, 2005 के तहत राज्य से इसे माँग सकता है। यह आवेदन का मसौदा बनाता है: हर निलंबन आदेश की प्रति, समीक्षा समिति की समीक्षा का अभिलेख, और हर आदेश कब प्रकाशित हुआ।',
+  'From': 'से',
+  'To': 'तक',
+  'Language of the letter': 'पत्र की भाषा',
+  'The letter (edit it here or after you download it)': 'पत्र (यहाँ बदलें या डाउनलोड करने के बाद)',
+  'Copy the letter': 'पत्र कॉपी करें',
+  'the RTI letter': 'RTI पत्र',
+  'Download as a text file': 'टेक्स्ट फ़ाइल के रूप में डाउनलोड करें',
+  'Start the letter again': 'पत्र फिर से शुरू करें',
+  'Rewrite the letter with this change? Your edits to it will be lost.': 'इस बदलाव के साथ पत्र फिर से लिखें? आपके किए बदलाव मिट जाएँगे।',
+  'Written in your browser and never sent anywhere: not to Arkiv, not to this site. Add your name and address to the letter after you download it, and never put them in a report or a filing on Switched Off: everything on the register is public and permanent.':
+    'आपके ब्राउज़र में लिखा गया और कहीं नहीं भेजा जाता: न Arkiv को, न इस साइट को। अपना नाम और पता पत्र डाउनलोड करने के बाद जोड़ें, और उन्हें Switched Off की किसी रिपोर्ट या दर्ज आदेश में कभी न डालें: रजिस्टर पर सब कुछ सार्वजनिक और स्थायी है।',
+  'How to send it': 'इसे कैसे भेजें',
+  'By post or by hand to the Public Information Officer of the Home Department, with the fee. Keep a copy and the postal receipt.': 'शुल्क के साथ, डाक से या हाथ से, गृह विभाग के लोक सूचना अधिकारी को। एक प्रति और डाक की रसीद अपने पास रखें।',
+  'Online, on the state’s RTI portal:': 'ऑनलाइन, राज्य के RTI पोर्टल पर:',
+  'This site doesn’t list an online RTI portal for this state that it has checked; post or hand delivery always works.': 'यह साइट इस राज्य का कोई जाँचा हुआ ऑनलाइन RTI पोर्टल नहीं बताती; डाक या हाथ से देना हमेशा काम करता है।',
+  'If the order came from the Union Home Secretary, send the same request to the Ministry of Home Affairs:': 'यदि आदेश केंद्रीय गृह सचिव ने जारी किया था, तो यही आवेदन गृह मंत्रालय को भेजें:',
+  'Where this comes from': 'यह कहाँ से आया',
+  'Only the Union Home Secretary, or the State’s Secretary in charge of the Home Department, may order a suspension, in writing and with reasons. In unavoidable circumstances an officer of at least Joint Secretary rank in the Union government, authorised by them, may; that order lapses unless confirmed within 24 hours (rules 2 and 3).':
+    'निलंबन का आदेश केवल केंद्रीय गृह सचिव, या राज्य सरकार के गृह विभाग के भारसाधक सचिव, लिखित रूप में और कारण दर्ज करके दे सकते हैं। अपरिहार्य परिस्थितियों में उनके द्वारा प्राधिकृत, केंद्र सरकार के संयुक्त सचिव से अन्यून पद का अधिकारी दे सकता है; 24 घंटे में पुष्टि न होने पर वह आदेश अस्तित्वहीन हो जाता है (नियम 2 और 3)।',
+  'Telecommunications (Temporary Suspension of Services) Rules, 2024, G.S.R. 724(E), Gazette of India, 22 Nov 2024': 'दूरसंचार (सेवाओं का अस्थायी निलंबन) नियम, 2024, सा.का.नि. 724(अ), भारत का राजपत्र, 22 नवंबर 2024',
+  'Every suspension order “shall be published”, must name its reasons, area and services, and may run at most 15 days (rule 3(2)). It goes to a review committee within 24 hours (rule 3(3)); the committee meets within five days and records whether the order is lawful, and may set it aside (rule 5).':
+    'हर निलंबन आदेश “प्रकाशित किया जाएगा”, उसमें कारण, क्षेत्र और सेवाएँ स्पष्ट होंगी, और वह अधिकतम 15 दिन चल सकता है (नियम 3(2))। उसकी प्रति 24 घंटे में पुनर्विलोकन समिति को जाती है (नियम 3(3)); समिति पाँच दिन के भीतर बैठक करके दर्ज करती है कि आदेश क़ानून के अनुसार है या नहीं, और उसे अपास्त कर सकती है (नियम 5)।',
+  'Rules, 2024': 'नियम, 2024',
+  'In Anuradha Bhasin v. Union of India (2020) the Supreme Court directed the authorities to publish all suspension orders in force and every future one.': 'अनुराधा भसीन बनाम भारत संघ (2020) में सुप्रीम कोर्ट ने प्राधिकारियों को लागू सभी निलंबन आदेश और आगे के हर आदेश प्रकाशित करने का निर्देश दिया।',
+  'Judgment of 10 Jan 2020, (2020) 3 SCC 637, para 152': '10 जनवरी 2020 का फ़ैसला, (2020) 3 SCC 637, पैरा 152',
+  'Anyone can ask in writing or electronically, in English, Hindi or the official language of the area (section 6(1)), without giving a reason (section 6(2)). An office that doesn’t hold the information must pass the request on within five days (section 6(3)).':
+    'कोई भी लिखित रूप में या इलेक्ट्रॉनिक माध्यम से, अंग्रेज़ी, हिंदी या उस क्षेत्र की राजभाषा में आवेदन कर सकता है (धारा 6(1)), बिना कोई कारण बताए (धारा 6(2))। जिस कार्यालय के पास सूचना नहीं है, उसे पाँच दिन में आवेदन आगे भेजना होता है (धारा 6(3))।',
+  'Right to Information Act, 2005': 'सूचना का अधिकार अधिनियम, 2005',
+  'The reply is due within 30 days. The 48-hour limit applies only where the information concerns the life or liberty of a person (section 7(1)); a late reply must be free of charge (section 7(6)).':
+    'जवाब 30 दिन के भीतर देना होता है। 48 घंटे की सीमा केवल तब लागू होती है जब सूचना किसी व्यक्ति के जीवन या स्वतंत्रता से जुड़ी हो (धारा 7(1)); देर से दी गई सूचना निःशुल्क देनी होती है (धारा 7(6))।',
+  'The fee is Rs 10 for Union government offices; each state sets its own in its RTI rules, so check before paying. People below the poverty line pay no fee (proviso to section 7(5)).':
+    'केंद्र सरकार के कार्यालयों के लिए शुल्क ₹10 है; हर राज्य अपने RTI नियमों में अपना शुल्क तय करता है, इसलिए भुगतान से पहले देख लें। गरीबी रेखा से नीचे के लोगों से कोई शुल्क नहीं लिया जाता (धारा 7(5) का परंतुक)।',
+  'RTI Rules, 2012, G.S.R. 603(E), rules 3 and 5': 'सूचना का अधिकार नियम, 2012, सा.का.नि. 603(अ), नियम 3 और 5',
+  'In 2023 the Supreme Court directed every state and union territory to run an online RTI portal. Not all of them do yet; the portals listed here were opened and checked.':
+    '2023 में सुप्रीम कोर्ट ने हर राज्य और केंद्र शासित प्रदेश को ऑनलाइन RTI पोर्टल चलाने का निर्देश दिया। अभी सबने ऐसा नहीं किया है; यहाँ दिए गए पोर्टल खोलकर जाँचे गए हैं।',
+  'Pravasi Legal Cell v. Union of India, order of 20 Mar 2023': 'प्रवासी लीगल सेल बनाम भारत संघ, 20 मार्च 2023 का आदेश',
+  'This is a draft, not legal advice. Fees, payment methods and portals differ by state; check the state’s RTI rules before sending.': 'यह एक मसौदा है, क़ानूनी सलाह नहीं। शुल्क, भुगतान के तरीक़े और पोर्टल हर राज्य में अलग हैं; भेजने से पहले राज्य के RTI नियम देख लें।',
   // LiveWire
   'Drill: ': 'अभ्यास: ',
   "Order lapsed on Arkiv's clock: {state}, {place} relit. Nobody deleted it; its expiry block arrived.": 'Arkiv की घड़ी पर आदेश समाप्त: {state}, {place} में फिर रोशनी। किसी ने इसे मिटाया नहीं; बस इसका समाप्ति ब्लॉक आ गया।',
