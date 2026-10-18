@@ -302,26 +302,22 @@ export function toReport(e: Raw): Report {
 }
 
 /**
- * The block a page-through is pinned to. Arkiv ties a page's cursor to the block its first page was read
- * at, and the SDK's next() asks again without that block, so once a new block lands (every 2 s) page two
- * fails: "cursor belongs to a different query, block or select" (friction.md #13). Every walk is therefore
- * pinned: to a recent block rounded down to a 20 s step, so visitors in the same 20 s send the same request
- * and share the relay's cached answer, or to the newest block for a minute after this browser's own write.
+ * Arkiv returns at most 200 per page: walk every page, all at one block. Arkiv ties a page's cursor to the
+ * block its first page was read at, and the SDK's next() asks again without that block, so once a new block
+ * lands (every 2 s) page two fails: "cursor belongs to a different query, block or select" (friction.md
+ * #13). The first page is read at the newest block (so a write this browser just made is in it, and the
+ * relay can share the identical request between visitors); only if there is a second page does the walk
+ * start again pinned to the block the first page reported, which costs one extra read for long lists only.
  */
-export function pinBlock(head = currentBlock(), fresh = Date.now() < freshUntil): bigint | undefined {
-  if (head < 20n) return undefined
-  const safe = head - 2n
-  return fresh ? safe : safe - (safe % 10n)
-}
-/** Arkiv returns at most 200 per page: walk every page, all at one block. */
 async function pages(client: typeof pub, where: Expression[], atBlock?: bigint, opts: { creator?: Hex; maxPages?: number } = {}): Promise<Raw[]> {
-  const out: Raw[] = []
-  let q = client.select('*').where(and(where)).limit(200)
-  if (opts.creator) q = q.createdBy(opts.creator)
-  const at = atBlock ?? pinBlock()
-  if (at) q = q.atBlock(at)
-  let page = await q.fetch()
-  out.push(...(page.entities as unknown as Raw[]))
+  const build = (at?: bigint) => {
+    let q = client.select('*').where(and(where)).limit(200)
+    if (opts.creator) q = q.createdBy(opts.creator)
+    return at ? q.atBlock(at) : q
+  }
+  let page = await build(atBlock).fetch()
+  if (!atBlock && page.hasNextPage()) page = await build(BigInt(page.blockNumber)).fetch()
+  const out: Raw[] = [...(page.entities as unknown as Raw[])]
   let guard = 0
   while (page.hasNextPage() && guard++ < (opts.maxPages ?? 25)) {
     page = await page.next()

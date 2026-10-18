@@ -10,7 +10,7 @@ Every item below was hit while building, and items 1–8 are re-run by **`npx ts
 What went smoothly is documented with the same care at the end, because a lot of it did.
 
 **Versions:** `@arkiv-network/sdk` 0.8.1 · `viem` 2.57.4 (package-lock) · Node 21.7.0 locally, 22 in CI · Tiramisu, chain 7738577 ·
-last full re-check 18 Oct 2026 at block 726088 ([`friction-check.json`](friction-check.json)).
+last full re-check 18 Oct 2026 at block 727800 (28 checks: 25 still as documented, 3 changed) ([`friction-check.json`](friction-check.json)).
 
 **Re-check every item yourself:** `npm run friction` runs the read-only checks (no key, about 10 RPC requests of the keyless
 budget, under 15 s); `npm run friction -- --write` adds the two write checks and needs a funded key (`FRICTION_KEY`, or
@@ -23,7 +23,7 @@ budget, under 15 s); `npm run friction -- --write` adds the two write checks and
 
 | # | Item | Severity | Where | First hit | Status, 18 Oct check | Fix / workaround |
 |---|---|---|---|---|---|---|
-| [13](#13-page-two-fails-once-a-new-block-lands-because-next-doesnt-pin-the-block) | Page two of a query fails once a new block lands: `next()` doesn't carry the first page's block | High | SDK + node | 18 Oct | Hit live (archive passed 200 records) | Pin every page-through with `.atBlock(n)` |
+| [13](#13-page-two-fails-once-a-new-block-lands-because-next-doesnt-pin-the-block) | Page two of a query fails once a new block lands: `next()` doesn't carry the first page's block | High | SDK + node | 18 Oct | STILL (`13`) | Pin every page-through with `.atBlock(n)` |
 | [11](#11-a-429-with-a-long-retry-after-and-a-client-that-obeys-it-is-a-silent-hang) | A 429 with `retry-after: ~1000` plus viem's default retries is a silent hang | High | node + viem defaults | 11 Oct | STILL (`11-viem`, `11-logs`) | `retryCount: 0` and a timeout on every transport; one fallback path for every read |
 | [5](#5-the-anonymous-query-budget-is-undocumented-and-it-runs-out) | Keyless query budget is undocumented and runs out | High | node + docs | 11 Oct | STILL (`5`, `5-docs`) | Relay with a shared cache, fall back when the budget is spent; Arkiv: document size, window and cost |
 | [12](#12-a-keys-monthly-quota-runs-out-silently-and-its-refusal-is-not-json-rpc-shaped) | A key's monthly quota runs out silently; refusal not JSON-RPC shaped | High | node + Hub + docs | 12 Oct | Header STILL (`12-header`); docs CHANGED (`12-docs`: Hub Usage tab now documented) | Relay reshapes the refusal and goes keyless; Arkiv: JSON-RPC shaped errors, state the quota size |
@@ -259,9 +259,12 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
 - **Repro:** any query with more than 200 matches and no `.atBlock(…)`: fetch page one, wait 3 s, call `next()`.
 - **Cost to us:** it broke the archive read on the live site and our snapshot script the moment 33 newer orders and 30
   corrections were filed; we found it within minutes because the snapshot script threw.
-- **Fix (for us):** every page-through is pinned (`pinBlock` in `src/lib/arkiv.ts`): a recent block rounded down to a
-  20 s step, so visitors in the same 20 s still send identical requests and share the relay's cache, or the newest block for a
-  minute after this browser's own write (tested in `test/lifetimes.test.ts`).
+- **Fix (for us):** `pages()` in `src/lib/arkiv.ts` reads page one at the newest block (so a write this browser just made is
+  in it, and visitors share the relay's cached answer); only when there is a second page does it start again pinned to the
+  block page one reported, at the cost of one extra read for long lists (tested in `test/app-queries.test.ts`). A first
+  attempt pinned every read two blocks behind the head; our end-to-end run caught that a drill order filed a moment earlier
+  was then missing from its filer's own view. The mirror and the CLI send page one's `blockNumber` as `atBlock` with each cursor.
+- **Checked by:** friction-check `13` (read-only: page two without `atBlock` is refused; with it, it answers). STILL on 18 Oct.
 - **Fix (for Arkiv):** have `next()` carry the first page's `blockNumber` as `atBlock` when none was set (the `QueryResult`
   already holds it), and give the node's refusal a message that names the stale cursor.
 

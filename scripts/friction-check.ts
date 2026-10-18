@@ -355,6 +355,20 @@ await check('4a', '4a', 'A bare number compares as i32, so a u64 range silently 
   return ['CHANGED', obs]
 })
 
+await check('13', '13', "Page two fails once a block has landed unless it carries the first page's block", 'read', async () => {
+  const q = "app = str('switched-off') AND type = str('record') AND net = str('live')"
+  const first = await query(q, { select: { key: true }, limit: '0x2' })
+  if (first.json.error || !first.json.result?.cursor) return ['ERROR', `no first page with a cursor: ${JSON.stringify(first.json.error ?? first.json.result).slice(0, 160)}`]
+  const { cursor, blockNumber: at } = first.json.result
+  await new Promise((r) => setTimeout(r, 4500)) // two blocks
+  const plain = await query(q, { select: { key: true }, limit: '0x2', cursor })
+  const pinned = await query(q, { select: { key: true }, limit: '0x2', cursor, atBlock: at })
+  const obs = `page two without atBlock → ${plain.json.error ? JSON.stringify(plain.json.error.data ?? plain.json.error.message).slice(0, 120) : `${plain.json.result?.data?.length} entities`}; with atBlock ${at} → ${pinned.json.error ? 'error' : `${pinned.json.result?.data?.length} entities`}`
+  if (plain.json.error && !pinned.json.error) return ['STILL', obs]
+  if (!plain.json.error) return ['CHANGED', obs]
+  return ['ERROR', obs]
+})
+
 await check('5', '5', 'Every keyless arkiv_query costs 100 units, rate limit in headers only', 'read', () => {
   if (!starHeaders) throw new Error('no response headers (3-rpc did not complete)')
   const cost = starHeaders.get('arkiv-cost')

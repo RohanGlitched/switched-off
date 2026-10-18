@@ -53,3 +53,31 @@ describe("the app's reads pass the relay", () => {
     expect(queries().every((c) => String(c.params?.[0]).includes("state = str('MN') AND issued > u64(1683071999)"))).toBe(true)
   })
 })
+
+describe('a long list is walked at one block (friction.md #13)', () => {
+  it('reads page one at the newest block, then restarts pinned to the block it reported', async () => {
+    // the first answer has a next page; every answer reports block 0x2a
+    let n = 0
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (_url: string, init: RequestInit) => {
+        const body = JSON.parse(String(init.body)) as Call | Call[]
+        const list = Array.isArray(body) ? body : [body]
+        calls.push(...list)
+        const answer = (c: Call) => {
+          if (c.method !== 'arkiv_query') return { jsonrpc: '2.0', id: c.id, result: '0x2a' }
+          const opts = (c.params?.[1] ?? {}) as { cursor?: string }
+          n++
+          return { jsonrpc: '2.0', id: c.id, result: { data: [], blockNumber: '0x2a', ...(opts.cursor ? {} : { cursor: 'next' }) } }
+        }
+        return new Response(JSON.stringify(Array.isArray(body) ? list.map(answer) : answer(list[0])), { status: 200, headers: { 'content-type': 'application/json' } })
+      }),
+    )
+    await activeOrders('live')
+    const opts = queries().map((c) => c.params?.[1] as { atBlock?: string; cursor?: string })
+    expect(opts[0].atBlock).toBeUndefined()
+    expect(opts.slice(1).every((o) => o.atBlock === '0x2a')).toBe(true)
+    expect(opts.some((o) => o.cursor === 'next' && o.atBlock === '0x2a')).toBe(true)
+    expect(n).toBe(3)
+  })
+})
