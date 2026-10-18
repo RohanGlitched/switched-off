@@ -8,7 +8,7 @@ import { tf, useT } from '../lib/i18n'
 const USERS = [
   ['People in a district that goes dark', 'Today they find out a shutdown is “official” from a forwarded photo of a letter, if at all. On Switched Off they see whether an order exists, what it covers, and the minute it lapses. When there is no order, they can say so, and the report outlives the rumour mill only if neighbours confirm it.'],
   ['Families and employers outside', 'A daughter in Pune can’t reach her parents in Churachandpur. The register tells her whether it is an order (and until when) or a local fault, and lets her file a report on their behalf.'],
-  ['Lawyers and digital-rights groups', 'Challenges to shutdowns depend on knowing the order, its stated reason and how often it was renewed. The register links every renewal to the order before it, so “renewed 23 times” is a query, not a research project.'],
+  ['Lawyers and digital-rights groups', 'Challenges to shutdowns depend on knowing the order, its stated reason and how often it was renewed. The register links every renewal to the order before it, so “renewed 8 times in a row” (Doda, September 2025) is a query, not a research project.'],
   ['Journalists', 'Every claim on the site has a reproducible query and a source link, and every live change arrives on the wire with its block number, which makes the register citable.'],
   ['Courts and review committees', 'The 2024 Rules require orders to be published and reviewed. A public, timestamped register of what was in force, and when, is the evidence base those reviews currently lack.'],
 ]

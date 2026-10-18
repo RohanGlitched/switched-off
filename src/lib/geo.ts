@@ -41,6 +41,8 @@ const ALIAS: Record<string, string> = {
   'east khasi hills': 'east khasi hills', prayagraj: 'allahabad', ayodhya: 'faizabad',
 }
 const norm = (s: string) => s.toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/district/g, '').replace(/[^a-z -]/g, '').replace(/\s+/g, ' ').trim()
+// the alias keys go through the same normalising as the names they are looked up by ("… districts" loses "district")
+const ALIAS_N: Record<string, string> = Object.fromEntries(Object.entries(ALIAS).map(([k, v]) => [norm(k), v]))
 
 /** Which map districts does an order's list of names cover? "Statewide" covers every district of the state. */
 export function districtIndexes(g: Geo, stateCode: string, names: string[]): number[] {
@@ -49,7 +51,7 @@ export function districtIndexes(g: Geo, stateCode: string, names: string[]): num
   const out = new Set<number>()
   for (const raw of names) {
     const n = norm(raw)
-    const want = ALIAS[n] ?? n
+    const want = ALIAS_N[n] ?? n
     let hit = inState.find(([d]) => norm(d.name) === want)
     hit ??= inState.find(([d]) => norm(d.name).startsWith(want) || want.startsWith(norm(d.name)))
     hit ??= g.districts.map((d, i) => [d, i] as const).find(([d]) => norm(d.name) === want)

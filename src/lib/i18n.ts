@@ -624,8 +624,8 @@ const HI: Record<string, string> = {
   'A daughter in Pune can’t reach her parents in Churachandpur. The register tells her whether it is an order (and until when) or a local fault, and lets her file a report on their behalf.':
     'पुणे में रहने वाली एक बेटी चुराचांदपुर में अपने माता-पिता से बात नहीं कर पा रही। रजिस्टर उसे बताता है कि यह किसी आदेश की वजह से है (और कब तक) या कोई स्थानीय ख़राबी है, और वह उनकी ओर से रिपोर्ट भी दर्ज कर सकती है।',
   'Lawyers and digital-rights groups': 'वकील और डिजिटल अधिकार संगठन',
-  'Challenges to shutdowns depend on knowing the order, its stated reason and how often it was renewed. The register links every renewal to the order before it, so “renewed 23 times” is a query, not a research project.':
-    'इंटरनेट बंदी को चुनौती देने के लिए आदेश, उसमें बताया गया कारण और उसके नवीनीकरण की गिनती जानना ज़रूरी है। रजिस्टर हर नवीनीकरण को उससे पहले वाले आदेश से जोड़ता है, इसलिए “23 बार नवीनीकरण” एक क्वेरी है, कोई शोध परियोजना नहीं।',
+  'Challenges to shutdowns depend on knowing the order, its stated reason and how often it was renewed. The register links every renewal to the order before it, so “renewed 8 times in a row” (Doda, September 2025) is a query, not a research project.':
+    'इंटरनेट बंदी को चुनौती देने के लिए आदेश, उसमें बताया गया कारण और उसके नवीनीकरण की गिनती जानना ज़रूरी है। रजिस्टर हर नवीनीकरण को उससे पहले वाले आदेश से जोड़ता है, इसलिए “लगातार 8 बार नवीनीकरण” (डोडा, सितंबर 2025) एक क्वेरी है, कोई शोध परियोजना नहीं।',
   Journalists: 'पत्रकार',
   'Every claim on the site has a reproducible query and a source link, and every live change arrives on the wire with its block number, which makes the register citable.':
     'साइट के हर दावे के पीछे एक क्वेरी है जिसे कोई भी दोबारा चला सकता है, और स्रोत का लिंक है; हर ताज़ा बदलाव अपने ब्लॉक नंबर के साथ फ़ीड पर आता है। इसलिए रजिस्टर का हवाला दिया जा सकता है।',

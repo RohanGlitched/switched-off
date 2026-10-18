@@ -1,0 +1,186 @@
+[
+ {
+  "id": "or-cuttack-2025-10-06",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Cuttack (Municipal Corporation, Development Authority area and 42 Mouza)"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-10-06",
+  "startsAt": "2025-10-06T19:00",
+  "endsAt": "2025-10-07T19:00",
+  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+  "legalBasis": "Section 20(2)(b) and 20(4) Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Apprehension that anti-social elements would use the internet to spread rumours, incite disaffection and disturb communal harmony after a clash during a Durga Puja immersion procession.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Odisha Home Department Notification No. 41832 dated 06.10.2025 (via SFLC.in)",
+    "url": "https://internetshutdowns.in/media/Cuttack_071025_5536852f-ef40-45bd-bcab-6c46780ec460._b43c5287-8ed2-4985-8c9a-ec68b93eefd5..jpeg"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Odisha, October 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-october-2025/"
+   },
+   {
+    "title": "OdishaBytes: Curfew lifted in Cuttack city, internet shutdown continues",
+    "url": "https://odishabytes.com/curfew-lifted-in-cuttack-city-daily-life-gradually-returns-to-normal-internet-shutdown-continues/"
+   }
+  ],
+  "notes": "In continuation of Notification No. 41748 dated 05.10.2025, on the Collector's recommendation. Social media, mobile data, ISP internet and broadband dial-up; government networks, banking and railways exempt. No further extension found. It continues an order of 5 Oct 2025 that is not on the register (its sources were too thin), so it is entered as the first of its chain."
+ },
+ {
+  "id": "dl-farmers-borders-2021-01-26",
+  "state": "Delhi",
+  "stateCode": "IN-DL",
+  "districts": [
+   "Singhu",
+   "Ghazipur",
+   "Tikri",
+   "Mukarba Chowk",
+   "Nangloi"
+  ],
+  "scope": "unknown",
+  "issuedAt": "2021-01-26",
+  "startsAt": "2021-01-26T12:00",
+  "endsAt": "2021-01-26T23:59",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Temporary Suspension of Telecom Services Rules, 2017",
+  "reasonStated": "Maintain public safety and avert public emergency during the farmers' tractor rally violence.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "Bar & Bench: Internet services suspended in parts of Delhi, read MHA order",
+    "url": "https://www.barandbench.com/news/litigation/internet-services-suspended-in-parts-of-delhi-read-mha-order"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in NCT of Delhi, 26 January 2021",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-national-capital-territory-of-delhi-uttar-pradesh-india-26-january-2021/"
+   }
+  ],
+  "notes": "Entries are localities and their adjoining areas, not districts. Bar & Bench gives noon to midnight; other reports give 12:00 to 23:59. Pulse says service was not fully restored for days."
+ },
+ {
+  "id": "mn-2023-12-03",
+  "state": "Manipur",
+  "stateCode": "IN-MN",
+  "districts": [
+   "Chandel",
+   "Kakching",
+   "Churachandpur",
+   "Bishnupur",
+   "Kangpokpi",
+   "Imphal West",
+   "Imphal East",
+   "Thoubal",
+   "Tengnoupal"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2023-12-03",
+  "startsAt": "2023-12-03",
+  "endsAt": "2023-12-18T19:45",
+  "issuingAuthority": "Commissioner (Home), Government of Manipur",
+  "legalBasis": "Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017",
+  "reasonStated": "Situation improving and public hardship; statewide ban revoked, but towers within 2 km of 7 inter-district boundaries stay suspended.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Manipur Home Dept order, 3 Dec 2023",
+    "url": "https://manipur.gov.in/wp-content/uploads/2023/12/Internet-opening-orders.pdf"
+   },
+   {
+    "title": "Scroll: Mobile internet restored in most areas till December 18",
+    "url": "https://scroll.in/latest/1060057/manipur-mobile-internet-restored-in-most-areas-till-december-18"
+   }
+  ],
+  "notes": "Revokes the statewide orders. Suspension now covers only towers along the Chandel–Kakching, Churachandpur–Bishnupur, Churachandpur–Kakching, Kangpokpi–Imphal West, Kangpokpi–Imphal East, Kangpokpi–Thoubal and Tengnoupal–Kakching boundaries. The districts listed are those touching these zones, not whole districts. Runs 15.6 days as stated in the order, just over the 15-day cap of the 2017 Rules as amended in November 2020."
+ },
+ {
+  "id": "jk-2020-07-29",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Statewide"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2020-07-29",
+  "startsAt": "2020-07-29",
+  "endsAt": "2020-08-19",
+  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Section 5(2) Indian Telegraph Act, 1885; Rule 2(1) Temporary Suspension of Telecom Services Rules, 2017",
+  "reasonStated": "Mobile data misuse for terror attacks and infiltration; expected rise in anti-national activity around the first anniversary of the constitutional changes and Independence Day.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-89(TSTS) of 2020 dated 29.07.2020",
+    "url": "https://home.jk.gov.in/pdf/89(TSTS)of2020_0001.pdf"
+   }
+  ],
+  "notes": "2G extension. The scan reads 'upto 19 August, 2020'. Only one source was verified. Longer than 15 days: issued before the November 2020 amendment that capped each order at 15 days."
+ },
+ {
+  "id": "jk-2020-08-16",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Statewide"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2020-08-16",
+  "startsAt": "2020-08-16T21:00",
+  "endsAt": "2020-09-08",
+  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Section 5(2) Indian Telegraph Act, 1885; Rule 2(1) Temporary Suspension of Telecom Services Rules, 2017",
+  "reasonStated": "SC-mandated Special Committee (10.08.2020 meeting) set parameters for calibrated easing in less sensitive areas.",
+  "renewalOf": "jk-2020-07-29",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-91(TSTS) of 2020 dated 16.08.2020",
+    "url": "https://home.jk.gov.in/pdf/91(TSTS)of2020_0001.pdf"
+   },
+   {
+    "title": "Al Jazeera: India restores 4G in two districts of Kashmir",
+    "url": "https://www.aljazeera.com/news/2020/8/17/india-restores-4g-internet-services-in-two-districts-of-kashmir"
+   }
+  ],
+  "notes": "Partial relaxation: 4G trial in Ganderbal and Udhampur from 2100 hrs; 2G only in all other districts. Later extensions (Home-99 of 08.09.2020 onward) were not reviewed. Longer than 15 days: issued before the November 2020 amendment that capped each order at 15 days."
+ },
+ {
+  "id": "jk-2025-09-09",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-09-09",
+  "startsAt": "2025-09-09T00:01",
+  "endsAt": "2025-09-09T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and Wi-Fi likely to be misused by anti-national elements; to maintain public order and prevent incitement.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-16(TSTS) of 2025 dated 09.09.2025",
+    "url": "https://home.jk.gov.in/pdf/16(TSTS)of2025.pdf"
+   },
+   {
+    "title": "MediaNama: Doda internet shutdown after MLA arrest",
+    "url": "https://www.medianama.com/2025/09/223-doda-internet-shutdown-aap-mla-arrest/"
+   },
+   {
+    "title": "Kashmir Life: Internet suspension in Doda leaves students, traders in crisis",
+    "url": "https://kashmirlife.net/internet-suspension-in-doda-leaves-students-traders-in-crisis-405321/"
+   }
+  ],
+  "notes": "Protests after a local political leader was detained on 8 Sep. Covers 2G-5G and public/private Wi-Fi. Renewed daily for Doda by Home-17, 20, 23, 26, 27, 28, 29 and 30 of 2025 (10 to 17 Sep); Home-18, 21, 24 are separate Gandoh orders and Home-19, 22, 25 separate Kishtwar orders. MediaNama reported on 11 Sep that no order was public; the confirmations now appear on home.jk.gov.in."
+ }
+]

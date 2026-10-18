@@ -59,11 +59,13 @@ if (problems.length) {
   process.exit(1)
 }
 
+// orders left off the chain as too thinly sourced (as in scripts/seed-archive.ts): a renewal chain stops before them
+const WEAK = new Set(['mh-beed-2023-10-30', 'or-cuttack-2025-10-05', 'mn-2026-04-25'])
 const byId = new Map([...old, ...fresh].map((o) => [o.id, o]))
 const seq = (o: Src): number => {
   let n = 1
   const seen = new Set<string>()
-  for (let cur = o; cur.renewalOf && byId.has(cur.renewalOf) && !seen.has(cur.id); cur = byId.get(cur.renewalOf)!, n++) seen.add(cur.id)
+  for (let cur = o; cur.renewalOf && byId.has(cur.renewalOf) && !WEAK.has(cur.renewalOf) && !seen.has(cur.id); cur = byId.get(cur.renewalOf)!, n++) seen.add(cur.id)
   return n
 }
 const t = (s: string | null) => (s ? Math.floor(new Date(/T|\d:\d/.test(s) ? s.replace(' ', 'T') + (/[zZ+]/.test(s.slice(10)) ? '' : '+05:30') : `${s}T00:00:00+05:30`).getTime() / 1000) : 0)

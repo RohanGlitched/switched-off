@@ -525,7 +525,7 @@
     "url": "https://home.jk.gov.in/pdf/89(TSTS)of2020_0001.pdf"
    }
   ],
-  "notes": "2G extension. The scan reads 'upto 19 August, 2020'. Only one source was verified."
+  "notes": "2G extension. The scan reads 'upto 19 August, 2020'. Only one source was verified. Longer than 15 days: issued before the November 2020 amendment that capped each order at 15 days."
  },
  {
   "id": "jk-2020-08-16",
@@ -553,7 +553,7 @@
     "url": "https://www.aljazeera.com/news/2020/8/17/india-restores-4g-internet-services-in-two-districts-of-kashmir"
    }
   ],
-  "notes": "Partial relaxation: 4G trial in Ganderbal and Udhampur from 2100 hrs; 2G only in all other districts. Later extensions (Home-99 of 08.09.2020 onward) were not reviewed."
+  "notes": "Partial relaxation: 4G trial in Ganderbal and Udhampur from 2100 hrs; 2G only in all other districts. Later extensions (Home-99 of 08.09.2020 onward) were not reviewed. Longer than 15 days: issued before the November 2020 amendment that capped each order at 15 days."
  },
  {
   "id": "jk-2021-01-22",
@@ -623,7 +623,7 @@
   "scope": "unknown",
   "issuedAt": "2021-01-26",
   "startsAt": "2021-01-26T12:00",
-  "endsAt": "2021-01-26",
+  "endsAt": "2021-01-26T23:59",
   "issuingAuthority": "Ministry of Home Affairs, Government of India",
   "legalBasis": "Temporary Suspension of Telecom Services Rules, 2017",
   "reasonStated": "Maintain public safety and avert public emergency during the farmers' tractor rally violence.",
@@ -1890,7 +1890,7 @@
     "url": "https://scroll.in/latest/1060057/manipur-mobile-internet-restored-in-most-areas-till-december-18"
    }
   ],
-  "notes": "Revokes the statewide orders. Suspension now covers only towers along the Chandel–Kakching, Churachandpur–Bishnupur, Churachandpur–Kakching, Kangpokpi–Imphal West, Kangpokpi–Imphal East, Kangpokpi–Thoubal and Tengnoupal–Kakching boundaries. The districts listed are those touching these zones, not whole districts."
+  "notes": "Revokes the statewide orders. Suspension now covers only towers along the Chandel–Kakching, Churachandpur–Bishnupur, Churachandpur–Kakching, Kangpokpi–Imphal West, Kangpokpi–Imphal East, Kangpokpi–Thoubal and Tengnoupal–Kakching boundaries. The districts listed are those touching these zones, not whole districts. Runs 15.6 days as stated in the order, just over the 15-day cap of the 2017 Rules as amended in November 2020."
  },
  {
   "id": "jk-2023-12-22",
@@ -2749,7 +2749,7 @@
     "url": "https://kashmirlife.net/internet-suspension-in-doda-leaves-students-traders-in-crisis-405321/"
    }
   ],
-  "notes": "Protests after an MLA's detention under the PSA on 8 Sep. Covers 2G-5G and public/private Wi-Fi. Renewed daily for Doda by Home-17, 20, 23, 26, 27, 28, 29 and 30 of 2025 (10 to 17 Sep); Home-18, 21, 24 are separate Gandoh orders and Home-19, 22, 25 separate Kishtwar orders. MediaNama reported on 11 Sep that no order was public; the confirmations now appear on home.jk.gov.in."
+  "notes": "Protests after a local political leader was detained on 8 Sep. Covers 2G-5G and public/private Wi-Fi. Renewed daily for Doda by Home-17, 20, 23, 26, 27, 28, 29 and 30 of 2025 (10 to 17 Sep); Home-18, 21, 24 are separate Gandoh orders and Home-19, 22, 25 separate Kishtwar orders. MediaNama reported on 11 Sep that no order was public; the confirmations now appear on home.jk.gov.in."
  },
  {
   "id": "up-bareilly-2025-09-27",
@@ -5382,7 +5382,7 @@
   "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
   "legalBasis": "Section 20(2)(b) and 20(4) Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
   "reasonStated": "Apprehension that anti-social elements would use the internet to spread rumours, incite disaffection and disturb communal harmony after a clash during a Durga Puja immersion procession.",
-  "renewalOf": "or-cuttack-2025-10-05",
+  "renewalOf": null,
   "published": true,
   "sources": [
    {
@@ -5398,7 +5398,7 @@
     "url": "https://odishabytes.com/curfew-lifted-in-cuttack-city-daily-life-gradually-returns-to-normal-internet-shutdown-continues/"
    }
   ],
-  "notes": "In continuation of Notification No. 41748 dated 05.10.2025, on the Collector's recommendation. Social media, mobile data, ISP internet and broadband dial-up; government networks, banking and railways exempt. No further extension found."
+  "notes": "In continuation of Notification No. 41748 dated 05.10.2025, on the Collector's recommendation. Social media, mobile data, ISP internet and broadband dial-up; government networks, banking and railways exempt. No further extension found. It continues an order of 5 Oct 2025 that is not on the register (its sources were too thin), so it is entered as the first of its chain."
  },
  {
   "id": "rj-hanumangarh-2025-11-18",
