@@ -183,6 +183,8 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   personal data, and our own schema says designations only. The records are sealed, so the fix is a registrar `correction` entity per
   record with name-free notes (`scripts/correct-names.ts`, sealed in the same transaction as it is created), and readers show the
   correction. The originals stay readable until they expire in 2028.
+- **Full account:** a second round (3 more corrections, tx `0xdda96076…ddf70`) brought it to 12 sealed entities with a name, all
+  listed with their corrections and expiry dates in [schema.md](schema.md#personal-data-what-went-wrong-and-what-we-did).
 - **Repro:** read any of the corrected records' originals by key (listed in `scripts/corrections.json` once filed) and compare.
 - **Fix (for us):** a name check in the personal-data guard before every write, run over the import too (`scripts/pii-check.ts`).
 - **Fix (for Arkiv):** none wanted; this is the trade-off working as designed. A note in the docs next to `changeOwnership` that a transfer
