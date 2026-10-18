@@ -61,21 +61,32 @@ async function read() {
   $('q').textContent = q
   $('status').textContent = 'asking Arkiv…'
   $('out').innerHTML = ''
-  // a cursor belongs to the block its first page was read at: later pages ask at that block
-  let cursor, block, all = []
-  try {
+  // A cursor belongs to the block its first page was read at: later pages ask at that block. The archive
+  // is read the registrar's records first (by $creator, so junk in the namespace can't bury it), then
+  // one capped page of everyone's, labelled community.
+  const walk = async (qq, maxPages) => {
+    let cursor, block, out = [], pages = 0
     do {
-      const r = await fetch(via, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [q, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...(cursor ? { cursor, atBlock: block } : {}) }] }) })
+      const r = await fetch(via, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'arkiv_query', params: [qq, { select: { key: true, attributes: true, payload: true, expiresAt: true, creator: true }, limit: '0xc8', ...(cursor ? { cursor, atBlock: block } : {}) }] }) })
       const j = await r.json()
       if (j.error) throw new Error(j.error.message || j.message || JSON.stringify(j.error))
       if (!j.result) throw new Error(j.message || 'no result')
-      all = all.concat(j.result.data)
+      out = out.concat(j.result.data)
       cursor = j.result.cursor
       block ??= j.result.blockNumber
-    } while (cursor && all.length < 2000)
+    } while (cursor && ++pages < maxPages)
+    return out
+  }
+  let all = []
+  try {
+    if (type === 'record') {
+      all = await walk(`${q} AND $creator = addr(${REGISTRARS[0]})`, 10)
+      const seen = new Set(all.map((e) => String(e.key).toLowerCase()))
+      all = all.concat((await walk(q, 1)).filter((e) => !seen.has(String(e.key).toLowerCase())))
+    } else all = await walk(q, 10)
   } catch (e) {
     $('status').innerHTML = `<span class="err">Arkiv said: ${esc(e.message)}</span>`
-    if (/budget|ANON|429/i.test(e.message) && via === RPC) $('status').innerHTML += ` <button id="relay">Retry through switched-off.vercel.app</button> <span style="color:var(--mute);font-size:13px">Arkiv limits keyless reads per network; the site’s relay uses its own key.</span>`, $('relay').onclick = () => { via = RELAY; $('rpc').textContent = RELAY.replace('https://', '') + ' (the site’s relay, with its own key)'; read() }
+    if (/budget|ANON|429/i.test(e.message) && via === RPC) $('status').innerHTML += ` <button id="relay">Retry through switched-off.vercel.app</button> <span style="color:var(--mute);font-size:13px">Arkiv limits keyless reads per IP address; the site’s relay uses its own key.</span>`, $('relay').onclick = () => { via = RELAY; $('rpc').textContent = RELAY.replace('https://', '') + ' (the site’s relay, with its own key)'; read() }
     return
   }
   // a correction replaces the record it names in `corrects`, but only when it comes from the registrar or
