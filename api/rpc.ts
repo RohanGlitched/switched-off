@@ -200,23 +200,29 @@ function reason(e: unknown): string {
 }
 
 const UPSTREAM_TIMEOUT_MS = 8000
-// the key's monthly quota answered QUOTA_EXCEEDED: reads go keyless (the relay's own anonymous budget) until then
-let keyOutUntil = 0
+// Keys in order of use: ARKIV_KEY, then ARKIV_KEY_2 (a second Hub account's key, held for when the first
+// month runs out). A key whose monthly quota answered QUOTA_EXCEEDED is rested and the next one is used;
+// with every key out, reads go keyless (the relay's own anonymous budget).
+const keyOut = new Map<string, number>()
 const KEY_OUT_MS = 10 * 60_000
+const keysNow = (): string[] => [process.env.ARKIV_KEY, process.env.ARKIV_KEY_2].filter((k): k is string => !!k && Date.now() > (keyOut.get(k) ?? 0))
 /**
- * One call to Arkiv. With the key first; if the key's monthly quota is spent (`QUOTA_EXCEEDED`, a 429)
- * the same call goes out keyless once, on the relay's own anonymous budget, and the key is rested for
- * ten minutes. A plain 429 is not retried: it is a budget, and the browser is told so it can go direct.
+ * One call to Arkiv. With the first key that isn't rested; if its monthly quota is spent (`QUOTA_EXCEEDED`,
+ * a 429) the key is rested for ten minutes and the same call goes out with the next key, then keyless. A
+ * plain 429 is not retried: it is a budget, and the browser is told so it can go direct.
  */
 async function upstream(call: Call, key: string | undefined): Promise<{ r: Response; text: string }> {
   const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: call.method, params: call.params ?? [] })
-  const useKey = !!key && Date.now() > keyOutUntil
-  const first = await attempt(body, useKey ? key : undefined)
-  if (useKey && first.r.status === 429 && /QUOTA_EXCEEDED/.test(first.text)) {
-    keyOutUntil = Date.now() + KEY_OUT_MS
-    return attempt(body, undefined)
-  }
-  return first
+  if (key)
+    for (const k of keysNow()) {
+      const res = await attempt(body, k)
+      if (res.r.status === 429 && /QUOTA_EXCEEDED/.test(res.text)) {
+        keyOut.set(k, Date.now() + KEY_OUT_MS)
+        continue
+      }
+      return res
+    }
+  return attempt(body, undefined)
 }
 /** The call itself, bounded in time and tried twice: a dropped socket or a 5xx is retried once after a short pause. */
 async function attempt(body: string, key: string | undefined): Promise<{ r: Response; text: string }> {
@@ -255,7 +261,8 @@ export default async function handler(req: Req, res: Res) {
   } catch {
     return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } })
   }
-  const key = process.env.ARKIV_KEY
+  // a marker that reads may use the relay's keys (which one is upstream()'s choice)
+  const key = process.env.ARKIV_KEY || process.env.ARKIV_KEY_2
   const ip = String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim() || 'unknown'
   const n = Array.isArray(body) ? body.length : 1
   if (Array.isArray(body) && body.length > MAX_BATCH) return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32600, message: `At most ${MAX_BATCH} calls per batch` } })

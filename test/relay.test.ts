@@ -136,14 +136,14 @@ describe('logs, calls and hashes are held to Arkiv’s own contract', () => {
 
 // The handler end to end, with Arkiv replaced by a stub: nothing here touches the network.
 type Sent = { method: string; params: unknown[] }
-function upstream(answer: (b: Sent) => { status?: number; body: unknown } = () => ({ body: { jsonrpc: '2.0', id: 1, result: { data: [], blockNumber: '0x1' } } })) {
+function upstream(answer: (b: Sent, headers: Record<string, string>) => { status?: number; body: unknown } = () => ({ body: { jsonrpc: '2.0', id: 1, result: { data: [], blockNumber: '0x1' } } })) {
   const sent: { body: Sent; headers: Record<string, string> }[] = []
   vi.stubGlobal(
     'fetch',
     vi.fn(async (_url: string, init: RequestInit) => {
       const body = JSON.parse(String(init.body)) as Sent
       sent.push({ body, headers: init.headers as Record<string, string> })
-      const a = answer(body)
+      const a = answer(body, init.headers as Record<string, string>)
       return new Response(JSON.stringify(a.body), { status: a.status ?? 200 })
     }),
   )
@@ -223,6 +223,17 @@ describe('the relay handler', () => {
     expect(sent[0].headers['x-api-key']).toBe('spent-key')
     expect(sent[1].headers['x-api-key']).toBeUndefined()
     expect(r.out.error?.message).toBe('Arkiv answered 429: QUOTA_EXCEEDED (quota exhausted)')
+  })
+
+  it("moves to the second key when the first key's month is spent, and stays there", async () => {
+    vi.stubEnv('ARKIV_KEY', 'month-one')
+    vi.stubEnv('ARKIV_KEY_2', 'month-two')
+    const sent = upstream((_b, h) => (h['x-api-key'] === 'month-one' ? { status: 429, body: { error: 'QUOTA_EXCEEDED', message: 'quota exhausted' } } : { body: { result: '0x2' } }))
+    const r = await post(call('eth_gasPrice', []))
+    expect(sent.map((x) => x.headers['x-api-key'])).toEqual(['month-one', 'month-two'])
+    expect(r.out.result).toBe('0x2')
+    await post(call('eth_maxPriorityFeePerGas', []))
+    expect(sent[2].headers['x-api-key']).toBe('month-two')
   })
 })
 
