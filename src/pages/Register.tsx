@@ -83,32 +83,35 @@ export function RegisterPage() {
         <p className="lede">{tx('Read straight from Arkiv: each card is a readonly, sealed {record} entity. Orders still in force also exist as a short-lived {order} entity that disappears the moment the order lapses.', { record: <code>record</code>, order: <code>order</code> })}</p>
         <div className="row"><Link to="/file" className="btn small primary">{t('File a published order')}</Link><span className="hint">{t('Seen one that isn’t here? Anyone can add it.')}</span></div>
       </div>
-      <div className="row" style={{ marginBottom: 18, alignItems: 'end' }}>
-        <label className="field" style={{ minWidth: 200, flex: '1 1 200px' }}>{t('State')}
+      {/* one cell per control, each with its own label, all on one baseline */}
+      <div className="filters">
+        <label className="field">{t('State')}
           <select className="input" value={state} onChange={(e) => setState(e.target.value)}>
             <option value="">{t('All states and UTs')}</option>
             {statesOnFile.map((s) => <option key={s} value={s}>{t(STATES[s] ?? s)}</option>)}
           </select>
-          <select className="input" value={since} onChange={(e) => setSince(e.target.value)} aria-label={t('Issued since')}>
-
+        </label>
+        <label className="field">{t('Issued since')}
+          <select className="input" value={since} onChange={(e) => setSince(e.target.value)}>
             <option value="">{t('Any year')}</option>
-
             {['2025', '2024', '2023', '2022', '2021', '2020', '2019'].map((y) => <option key={y} value={y}>{tf('Issued {y} or later', { y })}</option>)}
-
           </select>
         </label>
-        <label className="field" style={{ minWidth: 180, flex: '1 1 180px' }}>{t('What was cut')}
+        <label className="field">{t('What was cut')}
           <select className="input" value={scope} onChange={(e) => setScope(e.target.value)}>
             <option value="">{t('Anything')}</option>
             {Object.keys(scopeLabel).map((k) => <option key={k} value={k}>{scopeName(k)}</option>)}
           </select>
         </label>
-        <label className="field" style={{ minWidth: 220, flex: '2 1 220px' }}>{t('Search')}
+        <label className="field filters-wide">{t('Search')}
           <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('District, reason, authority')} />
         </label>
-        <div className="seg" role="group" aria-label={t('Which orders')}>
-          <button aria-pressed={show === 'all'} onClick={() => setShow('all')}>{t('All on file')}</button>
-          <button aria-pressed={show === 'force'} onClick={() => setShow('force')}>{t('In force now')}</button>
+        <div className="field">
+          <span id="which-orders">{t('Which orders')}</span>
+          <div className="seg" role="group" aria-labelledby="which-orders">
+            <button aria-pressed={show === 'all'} onClick={() => setShow('all')}>{t('All on file')}</button>
+            <button aria-pressed={show === 'force'} onClick={() => setShow('force')}>{t('In force now')}</button>
+          </div>
         </div>
       </div>
       <p className="hint" style={{ marginBottom: 16 }}>{live.loading ? t('Reading the register from Arkiv…') : tf('{n} of {total} orders', { n: list.length, total: live.records.length })}{remote && remote.for === `${state}|${since}` ? <> · {t('query sent to Arkiv:')} <code className="num">{remote.query}</code>{remote.hidden ? <> · {tp(remote.hidden, '{n} corrected original hidden', '{n} corrected originals hidden')}</> : null}</> : null}</p>
