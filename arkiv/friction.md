@@ -233,7 +233,7 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   anonymous budget while the key is out, and serves its last good answer for up to fifteen minutes when every path is refused; the
   page reads at most every 90 s when idle, never while hidden, and re-reads the drill net only during a drill. Idle cost fell from
   about 72,000 units an hour per open tab to about 8,000.
-- **Fix (for Arkiv):** show `Arkiv-Quota-Used-Percent` on the Hub's key page too (it is already in the headers), state the quota's size and reset
+- **Fix (for Arkiv):** the meter we asked for here is now documented (the Hub's **Usage** tab, see the 18 Oct note below); what is left: state the quota's size and reset
   day on the access-keys page, and shape budget refusals as JSON-RPC errors (`{"error":{"code":…,"message":…}}`) so every client
   shows the reason.
 - **Checked by:** friction-check `12-header` (a keyless read still carries no `arkiv-quota-used-percent`, though
