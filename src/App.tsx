@@ -12,6 +12,7 @@ import { DrillPage } from './pages/Drill'
 import { DataPage } from './pages/Data'
 import { WhyPage } from './pages/Why'
 import { FilePage } from './pages/File'
+import { ProofPage } from './pages/Proof'
 import { ToastHost } from './components/Toast'
 import { setLang, tx, useLang, useT } from './lib/i18n'
 import { MODE, setMode } from './lib/arkiv'
@@ -21,6 +22,7 @@ const NAV = [
   ['/register', 'Register'],
   ['/report', 'Report'],
   ['/drill', 'Drill'],
+  ['/proof', 'Proof'],
   ['/data', 'Data & mirrors'],
   ['/why', 'Why'],
 ] as const
@@ -34,7 +36,7 @@ export function App() {
   useEffect(() => setOpen(false), [path])
   // one title per page, in the reader's language
   useEffect(() => {
-    const name = route === '/' ? '' : route === '/register' ? t('Register of orders') : route === '/report' ? t('Report no internet') : route === '/drill' ? t('Run a drill') : route === '/data' ? t('Data and mirrors') : route === '/why' ? t('Why this exists') : route === '/file' ? t('File a published order') : route.startsWith('/e/') ? t('Entity') : t('Page not found')
+    const name = route === '/' ? '' : route === '/register' ? t('Register of orders') : route === '/report' ? t('Report no internet') : route === '/drill' ? t('Run a drill') : route === '/data' ? t('Data and mirrors') : route === '/why' ? t('Why this exists') : route === '/file' ? t('File a published order') : route === '/proof' ? t('Proof') : route.startsWith('/e/') ? t('Entity') : t('Page not found')
     document.title = name ? `${name} · Switched Off` : t("Switched Off: India's internet shutdown register")
   }, [route, lang, t])
   // reports saved offline go out from any page, the moment the signal returns
@@ -58,6 +60,7 @@ export function App() {
     : route === '/data' ? <DataPage />
     : route === '/why' ? <WhyPage />
     : route === '/file' ? <FilePage />
+    : route === '/proof' ? <ProofPage />
     : <NotFound />
   return (
     <>
@@ -134,6 +137,7 @@ function Footer() {
         <div>
           <h4>{t('Check it')}</h4>
           <ul>
+            <li><Link to="/proof">{t('Proof: check every claim live')}</Link></li>
             <li><Link to="/data">{t('Exact queries')}</Link></li>
             <li><Link to="/data#mirrors">{t('Mirrors and CLI')}</Link></li>
             <li><a href="https://rohanglitched.github.io/switched-off/">{t('Independent mirror (GitHub Pages)')}</a></li>

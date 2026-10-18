@@ -195,3 +195,11 @@ a.item:hover { border-color: var(--line-2); background: var(--night-3); color: i
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
+
+/* proof page: feature table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); }
+.tbl { width: 100%; border-collapse: collapse; min-width: 560px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.tbl th { font-weight: 600; color: var(--mute, inherit); font-size: 14px; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td:first-child { white-space: nowrap; }
