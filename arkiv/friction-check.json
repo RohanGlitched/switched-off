@@ -1,0 +1,297 @@
+{
+  "tool": "scripts/friction-check.ts",
+  "generatedAt": "2026-10-18T05:39:28.909Z",
+  "mode": "read+write",
+  "sdkVersion": "0.8.1",
+  "viemVersion": "2.57.4",
+  "node": "v21.7.0",
+  "chainId": 7738577,
+  "rpc": "https://rpc.tiramisu.db-chain.testnet.arkiv.network",
+  "blockNumber": "726088",
+  "durationMs": 35633,
+  "rpcRequests": 55,
+  "counts": {
+    "STILL": 24,
+    "CHANGED": 3,
+    "ERROR": 0,
+    "SKIPPED": 0
+  },
+  "states": {
+    "STILL": "the behaviour we documented still happens",
+    "CHANGED": "Arkiv fixed or changed it",
+    "ERROR": "could not check",
+    "SKIPPED": "write check without a funded key"
+  },
+  "checks": [
+    {
+      "id": "1-sdk",
+      "item": "1",
+      "title": "SDK accepts a camelCase attribute name client-side",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "isValidAttributeName('orderId') = true and createEntity went on to build the transaction (eth_blockNumber, eth_fillTransaction, eth_getTransactionCount); the node half is check 1-node",
+      "at": "2026-10-18T05:38:53.560Z",
+      "durationMs": 276
+    },
+    {
+      "id": "1-node",
+      "item": "1",
+      "title": "The node rejects the camelCase name the SDK let through",
+      "kind": "write",
+      "state": "STILL",
+      "observed": "EntityMutationError: Transaction failed: an attribute name holds \"I\" (0x49) at byte 5, which is outside the name charset (\"A\"-\"Z\", \"a\"-\"z\", \"0\"-\"9\", \".\", \"-\" and \"_\", with a letter first)",
+      "at": "2026-10-18T05:39:08.201Z",
+      "durationMs": 1891
+    },
+    {
+      "id": "2",
+      "item": "2",
+      "title": "fromSeconds(299) is refused, and the message does not point at atDate",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "InvalidExpiryError: Invalid expiry: a lifetime must be a multiple of the 2s block time, got 299, which is 149.5 blocks. Try 298 or 300, or ExpirationTime.fromBlocks(n).",
+      "at": "2026-10-18T05:38:53.566Z",
+      "durationMs": 1
+    },
+    {
+      "id": "2-docs",
+      "item": "2",
+      "title": "The docs point a deadline at atDate",
+      "kind": "docs",
+      "state": "CHANGED",
+      "observed": "the SDK mutating-data page now explains atDate() for deadlines (\"rounds up, so the entity lives until at least that instant\")",
+      "at": "2026-10-18T05:39:00.195Z",
+      "durationMs": 877
+    },
+    {
+      "id": "3-sdk",
+      "item": "3",
+      "title": "SDK refuses a query with no filter, before sending anything",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "InvalidPredicateError: A query needs at least one filter — the language has no spelling for 'match every entity\". Add a where(...) predicate, or narrow by ownedBy(...) / createdBy(...). (quotes still mismatched); requests sent: 0",
+      "at": "2026-10-18T05:38:53.569Z",
+      "durationMs": 3
+    },
+    {
+      "id": "3-docs",
+      "item": "3",
+      "title": "The RPC docs list `*` as match-everything, and do not say the SDK refuses it",
+      "kind": "docs",
+      "state": "STILL",
+      "observed": "RPC querying page lists `*` under \"Match everything\", no word that the SDK refuses it; SDK querying page says \"A query needs at least one filter.\"",
+      "at": "2026-10-18T05:39:00.874Z",
+      "durationMs": 679
+    },
+    {
+      "id": "3-rpc",
+      "item": "3",
+      "title": "Raw arkiv_query accepts `*`",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "\"*\" returned 1 entity (HTTP 200); the SDK refuses the same query (3-sdk)",
+      "at": "2026-10-18T05:39:03.130Z",
+      "durationMs": 380
+    },
+    {
+      "id": "4a",
+      "item": "4a",
+      "title": "A bare number compares as i32, so a u64 range silently returns nothing",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "issued > 1 → 0, issued > u64(1) → 5 (limit 5); no error for the mismatch",
+      "at": "2026-10-18T05:39:04.112Z",
+      "durationMs": 672
+    },
+    {
+      "id": "4-docs",
+      "item": "4",
+      "title": "The Tiramisu network page does not link the query grammar",
+      "kind": "docs",
+      "state": "STILL",
+      "observed": "the page body (RPC URL table, raw JSON-RPC tip) has no link to json-rpc/querying-data; only the site-wide sidebar lists it",
+      "at": "2026-10-18T05:39:01.048Z",
+      "durationMs": 173
+    },
+    {
+      "id": "4",
+      "item": "4",
+      "title": "A JSON-style string literal fails with a bare \"unexpected character\"",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "{\"code\":-32001,\"message\":\"unexpected character\",\"data\":{\"message\":\"unexpected character\",\"position\":6}}",
+      "at": "2026-10-18T05:39:03.440Z",
+      "durationMs": 310
+    },
+    {
+      "id": "5-docs",
+      "item": "5",
+      "title": "The keyless budget (size, window, per-method cost) is not written down",
+      "kind": "docs",
+      "state": "STILL",
+      "observed": "no budget size, window or per-call cost on /networks/tiramisu.md, /start-here/access-keys.md, /json-rpc/querying-data.md (access-keys says only \"at the default rate limit\")",
+      "at": "2026-10-18T05:39:01.215Z",
+      "durationMs": 167
+    },
+    {
+      "id": "5",
+      "item": "5",
+      "title": "Every keyless arkiv_query costs 100 units, rate limit in headers only",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "arkiv-cost: 100; ratelimit: limit=600, remaining=594, reset=28",
+      "at": "2026-10-18T05:39:04.113Z",
+      "durationMs": 1
+    },
+    {
+      "id": "6",
+      "item": "6",
+      "title": "watchEntityEvents has no filter, and polls every second by default",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "options: onEntityCreated, onEntityPatched, onExpiryExtended, onOwnershipTransferred, onEntityDeleted, onEvent, onError, fromBlock, pollingInterval; eth_newFilter address 0x4400000000000000000000000000000000000044, 5 event topics, nothing narrower; poll gap 1012 ms",
+      "at": "2026-10-18T05:38:55.900Z",
+      "durationMs": 2331
+    },
+    {
+      "id": "7",
+      "item": "7",
+      "title": "ExpiryExtended does not carry who extended",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "ExpiryExtended(bytes32 entityKey, address owner, uint64 expiresAt)",
+      "at": "2026-10-18T05:38:55.902Z",
+      "durationMs": 1
+    },
+    {
+      "id": "8",
+      "item": "8",
+      "title": "getEntity says the same thing for expired and never-existed keys",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "identical for both: NoEntityFoundError: No live entity with key <key>. It was never created, or it has been deleted or has expired.",
+      "at": "2026-10-18T05:39:04.821Z",
+      "durationMs": 707
+    },
+    {
+      "id": "9-readme",
+      "item": "9",
+      "title": "SDK README install snippet pins an older version than npm installs",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "README snippet \"^0.6.0\", installed 0.8.1",
+      "at": "2026-10-18T05:38:55.908Z",
+      "durationMs": 6
+    },
+    {
+      "id": "9-limits",
+      "item": "9",
+      "title": "No orderBy in the query builder; MAX_LIMIT is 200",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "MAX_LIMIT = 200; ordering methods: none",
+      "at": "2026-10-18T05:38:55.909Z",
+      "durationMs": 1
+    },
+    {
+      "id": "9-docs",
+      "item": "9",
+      "title": "The docs home and Python guide state old SDK versions",
+      "kind": "docs",
+      "state": "CHANGED",
+      "observed": "docs home shows no SDK version string; sitemap lists 0 Python page(s)",
+      "at": "2026-10-18T05:39:01.835Z",
+      "durationMs": 620
+    },
+    {
+      "id": "9-tagged",
+      "item": "9",
+      "title": "Attributes read back tagged ({type, value}) though written bare",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "written as app: 'switched-off', reads back as app: {\"type\":\"str\",\"value\":\"switched-off\"}",
+      "at": "2026-10-18T05:39:05.305Z",
+      "durationMs": 0
+    },
+    {
+      "id": "10",
+      "item": "10",
+      "title": "A sealed record cannot be repaired: its owner is 0x…dEaD",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "original 0xe27b2d37… is live, owner 0x000000000000000000000000000000000000dEaD, so only a correction entity can fix it",
+      "at": "2026-10-18T05:39:05.700Z",
+      "durationMs": 394
+    },
+    {
+      "id": "11-viem",
+      "item": "11",
+      "title": "viem's http transport obeys a 429 retry-after with 3 retries by default",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "default transport: 4 requests over 3.3 s for retry-after 1 s (every retry waits the full retry-after; at Arkiv's ~1000 s the first retry alone is ~17 min); retryCount 0: 1 request, 0.0 s; error: HttpRequestError: HTTP request failed. (\"ANON_COST_LIMITED\")",
+      "at": "2026-10-18T05:38:59.309Z",
+      "durationMs": 3399
+    },
+    {
+      "id": "11-logs",
+      "item": "11",
+      "title": "eth_getLogs answers at most 100,000 blocks",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "100,002-block range: {\"code\":-32602,\"message\":\"query exceeds max block range 100000\"}",
+      "at": "2026-10-18T05:39:06.005Z",
+      "durationMs": 304
+    },
+    {
+      "id": "12-docs",
+      "item": "12",
+      "title": "A key's quota use and reset day are not shown anywhere",
+      "kind": "docs",
+      "state": "CHANGED",
+      "observed": "access-keys page now says the Hub's Usage tab shows the cost units used this month and the reset date; quota size still not stated",
+      "at": "2026-10-18T05:39:01.836Z",
+      "durationMs": 1
+    },
+    {
+      "id": "12-header",
+      "item": "12",
+      "title": "A keyless read carries no Arkiv-Quota-Used-Percent, though CORS exposes it",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "arkiv-quota-used-percent absent; listed in access-control-expose-headers: true",
+      "at": "2026-10-18T05:39:04.113Z",
+      "durationMs": 0
+    },
+    {
+      "id": "ok-str128",
+      "item": "smooth",
+      "title": "A str attribute over 128 bytes is refused before sending",
+      "kind": "offline",
+      "state": "STILL",
+      "observed": "InvalidValueError: Invalid str value \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...\": 139 UTF-8 bytes exceeds the 128-byte limit on a str. Store the long form in the entity payload and keep a short, qu (requests: eth_blockNumber)",
+      "at": "2026-10-18T05:38:59.318Z",
+      "durationMs": 8
+    },
+    {
+      "id": "ok-history",
+      "item": "smooth",
+      "title": "An expired entity is still returned by a query at an earlier block",
+      "kind": "read",
+      "state": "STILL",
+      "observed": "atBlock(0x6ae4b) → 1 entity (the evidence key), 288,253 blocks ago",
+      "at": "2026-10-18T05:39:05.304Z",
+      "durationMs": 483
+    },
+    {
+      "id": "ok-pricing",
+      "item": "smooth",
+      "title": "Lifetime is not priced: a 1-day and a 365-day create cost the same gas",
+      "kind": "write",
+      "state": "STILL",
+      "observed": "gasUsed 1 day 95656, 365 days 95656; deleted both again in one batch",
+      "at": "2026-10-18T05:39:28.908Z",
+      "durationMs": 20707
+    }
+  ]
+}
