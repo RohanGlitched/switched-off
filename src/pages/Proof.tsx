@@ -13,14 +13,15 @@ const GH = 'https://github.com/RohanGlitched/switched-off/blob/main/'
 // what each Arkiv feature does for a person using the register, and where the code is
 const FEATURES: { feature: string; sees: string; code: string; path: string }[] = [
   { feature: 'Expiration', sees: 'An order disappears from the map at the block its legal deadline falls on; a report fades after six hours.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
-  { feature: 'Lifetime extension', sees: 'Confirming an emergency order, a neighbour confirming a report, anyone keeping a lapsed record alive.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
+  { feature: 'Lifetime extension', sees: 'Confirming an emergency order, a neighbour confirming a report, anyone keeping a record alive.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
   { feature: 'Creation flags', sees: 'Records are readonly (text never changes) and open to anyone’s extension; orders can only be confirmed by their filer.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
-  { feature: 'Ownership transfer', sees: 'The archive is handed to 0x…dEaD: nobody can delete it, us included. The ARCHIVED stamp on every record.', code: 'scripts/seal.ts', path: 'scripts/seal.ts' },
+  { feature: 'Ownership transfer', sees: 'The archive is handed to 0x…dEaD: nobody can delete it, us included. Every record’s page says it is sealed and who filed it.', code: 'scripts/seal.ts', path: 'scripts/seal.ts' },
   { feature: 'Batch writes', sees: 'An order and its permanent record are filed and sealed in one transaction; corrections went in nine at a time.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
   { feature: 'Typed attributes vs payload', sees: 'Filters by state, type and date run on Arkiv; the order’s reason, authority and sources ride in the payload.', code: 'arkiv/schema.md', path: 'arkiv/schema.md' },
   { feature: 'Queries (equality, u64 ranges)', sees: 'The register’s state and year filters, “issued after”, and the exact query printed under each view.', code: 'src/lib/arkiv.ts', path: 'src/lib/arkiv.ts' },
   { feature: '$creator / $owner', sees: '“Filed by the registrar” vs “community transcription”; a stranger’s correction can’t hide a record.', code: 'src/lib/arkiv.ts', path: 'src/lib/arkiv.ts' },
   { feature: 'atBlock', sees: 'The drill’s rewind and the evidence that a lapsed order existed at its own block.', code: 'src/pages/Drill.tsx', path: 'src/pages/Drill.tsx' },
+  { feature: 'Delete', sees: '“Withdraw my report”: the one change an owner of a readonly entity can still make. A sealed record has no owner who could.', code: 'src/lib/write.ts', path: 'src/lib/write.ts' },
   { feature: 'WebSocket entity events', sees: 'The Live wire: a filing, a report or a confirmation shows for everyone within seconds.', code: 'src/lib/store.ts', path: 'src/lib/store.ts' },
 ]
 

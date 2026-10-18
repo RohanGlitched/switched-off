@@ -23,4 +23,8 @@ const out = {
   records: list,
 }
 fs.writeFileSync('public/snapshot.json', JSON.stringify(out, (_k, v) => (typeof v === 'bigint' ? `${v}n` : v)))
-console.log(`snapshot: ${list.length} records at block ${block}`)
+// the records those corrections supersede: a record page checks this list before its own archive read lands
+const filed = ['scripts/corrections.json', 'scripts/data-corrections.json'].flatMap((f) => (JSON.parse(fs.readFileSync(f, 'utf8')) as { batches: { corrections: { corrects: string }[] }[] }).batches.flatMap((b) => b.corrections.map((c) => c.corrects)))
+const superseded = [...new Set([...filed, ...list.map((r) => r.corrects)].map((k) => k.toLowerCase()).filter(Boolean))].sort()
+fs.writeFileSync('src/data/superseded.json', JSON.stringify({ note: 'Records superseded by a registrar correction, as of the archive snapshot (written by scripts/snapshot.ts). A record page checks this before its archive read lands, so it never paints an original it should not show.', keys: superseded }, null, 1))
+console.log(`snapshot: ${list.length} records at block ${block}, ${superseded.length} superseded`)

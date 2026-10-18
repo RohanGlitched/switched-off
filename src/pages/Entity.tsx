@@ -13,12 +13,15 @@ import { addrUrl, ago, fmtDate, fmtDateTime, left, short, txUrl } from '../lib/f
 import { refresh, useNow } from '../lib/store'
 import { Link } from '../lib/router'
 import { STATES } from '../lib/geo'
+import supersededList from '../data/superseded.json'
 import { toast } from '../components/Toast'
 import { tf, tp, tr, tx as tx_, useLang, useT } from '../lib/i18n'
 
 type Any = Order | Record_ | Report
 const isReport = (e: Any): e is Report => 'carrier' in e
 const isRecord = (e: Any): e is Record_ => 'permissionless' in e
+// records known to be superseded when the site was built (src/data/superseded.json, from scripts/snapshot.ts)
+const SUPERSEDED = new Set(supersededList.keys)
 
 export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const [e, setE] = useState<Any | null | 'loading'>('loading')
@@ -28,8 +31,13 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const now = useNow()
   const [witnesses, setWitnesses] = useState<Hex[] | null>(null)
   const [related, setRelated] = useState<{ corrects?: Hex; correctedBy?: Hex; renews?: { key: Hex; label: string }; renewedBy?: { key: Hex; label: string }[] }>({})
+  // which record `related` was worked out for: a record's text waits for it, so a superseded original
+  // (some quoted names) is never painted, even for the moment before the archive read lands
+  const [relatedFor, setRelatedFor] = useState<string | null>(null)
   const t = useT()
   const load = () => syncClock().then(() => orderByKey(entityKey)).then((x) => {
+    setRelated({})
+    setRelatedFor(null)
     setE(x)
     if (x && ('carrier' in x || 'permissionless' in x)) void extenders(x.key, x.createdAt > 0n ? x.createdAt : currentBlock() - 400_000n, x.creator).then(setWitnesses)
     if (x && 'permissionless' in x)
@@ -43,7 +51,8 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           renews: x.renews ? visible.filter((r) => r.orderId === x.renews && sameDesk(r, x)).map((r) => ({ key: r.key, label: `${r.orderId} (${fmtDate(r.starts * 1000)})` }))[0] : undefined,
           renewedBy: visible.filter((r) => r.renews === x.orderId && sameDesk(r, x)).sort((a, b) => a.seq - b.seq).map((r) => ({ key: r.key, label: tf('renewal no. {n}, {date}', { n: Math.max(1, r.seq - 1), date: fmtDate(r.starts * 1000) }) })),
         })
-      })
+        setRelatedFor(x.key.toLowerCase())
+      }, () => setRelatedFor(x.key.toLowerCase()))
   })
   useEffect(() => void load(), [entityKey])
   // the tab names the record ("Manipur, 3 May 2023 · Switched Off"), not the word "Entity"
@@ -96,15 +105,19 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
   const iFiled = e.creator.toLowerCase() === me
   const iConfirmed = !!witnesses?.includes(me as Hex)
   const sealed = e.owner.toLowerCase() === SEALED.toLowerCase()
+  const superseded = !!related.correctedBy || (isRecord(e) && SUPERSEDED.has(e.key.toLowerCase()))
+  const waiting = isRecord(e) && !superseded && relatedFor !== e.key.toLowerCase()
   return (
     <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 16, minWidth: 0 }}>
-          {related.correctedBy ? (
+          {waiting ? (
+            <div className="skel" style={{ height: 420 }} aria-label={t('Reading the archive from Arkiv…')} />
+          ) : superseded ? (
             <div className="panel" style={{ display: 'grid', gap: 10 }}>
               <h2 className="h3">{t('Superseded by a correction')}</h2>
               <p className="mute" style={{ margin: 0 }}>{t('The registrar filed a correction for this record: its notes or sources quoted people’s names, or better sources improved its dates and links. The register shows the correction. This original is sealed and readonly, so it stays on Arkiv until it expires, but this site does not display its text.')}</p>
-              <div className="row"><Link to={`/e/${related.correctedBy}`} className="btn primary">{t('Open the correction')}</Link></div>
+              {related.correctedBy ? <div className="row"><Link to={`/e/${related.correctedBy}`} className="btn primary">{t('Open the correction')}</Link></div> : <span className="hint">{t('Reading the archive from Arkiv…')}</span>}
             </div>
           ) : isReport(e) ? <ReportCard r={e} /> : <Gazette o={e} live={!isRecord(e)} />}
         </div>
@@ -149,7 +162,7 @@ export function EntityPage({ entityKey }: { entityKey: Hex }) {
           <p className="hint" style={{ margin: 0 }}>{tx_('Reproduce: {code} on Tiramisu, or see {link}.', { code: <code>arkiv_getEntity("{short(e.key)}")</code>, link: <Link to="/data">{t('the exact queries')}</Link> })}</p>
         </div>
       </div>
-      {!isReport(e) && !related.correctedBy && (
+      {!isReport(e) && !superseded && !waiting && (
         <div style={{ display: 'grid', gap: 20, marginTop: 20 }}>
           <CitePanel o={e} />
           {e.net === 'live' && !orderOnFile(e) && (

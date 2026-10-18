@@ -131,8 +131,8 @@ the key for `0x…dEaD`), by us or anyone. This is friction item 10 ([friction.m
 2. **Every reader shows the correction instead.** The site ([`applyCorrections` in `src/lib/arkiv.ts`](../src/lib/arkiv.ts)),
    the mirror ([`docs/index.html`](../docs/index.html)) and the CLI ([`cli/switched-off.mjs`](../cli/switched-off.mjs)) hide every
    record that a trusted correction names in `corrects`, so after a correction of a correction only the last one shows. The entity page
-   of an original says "Superseded by a correction", links the correction, and shows the original only behind a
-   **"Show the original anyway"** button.
+   of an original says "Superseded by a correction" and links the correction; the site does not display the original's text at all
+   (a page waits for the archive check, and a list of superseded keys built with the site covers the moment before it lands).
 3. **A personal-data guard before every write.** [`src/lib/pii.ts`](../src/lib/pii.ts) refuses phone numbers (any spacing,
    `+91`, Devanagari and full-width digits), Aadhaar numbers and the word, emails (also spelled out) and UPI ids, honorifics,
    case titles, judge styles, a role followed by a name, names the register has already had to remove, and links whose slug

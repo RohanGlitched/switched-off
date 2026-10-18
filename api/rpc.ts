@@ -62,7 +62,17 @@ function paced(ip: string, n: number): boolean {
  * cache-skipping fresh reads; past that, its reads go out on Arkiv's keyless budget (shared caches still
  * answer them first). Normal browsing, a page of reads every few seconds, stays well inside both.
  */
-const KEYED_PER_IP = 40
+const KEYED_PER_IP = 15
+// and a ceiling per server instance, so even many networks together can't spend a key's month in an afternoon
+const KEYED_PER_HOUR = 600
+const keyedHour: number[] = []
+function keyedBudget(ip: string): boolean {
+  const now = Date.now()
+  while (keyedHour.length && now - keyedHour[0] > 3_600_000) keyedHour.shift()
+  if (keyedHour.length >= KEYED_PER_HOUR || !allow(keyed, ip, KEYED_PER_IP)) return false
+  keyedHour.push(now)
+  return true
+}
 const FRESH_PER_IP = 12
 const keyed = new Map<string, number[]>()
 const freshes = new Map<string, number[]>()
@@ -158,7 +168,7 @@ async function one(call: Call, key: string | undefined, fresh = false, ip = 'unk
     const hit = ck ? cache.get(ck) : undefined
     // a browser that has just written asks for a fresh read, or it would be shown the page before its own write
     if (hit && !fresh && Date.now() - hit.at < (ttl ?? 0)) return { jsonrpc: '2.0', id: call.id, ...(hit.body as object) }
-    const { r, text } = await upstream(call, call.method === 'arkiv_query' && !allow(keyed, ip, KEYED_PER_IP) ? undefined : key)
+    const { r, text } = await upstream(call, call.method === 'arkiv_query' && !keyedBudget(ip) ? undefined : key)
     let j: { result?: unknown; error?: unknown; message?: unknown }
     try {
       j = JSON.parse(text) as { result?: unknown; error?: unknown; message?: unknown }

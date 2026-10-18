@@ -123,7 +123,8 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   fail for a reader who has done nothing. The site, mirror and CLI now fall back
   to the relay when a direct read hits the budget, and say so.
 - **Design consequence:** the access-keys page rightly warns that a key in browser code can be read and spent by anyone. So a public site
-  either puts every visitor on the keyless budget or runs a proxy. We run a small allowlisted relay with a 4-second shared cache, plus a
+  either puts every visitor on the keyless budget or runs a proxy. We run a small allowlisted relay that shares answers between visitors (20 s for orders and reports, 5 min for the sealed
+  archive, 15 min for reads pinned to a past block) and caps each network's share of the key, plus a
   "direct" switch so readers can bypass us. The mirror falls back to the relay when the keyless budget is spent.
 - **Fix:** document the anonymous budget and per-method costs next to the RPC URL. A browser-safe, origin-locked read key would remove the
   need for proxies like ours.
@@ -240,6 +241,9 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   anonymous budget while the key is out, and serves its last good answer for up to fifteen minutes when every path is refused; the
   page reads at most every 90 s when idle, never while hidden, and re-reads the drill net only during a drill. Idle cost fell from
   about 72,000 units an hour per open tab to about 8,000.
+  On 18 Oct, before judging: the relay holds a second Hub account's key and moves to it when the first answers `QUOTA_EXCEEDED`;
+  the sealed archive is shared between visitors for five minutes and reads pinned to a past block for fifteen; and each network gets
+  15 keyed queries and 12 cache-skipping fresh reads a minute, each server instance 600 keyed queries an hour, past which reads go keyless.
 - **Fix (for Arkiv):** the meter we asked for here is now documented (the Hub's **Usage** tab, see the 18 Oct note below); what is left: state the quota's size and reset
   day on the access-keys page, and shape budget refusals as JSON-RPC errors (`{"error":{"code":…,"message":…}}`) so every client
   shows the reason.

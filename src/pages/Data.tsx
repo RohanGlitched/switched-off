@@ -32,9 +32,9 @@ for (;;) { use(page.entities); if (!page.hasNextPage()) break; page = await page
   },
   {
     title: 'Every order ever filed for Manipur',
-    claim: 'Filter by state code on an attribute, not by reading payloads.',
-    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND state = str('MN')",
-    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live'), eq('state','MN')])).fetch()`,
+    claim: 'Filter by state code on an attribute, not by reading payloads. Read by the registrar’s $creator; superseded originals come back too and are replaced by their corrections in the reader.',
+    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND state = str('MN') AND \\$creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e)",
+    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live'), eq('state','MN')])).createdBy('0xA2724EA69eA093677D8426E7FE20644EE90a0E3e').fetch()`,
   },
   {
     title: 'Live citizen reports',
@@ -45,8 +45,8 @@ for (;;) { use(page.entities); if (!page.hasNextPage()) break; page = await page
   {
     title: 'Orders issued after a date',
     claim: 'Timestamps are u64 attributes, so ranges are a query, not a scan. Note the u64(…) tag: a bare number is read as i32 and silently matches nothing (see friction.md).',
-    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND issued > u64(1688169600)",
-    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), gt('issued', u64(1688169600n))])).fetch() // issued after 1 Jul 2023`,
+    expr: "app = str('switched-off') AND type = str('record') AND net = str('live') AND issued > u64(1688169600) AND \\$creator = addr(0xA2724EA69eA093677D8426E7FE20644EE90a0E3e)",
+    sdk: `pub.select('*').where(and([eq('app','switched-off'), eq('type','record'), eq('net','live'), gt('issued', u64(1688169600n))])).createdBy('0xA2724EA69eA093677D8426E7FE20644EE90a0E3e').fetch() // issued after 1 Jul 2023`,
   },
 ]
 
@@ -72,6 +72,7 @@ export function DataPage() {
           <div key={x.title} className="panel" style={{ display: 'grid', gap: 10 }}>
             <h2 className="h3">{t(x.title)}</h2>
             <p className="mute" style={{ margin: 0 }}>{t(x.claim)}</p>
+            {x.title === 'The whole archive' && live.loadedAt > 0 && live.superseded && <p className="hint num" style={{ margin: 0 }}>{tf('Read just now: {raw} registrar records come back = {shown} on the register + {sup} earlier versions superseded by corrections.', { raw: live.records.filter((r) => r.official).length + live.superseded.length, shown: live.records.filter((r) => r.official).length, sup: live.superseded.length })}</p>}
             <pre className="code">{q(x.expr, x.extra)}{x.after ? `
 ${x.after}` : ''}</pre>
             <pre className="code" style={{ opacity: 0.85 }}>{`// @arkiv-network/sdk 0.8.1\n${x.sdk}`}</pre>
