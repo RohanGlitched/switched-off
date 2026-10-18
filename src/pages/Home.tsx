@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { NightMap, useMapState } from '../components/NightMap'
 import { Gazette } from '../components/Gazette'
 import { LiveWire } from '../components/LiveWire'
 import { Rewind } from '../components/Rewind'
 import { loadGeo, type Geo } from '../lib/geo'
-import { useNow, useRegister } from '../lib/store'
+import { useDrillOrders, useNow, useRegister } from '../lib/store'
 import { Link, go } from '../lib/router'
 import { tf, tp, tx, useT } from '../lib/i18n'
 import { fmtDate } from '../lib/fmt'
@@ -16,9 +16,18 @@ export function Home() {
   const [geo, setGeo] = useState<Geo | null>(null)
   useEffect(() => void loadGeo().then(setGeo), [])
   const now = useNow(5000)
+  // drill orders in force: shown on the map in their own style, never counted as the register's
+  const drill = useDrillOrders()
   // history replay: which archived orders were in force on a given day
   const [at, setAt] = useState<number | null>(null)
   const [playing, setPlaying] = useState(false)
+  // with nothing in force, the map is never a still, all-lit picture: it replays the history on every
+  // visit (`auto`), then settles on the last twelve months (`recent`) and plays again after a pause
+  const [auto, setAuto] = useState(false)
+  const [recent, setRecent] = useState(false)
+  // the reader stopped it (scroll, tap, the slider, "Back to now"): leave the map where they put it
+  const [stopped, setStopped] = useState(false)
+  const reduced = useMemo(() => matchMedia('(prefers-reduced-motion: reduce)').matches, [])
   const span = useMemo(() => {
     const ss = live.records.map((r) => r.starts).filter(Boolean)
     return ss.length ? [Math.min(...ss) * 1000 - 7 * 86_400_000, Date.now()] as const : null
@@ -35,23 +44,37 @@ export function Home() {
     }
     return [...ts].sort((a, b) => a - b).filter((x) => x < Date.now())
   }, [live.records])
+  // nothing in force: no live order (or none known yet while Arkiv answers) and no drill running
+  const idle = (live.loading || live.orders.length === 0) && drill.length === 0
+  const idleRef = useRef(idle)
+  idleRef.current = idle
+  const atRef = useRef(at)
+  atRef.current = at
   useEffect(() => {
     if (!playing || !span || !stops.length) return
-    const id = window.setInterval(() => setAt((a) => {
-      const i = stops.findIndex((x) => x > (a ?? -Infinity))
-      if (i < 0) { setPlaying(false); return null }
-      return stops[i]
-    }), Math.max(70, Math.min(320, Math.round(15_000 / Math.max(1, stops.length)))))
-    return () => clearInterval(id)
-  }, [playing, span, stops])
-  // a person who scrolls or taps while the replay runs wants the live map back
-  useEffect(() => {
-    if (!playing) return
-    const stop = () => {
+    const id = window.setInterval(() => {
+      const i = stops.findIndex((x) => x > (atRef.current ?? -Infinity))
+      if (i >= 0) return setAt(stops[i])
+      // the end of the record: settle on the last twelve months while nothing is in force
       setPlaying(false)
       setAt(null)
+      setRecent(idleRef.current)
+    }, Math.max(70, Math.min(320, Math.round(15_000 / Math.max(1, stops.length)))))
+    return () => clearInterval(id)
+  }, [playing, span, stops])
+  // a person who scrolls or taps while the map is moving wants it to hold still: it stays on the
+  // last twelve months (the replay controls themselves don't count)
+  useEffect(() => {
+    if (!playing && !auto) return
+    const stop = (e: Event) => {
+      if ((e.target as Element | null)?.closest?.('[data-replay]')) return
+      setPlaying(false)
+      setAt(null)
+      setAuto(false)
+      setStopped(true)
+      setRecent(idleRef.current)
     }
-    const opts = { passive: true, once: true } as AddEventListenerOptions
+    const opts = { passive: true } as AddEventListenerOptions
     window.addEventListener('wheel', stop, opts)
     window.addEventListener('touchmove', stop, opts)
     window.addEventListener('pointerdown', stop, opts)
@@ -60,21 +83,36 @@ export function Home() {
       window.removeEventListener('touchmove', stop)
       window.removeEventListener('pointerdown', stop)
     }
-  }, [playing])
-  // with nothing in force today, play the history once so the first screen shows what the map does
+  }, [playing, auto])
+  // with nothing in force, play the history on every visit, as soon as the archive is on screen (the
+  // bundled copy paints within a second); with reduced motion, show the last twelve months, still
   useEffect(() => {
-    if (live.loading || live.orders.length > 0 || !span || !stops.length || at !== null || playing) return
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    try {
-      if (sessionStorage.getItem('switched-off:played')) return
-      sessionStorage.setItem('switched-off:played', '1')
-    } catch {
-      return
-    }
+    if (stopped || !idle || at !== null || playing || recent || !stops.length) return
+    setAuto(true)
+    if (reduced) return setRecent(true)
     setAt(stops[0])
     setPlaying(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [live.loading, live.orders.length, span, stops])
+  }, [stopped, idle, at, playing, recent, stops, reduced])
+  // after the last twelve months have been on screen a while, play it all again
+  useEffect(() => {
+    if (!recent || !auto || reduced) return
+    const id = window.setTimeout(() => {
+      setRecent(false)
+      setAt(stops[0] ?? null)
+      setPlaying(stops.length > 0)
+    }, 9000)
+    return () => clearTimeout(id)
+  }, [recent, auto, reduced, stops])
+  // an order comes into force, or a drill starts: the map shows now
+  useEffect(() => {
+    if (idle || (!auto && !recent)) return
+    setAuto(false)
+    setRecent(false)
+    if (auto) {
+      setPlaying(false)
+      setAt(null)
+    }
+  }, [idle, auto, recent])
   // an order with no published end is shown until the next order on file for its state, at most
   // fifteen days (the per-order cap since November 2020); the note under the map says so
   const spans = useMemo(() => {
@@ -89,8 +127,14 @@ export function Home() {
     const t = at / 1000
     return spans.filter(({ r, end }) => r.starts <= t && t < end).map(({ r }) => r) as unknown as Order[]
   }, [at, spans])
+  // the last twelve months: every order on file that was in force at any moment of them
+  const lastYear = useMemo(() => {
+    const from = Date.now() / 1000 - 365 * 86400
+    return spans.filter(({ r, end }) => r.official && end > from && r.starts <= Date.now() / 1000).map(({ r }) => r) as unknown as Order[]
+  }, [spans])
   // live reports stay on the map during a replay: they are about now, whatever year the orders show
-  const map = useMapState(geo, at === null ? live.orders : inForceAt, live.reports)
+  const map = useMapState(geo, at !== null ? inForceAt : recent ? lastYear : live.orders, live.reports, at === null && !recent ? drill : undefined)
+  const drillStates = [...new Set(drill.map((o) => t(o.stateName)))].join(', ')
   // the headline numbers always describe right now, whatever date the map is replaying
   const nowMap = useMapState(geo, live.orders, live.reports)
   const down = live.reports.filter((r) => r.status !== 'back')
@@ -141,20 +185,26 @@ export function Home() {
           </div>
           <div className="hero-map">
             <div style={{ position: 'relative' }}>
-              {at !== null && <div className="map-caption num" aria-hidden="true">{tf('Replaying the register: {date}', { date: fmtDate(at) })}<br /><span className="mute">{playing ? t('Scroll or tap to stop') : ''}</span></div>}
-              <NightMap state={map} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? tf('Map of India on {date}: {n} districts under a suspension order on file.', { date: fmtDate(at), n: map.off.size }) : undefined} />
+              {at !== null ? (
+                <div className="map-caption num" aria-hidden="true"><b className="cap-kicker">{t('History, not now')}</b>{tf('Replaying the register: {date}', { date: fmtDate(at) })}<br /><span className="mute">{playing ? t('Scroll or tap to stop') : ''}</span></div>
+              ) : recent ? (
+                <div className="map-caption" aria-hidden="true"><b className="cap-kicker">{t('History, not now')}</b>{tp(map.off.size, '{n} district switched off at some point in the last 12 months', '{n} districts switched off at some point in the last 12 months')}<br /><span className="mute">{live.loading ? t('Checking what is in force now…') : t('No order is in force today.')}{auto && !reduced ? ` ${t('Scroll or tap to stop')}` : ''}</span></div>
+              ) : drill.length > 0 ? (
+                <div className="map-caption drill" style={{ pointerEvents: 'auto' }}><b className="cap-kicker">{t('DRILL')}</b>{tf('A drill order is running in {states}: a sandbox, not a real shutdown, and not counted below.', { states: drillStates })}<br /><Link to="/drill">{t('Watch it on the drill page')}</Link></div>
+              ) : null}
+              <NightMap state={map} offLabel={at !== null || recent ? t('Switched off by an order on file (history)') : undefined} onPick={(i) => geo && go(`/register?state=${geo.districts[i].code}`)} label={at ? tf('Map of India on {date}: {n} districts under a suspension order on file.', { date: fmtDate(at), n: map.off.size }) : recent ? tp(map.off.size, 'Map of India, history not now: {n} district switched off at some point in the last 12 months.', 'Map of India, history not now: {n} districts switched off at some point in the last 12 months.') : undefined} />
             </div>
             <div className="mobile-only" style={{ marginTop: 12 }}><Link to="/report" className="btn primary" style={{ width: '100%' }}>{t('Is your internet off? Report it')}</Link></div>
             {span && (
-              <div className="panel" style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>
+              <div className="panel" data-replay style={{ marginTop: 12, padding: 14, display: 'grid', gap: 8 }}>
                 <div className="row" style={{ justifyContent: 'space-between' }}>
-                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : t('Now')} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${tp(inForceAt.length, '{n} order in force', '{n} orders in force')}, ${tp(map.off.size, '{n} district dark', '{n} districts dark')}` : tp(live.orders.length, '{n} order in force', '{n} orders in force')}</span></span>
+                  <span className="num" style={{ fontWeight: 600 }}>{at ? fmtDate(at) : recent ? t('Last 12 months') : t('Now')} <span className="mute" style={{ fontWeight: 400 }}>· {at ? `${tp(inForceAt.length, '{n} order in force', '{n} orders in force')}, ${tp(map.off.size, '{n} district dark', '{n} districts dark')}` : recent ? `${tp(lastYear.length, '{n} order on file', '{n} orders on file')}, ${tp(map.off.size, '{n} district dark at some point', '{n} districts dark at some point')}` : tp(live.orders.length, '{n} order in force', '{n} orders in force')}{at === null && !recent && drill.length > 0 ? ` · ${tp(drill.length, '{n} drill order, not counted', '{n} drill orders, not counted')}` : ''}</span></span>
                   <span className="row" style={{ gap: 6 }}>
-                    <button className="btn small primary" onClick={() => { if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? t('Pause') : t('Play the history')}</button>
-                    {at !== null && <button className="btn small" onClick={() => { setPlaying(false); setAt(null) }}>{t('Back to now')}</button>}
+                    <button className="btn small primary" onClick={() => { setAuto(false); setRecent(false); if (!playing && (at === null || at >= span[1] - 86_400_000)) setAt(span[0]); setPlaying(!playing) }}>{playing ? t('Pause') : t('Play the history')}</button>
+                    {(at !== null || recent) && <button className="btn small" onClick={() => { setPlaying(false); setAt(null); setAuto(false); setRecent(false); setStopped(true) }}>{t('Back to now')}</button>}
                   </span>
                 </div>
-                <input type="range" aria-label={t('Day to show')} aria-valuetext={at ? fmtDate(at) : t('today')} min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
+                <input type="range" aria-label={t('Day to show')} aria-valuetext={at ? fmtDate(at) : t('today')} min={span[0]} max={span[1]} step={86_400_000} value={at ?? span[1]} onChange={(e) => { setPlaying(false); setAuto(false); setRecent(false); setStopped(true); const v = +e.target.value; setAt(v >= span[1] - 86_400_000 ? null : v) }} />
                 <span className="hint">{t('Every order on the register, replayed from its stated start to its stated end. Orders without a published end date are shown until the next order on file for that state, at most fifteen days.')}</span>
               </div>
             )}

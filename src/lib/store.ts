@@ -129,7 +129,7 @@ function scheduleExpiry() {
   const wait = Number.isFinite(next) ? Math.min(Math.max(next - Date.now() + 1500, 1500), 180_000) : 180_000
   expiryTimer = window.setTimeout(() => {
     void refresh('live')
-    void refresh('drill')
+    drillRead()
   }, wait)
 }
 
@@ -164,7 +164,10 @@ function watch() {
       lastRead = Date.now()
       void refresh('live', !urgent)
       const drillOn = snaps.drill.orders.length > 0 || snaps.drill.reports.length > 0 || location.pathname.startsWith('/drill')
-      if (urgent || drillOn) void refresh('drill', !urgent)
+      if (urgent) void refresh('drill')
+      else if (drillOn) drillRead()
+      // the home map shows a drill while one runs: a stranger's new entity may be a drill order
+      else if (location.pathname === '/') void peekDrill()
     }, wait)
   }
   const keysNow = () => {
@@ -221,6 +224,45 @@ export function useRegister(net: Net): Snapshot {
     watch()
   }, [net])
   return s
+}
+
+/**
+ * The drill net, for a page that only needs to know which drill orders are in force (the home map):
+ * one small query for orders, without the drill's archive of records, unless the drill page has
+ * already read the whole net.
+ */
+async function peekDrill() {
+  try {
+    const o = await activeOrders('drill')
+    if (snaps.drill.loadedAt) return
+    snaps.drill = { ...snaps.drill, orders: o }
+    settlePending()
+    emit()
+    scheduleExpiry()
+  } catch {
+    /* the home map simply shows no drill */
+  }
+}
+/** Re-read the drill: all of it once the drill page has, else only its orders in force. */
+function drillRead() {
+  if (snaps.drill.loadedAt || location.pathname.startsWith('/drill')) void refresh('drill', true)
+  else void peekDrill()
+}
+let drillPeeked = false
+/** Drill orders in force now, read lightly; the full drill net is the drill page's to read. */
+export function useDrillOrders(): Order[] {
+  const s = useSyncExternalStore(
+    (f) => (subs.add(f), () => subs.delete(f)),
+    () => snaps.drill,
+  )
+  useEffect(() => {
+    if (!snaps.drill.loadedAt && !drillPeeked) {
+      drillPeeked = true
+      void peekDrill()
+    }
+    watch()
+  }, [])
+  return s.orders
 }
 
 export function useWire(): WireItem[] {
