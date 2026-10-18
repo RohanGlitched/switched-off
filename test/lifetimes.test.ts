@@ -54,3 +54,20 @@ describe('when an order lapses in law', () => {
     expect(lapseOf({ net: 'drill', emergency: true, issued, ends: issued + 10 * DRILL_DAY_MS })).toBe(issued + 60_000)
   })
 })
+
+describe('page-throughs are pinned to one block', () => {
+  it('a recent block rounded down to a 20 s step, so visitors share a cached answer', async () => {
+    const { pinBlock } = await import('../src/lib/arkiv')
+    expect(pinBlock(727_477n, false)).toBe(727_470n)
+    expect(pinBlock(727_479n, false)).toBe(727_470n)
+    expect(pinBlock(727_482n, false)).toBe(727_480n)
+  })
+  it('the newest safe block right after this browser wrote something', async () => {
+    const { pinBlock } = await import('../src/lib/arkiv')
+    expect(pinBlock(727_477n, true)).toBe(727_475n)
+  })
+  it('no pin before the block clock is known', async () => {
+    const { pinBlock } = await import('../src/lib/arkiv')
+    expect(pinBlock(0n, false)).toBeUndefined()
+  })
+})

@@ -1,0 +1,367 @@
+[
+  {
+    "id": "or-malkangiri-2025-12-09",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-09",
+    "startsAt": "2025-12-09T18:00",
+    "endsAt": "2025-12-10T12:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+    "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Continuing tension in the district; extended on the District Magistrate's request.",
+    "renewalOf": "or-malkangiri-2025-12-08",
+    "published": true,
+    "sources": [
+      {
+        "title": "Odisha Home Department notification of 9 Dec 2025 (archived by InternetShutdowns.in)",
+        "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_Extended_101225_142e5a95-11ea-4fa0-ac24-91c99d35e809._bba1b7c5-9638-4ae3-9_b1g8nX6.pdf"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1468",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1468/odisha-2025/"
+      },
+      {
+        "title": "Pragativadi: Internet suspension in Malkangiri extended by 18 hours",
+        "url": "https://pragativadi.com/internet-suspension-in-malkangiri-extended-by-18-hours/"
+      }
+    ],
+    "notes": "First extension, 18 hours, other conditions unchanged. Exempts OSWAN, NIC Net, NKN, banking, railways and government services."
+  },
+  {
+    "id": "or-malkangiri-2025-12-10",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-10",
+    "startsAt": "2025-12-10T12:00",
+    "endsAt": "2025-12-11T12:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+    "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Continuing tension after further developments in the killing case; extended on the District Magistrate's request.",
+    "renewalOf": "or-malkangiri-2025-12-09",
+    "published": true,
+    "sources": [
+      {
+        "title": "Odisha Home Department notification of 10 Dec 2025 (archived by InternetShutdowns.in)",
+        "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_Extended_111225_cca446fe-2dd9-4f4f-b04a-4aa97865c642._da2fe530-58aa-469a-a_zyBhRje.pdf"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1469",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1469/odisha-2025/"
+      },
+      {
+        "title": "Ommcom News: Internet ban extended in Malkangiri",
+        "url": "https://ommcomnews.com/odisha-news/internet-ban-extended-in-malkangiri-after-severed-head-recovery/"
+      }
+    ],
+    "notes": "Second extension, 24 hours, other conditions unchanged."
+  },
+  {
+    "id": "or-malkangiri-2025-12-11",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-11",
+    "startsAt": "2025-12-11T12:00",
+    "endsAt": "2025-12-12T00:00",
+    "issuingAuthority": "Home Department, Government of Odisha",
+    "legalBasis": null,
+    "reasonStated": "Prevent inflammatory messages and maintain public order amid continuing tension.",
+    "renewalOf": "or-malkangiri-2025-12-10",
+    "published": null,
+    "sources": [
+      {
+        "title": "InternetShutdowns.in tracker entry 1470",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1470/odisha-2025/"
+      },
+      {
+        "title": "Ommcom News: Internet ban extended in Malkangiri for another 12 hours",
+        "url": "https://ommcomnews.com/odisha-news/internet-ban-extended-in-malkangiri-for-another-12-hours-amidst-tensions/"
+      }
+    ],
+    "notes": "Third extension, 12 hours to midnight (SFLC tracker); one news report says '12 pm on December 12', which conflicts. Order text not seen."
+  },
+  {
+    "id": "or-malkangiri-2025-12-12",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-11",
+    "startsAt": "2025-12-12T00:00",
+    "endsAt": "2025-12-13T00:00",
+    "issuingAuthority": "Home Department, Government of Odisha",
+    "legalBasis": null,
+    "reasonStated": "Continuing tension in the affected village area; prevent rumours.",
+    "renewalOf": "or-malkangiri-2025-12-11",
+    "published": null,
+    "sources": [
+      {
+        "title": "InternetShutdowns.in tracker entry 1471",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1471/odisha-2025/"
+      },
+      {
+        "title": "Ommcom News: Internet restriction extended further in Malkangiri",
+        "url": "https://ommcomnews.com/odisha-news/internet-restriction-extended-further-in-malkangiri-malyabanta-mahotsav-postponed/"
+      }
+    ],
+    "notes": "Fourth extension, 24 hours. Covers mobile internet (2G-5G), dongle services and social media. Order text not seen."
+  },
+  {
+    "id": "or-malkangiri-2025-12-13",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": null,
+    "startsAt": "2025-12-13T00:00",
+    "endsAt": "2025-12-14T00:00",
+    "issuingAuthority": "Home Department, Government of Odisha",
+    "legalBasis": null,
+    "reasonStated": "Precaution to curb rumours, misinformation and mobilisation.",
+    "renewalOf": "or-malkangiri-2025-12-12",
+    "published": null,
+    "sources": [
+      {
+        "title": "InternetShutdowns.in tracker entry 1475",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1475/odisha-2025/"
+      },
+      {
+        "title": "Pragativadi: Internet shutdown extended for fifth time in Malkangiri",
+        "url": "https://pragativadi.com/internet-shutdown-extended-for-fifth-time-in-odishas-malkangiri-amid-ongoing-review/"
+      }
+    ],
+    "notes": "Fifth extension, 24 hours to midnight. Order text not seen."
+  },
+  {
+    "id": "or-malkangiri-2025-12-14",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-13",
+    "startsAt": "2025-12-14T00:00",
+    "endsAt": "2025-12-15T12:00",
+    "issuingAuthority": "Home Department, Government of Odisha",
+    "legalBasis": null,
+    "reasonStated": "Curfew and prohibitory orders lifted, but internet kept suspended to prevent rumours and maintain peace.",
+    "renewalOf": "or-malkangiri-2025-12-13",
+    "published": null,
+    "sources": [
+      {
+        "title": "InternetShutdowns.in tracker entry 1476",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1476/odisha-2025/"
+      },
+      {
+        "title": "Odisha TV: Curfew lifted but internet shutdown extended for another 36 hours",
+        "url": "https://odishatv.in/odisha/malkangiri-violence-curfew-lifted-but-internet-shutdown-extended-for-another-36-hours-10908122"
+      }
+    ],
+    "notes": "Sixth and final extension, 36 hours to noon on 15 Dec. Order text not seen."
+  },
+  {
+    "id": "rj-hanumangarh-tibbi-2025-12-09",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Hanumangarh (Tibbi area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-12-09",
+    "endsAt": "2025-12-13",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Prevent rumours around a farmers' gathering and protests against an ethanol plant in Tibbi.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Hanumangarh, 8 December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-hanumangarh-india-8-december-2025/"
+      },
+      {
+        "title": "Zee News Hindi: Internet services resume in Tibbi",
+        "url": "https://zeenews.india.com/hindi/india/rajasthan/hanumangargh/rajasthan-news-internet-services-resumes-in-tibbi-violence-in-kisan-andolan/1765630222774"
+      },
+      {
+        "title": "Assam Tribune: Internet remains suspended in Tibbi as ethanol factory protests escalate",
+        "url": "https://assamtribune.com/national/rajasthan-internet-remain-suspended-in-tibbi-as-ethanol-factory-protests-escalate-1600848"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1474",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1474/rajasthan-2025/"
+      }
+    ],
+    "notes": "Cut on the evening of 9 Dec and restored on 13 Dec after about four days. SFLC splits this into three entries (1472-1474), suggesting daily extension orders, but none was seen, so one record. Pulse: no order made public."
+  },
+  {
+    "id": "jk-kishtwar-2026-01-23",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Singhpora, Chingam and Chatroo, 6 km radius)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-01-23",
+    "endsAt": null,
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer)",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Prevent misuse of high-speed mobile data during a counter-terror operation that could disturb public order.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Outlook (PTI): Anti-terror operation intensified in Kishtwar as internet suspension extended",
+        "url": "https://www.outlookindia.com/amp/story/national/anti-terror-operation-intensified-in-kishtwar-as-internet-suspension-extended"
+      }
+    ],
+    "notes": "Reported as 'initially suspended on January 23' and later extended by a Home Department order. Start order and end not seen; unclear whether continuous until 29 Jan. Single source."
+  },
+  {
+    "id": "rj-hanumangarh-tibbi-2026-02-10",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Hanumangarh (Tibbi area)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": "2026-02-10T18:00",
+    "endsAt": "2026-02-11T18:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Expected farmers' protests against an ethanol factory, with a farmers' gathering at Talwara on 11 Feb.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "InternetShutdowns.in tracker entry 1489",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1489/rajasthan-2026/"
+      },
+      {
+        "title": "Dainik Bhaskar report archived by InternetShutdowns.in",
+        "url": "https://alpha.internetshutdowns.in/media/Tibbi_IS_110226_e9bc0e95-e244-404b-a7be-a1cdbf88810b._8b35673f-929c-4ed3-b01a-c21cb21a4cc0..pdf"
+      }
+    ],
+    "notes": "24 hours per the SFLC tracker. The archived file is a news printout reporting the fifth shutdown in about 2.5 months, with BNSS s.163 in force. Authority unconfirmed."
+  },
+  {
+    "id": "jk-kashmir-2026-03-01",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Srinagar",
+      "Budgam",
+      "Ganderbal",
+      "Anantnag",
+      "Kulgam",
+      "Pulwama",
+      "Shopian",
+      "Baramulla",
+      "Kupwara",
+      "Bandipora"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": null,
+    "startsAt": "2026-03-01T09:00",
+    "endsAt": "2026-03-04T20:00",
+    "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Apprehension that high-speed internet could disturb public order and security amid protests over a foreign leader's killing.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Kashmir Life: 2G restrictions to continue across Kashmir Valley till March 4",
+        "url": "https://kashmirlife.net/2g-restrictions-to-continue-across-kashmir-valley-till-march-4-427198/"
+      },
+      {
+        "title": "Kashmir Despatch: Prepaid internet limited to 2G across the Valley",
+        "url": "https://kashmirdespatch.com/?p=157848"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1490",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1490/jammu-and-kashmir-2026/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet throttled amid protests in Jammu and Kashmir",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-throttled-amid-protests-jammu-and-kashmir-india/"
+      }
+    ],
+    "notes": "Whole Kashmir Valley (ten districts). Prepaid mobile data throttled to 2G (max 128 kbps), a suspension of high-speed data rather than a full cut; prepaid voice/SMS also restricted, hence voice-sms-too. Directions by the IGP Kashmir Zone as authorised officer, confirmed by the Home Department. SFLC lists Srinagar only, 21:02 on 1 Mar to 20:00 on 6 Mar. Restrictions reportedly continued to 6 Mar; no extension order found."
+  },
+  {
+    "id": "jk-ramban-2026-04-13",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Ramban"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-04-13",
+    "endsAt": "2026-04-14",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Law and order concerns and rumours amid protests along the Ramban-Ramsu-Banihal axis.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2026/"
+      },
+      {
+        "title": "Deccan Chronicle: Tensions linger along J&K's Ramban-Ramsu-Banihal axis",
+        "url": "https://www.deccanchronicle.com/nation/tensions-linger-along-jks-rambanramsu-banihal-axis-after-alleged-vigilante-attack-1950378"
+      }
+    ],
+    "notes": "Uncertain: Pulse marks it unconfirmed with no official acknowledgement; Deccan Chronicle says mobile internet was temporarily suspended after protests on 13 Apr and restored on the afternoon of 14 Apr."
+  },
+  {
+    "id": "hr-faridabad-2026-05-30",
+    "state": "Haryana",
+    "stateCode": "IN-HR",
+    "districts": [
+      "Faridabad (1 km radius of a notified point in NIT Zone)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2026-05-29",
+    "startsAt": "2026-05-30T00:30",
+    "endsAt": "2026-05-30T22:00",
+    "issuingAuthority": "Additional Secretary (Home-1), Home Affairs Department, Government of Haryana",
+    "legalBasis": "Telecommunications Act, 2023, s.20 read with Rule 3 of the Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Preventive measure for a demolition drive: risk of tension, disturbance and property damage; stop misinformation and crowd mobilisation on social media.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "WebIndia123: Haryana suspends mobile internet in part of Faridabad ahead of demolition drive",
+        "url": "https://news.webindia123.com/news/Articles/India/20260530/4456271.html"
+      },
+      {
+        "title": "Kalinga TV: Mobile internet services suspended in Haryana ahead of demolition drive",
+        "url": "https://kalingatv.com/nation/mobile-internet-services-suspended-in-haryana-ahead-of-demolition-drive/"
+      }
+    ],
+    "notes": "Mobile internet (2G-5G), dongle services and bulk SMS; banking/recharge SMS and voice exempt. Area defined by coordinates 28.39448, 77.28622."
+  }
+]

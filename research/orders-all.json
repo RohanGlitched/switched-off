@@ -2749,7 +2749,7 @@
     "url": "https://kashmirlife.net/internet-suspension-in-doda-leaves-students-traders-in-crisis-405321/"
    }
   ],
-  "notes": "Protests after an MLA's detention under the PSA on 8 Sep. Covers 2G-5G and public/private Wi-Fi. Renewed daily (Home-17 to 30 of 2025, 10 to 17 Sep). MediaNama reported on 11 Sep that no order was public; the confirmations now appear on home.jk.gov.in."
+  "notes": "Protests after an MLA's detention under the PSA on 8 Sep. Covers 2G-5G and public/private Wi-Fi. Renewed daily for Doda by Home-17, 20, 23, 26, 27, 28, 29 and 30 of 2025 (10 to 17 Sep); Home-18, 21, 24 are separate Gandoh orders and Home-19, 22, 25 separate Kishtwar orders. MediaNama reported on 11 Sep that no order was public; the confirmations now appear on home.jk.gov.in."
  },
  {
   "id": "up-bareilly-2025-09-27",
@@ -2759,12 +2759,12 @@
    "Bareilly"
   ],
   "scope": "all-internet",
-  "issuedAt": null,
+  "issuedAt": "2025-09-27",
   "startsAt": "2025-09-27T00:30",
   "endsAt": "2025-09-29T00:30",
-  "issuingAuthority": null,
-  "legalBasis": null,
-  "reasonStated": "Local conflict after the 'I Love Muhammad' clashes and arrest of a cleric.",
+  "issuingAuthority": "Secretary, Home Department, Government of Uttar Pradesh",
+  "legalBasis": "Section 7, Indian Telegraph Act, 1885 read with Rule 2(1), Temporary Suspension of Telecom Services Rules, 2017 (as cited)",
+  "reasonStated": "Local conflict after clashes over a religious slogan campaign and a cleric's arrest.",
   "renewalOf": null,
   "published": true,
   "sources": [
@@ -2777,7 +2777,7 @@
     "url": "https://internetshutdowns.in/india-shutdowns/1462/uttar-pradesh-2025/"
    }
   ],
-  "notes": "Mobile internet, broadband (FTTH, ADSL, DSL, wireless) and SMS. The tracker links an order PDF, so published=true. Pulse's UTC times conflict with its local times."
+  "notes": "Mobile internet, broadband (FTTH, ADSL, DSL, wireless) and SMS. The tracker links an order PDF, so published=true. Pulse's UTC times conflict with its local times. UP Home Department Notification No. 90/2025-CX-3."
  },
  {
   "id": "la-leh-2025-09-29",
@@ -2793,7 +2793,7 @@
   "issuingAuthority": "Ministry of Home Affairs, Government of India",
   "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024",
   "reasonStated": "Public safety, public order and preventing incitement amid protests after the 24 Sep violence in Leh and an activist's arrest.",
-  "renewalOf": null,
+  "renewalOf": "la-leh-2025-09-26",
   "published": null,
   "sources": [
    {
@@ -2809,7 +2809,7 @@
     "url": "https://internetshutdowns.in/india-shutdowns/1461/ladakh-2025/"
    }
   ],
-  "notes": "2G-5G and public Wi-Fi. Issued under the Telecommunications Act, 2023 by an Under Secretary with JS (CIS) approval, citing emergent conditions. Unconfirmed reports say cuts began about 25-26 Sep and lasted past 8 Oct. The Ladakh UT Home Dept reportedly lists Leh orders dated 27 Sep, 29 Sep and 3 Oct, which I could not open. Start dates conflict: SFLC.in gives 25 Sep 12:00, Pulse 29 Sep 18:00, local media 26 Sep; this record follows the 29 Sep MHA order."
+  "notes": "2G-5G and public Wi-Fi. Issued under the Telecommunications Act, 2023 by an Under Secretary with JS (CIS) approval, citing emergent conditions. Unconfirmed reports say cuts began about 25-26 Sep and lasted past 8 Oct. The Ladakh UT Home Dept reportedly lists Leh orders dated 27 Sep, 29 Sep and 3 Oct, which I could not open. Start dates conflict: SFLC.in gives 25 Sep 12:00, Pulse 29 Sep 18:00, local media 26 Sep; this record follows the 29 Sep MHA order. Update: the earlier MHA order dated 26 Sep (listed by Ladakh on 27 Sep) is now la-leh-2025-09-26; extensions la-leh-2025-10-03 and la-leh-2025-10-07 follow."
  },
  {
   "id": "up-bareilly-2025-10-02",
@@ -3379,43 +3379,67 @@
   "scope": "unknown",
   "issuedAt": null,
   "startsAt": "2025-02-16",
-  "endsAt": "2025-02-18",
-  "issuingAuthority": "District Magistrate, Jamui",
+  "endsAt": null,
+  "issuingAuthority": null,
   "legalBasis": null,
-  "reasonStated": "Preventive measure to stop rumours and control communal unrest after a clash during a religious procession.",
+  "reasonStated": "Clash between two communities after a religious procession in the Jhajha area; stop rumours on social media.",
   "renewalOf": null,
-  "published": true,
+  "published": null,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in Bihar, 16 February 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-bihar-india-16-february-2025/"
+   },
+   {
+    "title": "The Tribune: Net suspended after Bihar procession clash",
+    "url": "https://www.tribuneindia.com/news/india/net-suspended-after-bihar-procession-clash"
+   },
+   {
+    "title": "internetshutdowns.in: Jamui, February 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1449/bihar-2025/"
+   },
+   {
+    "title": "Sabrang India: Communal tensions erupt in Jamui during religious procession",
+    "url": "https://sabrangindia.in/communal-tensions-erupt-in-bihars-jamui-alleged-stone-pelting-during-religious-procession-leads-to-violence"
    }
   ],
-  "notes": "48 hours from 16 Feb 2025. Pulse links an order copy archived by SFLC.in. Services covered not stated. Exact start time not confirmed (Pulse time labels are unreliable)."
+  "notes": "Duration conflicts. Pulse and Sabrang say 48 hours (Pulse: 16-18 Feb). SFLC.in gives 16 Feb 17:00 to 17 Feb 17:00 (24 h). The document SFLC and Pulse link is a Jamui Police press note of 17 Feb saying internet was shut immediately to stop rumours, not the order itself. Sabrang reports that the Bihar government acted on the District Magistrate's recommendation under s.5 Telegraph Act 1885 and blocked named social media platforms. That provision had been replaced by the 2024 Rules, so it is unverified. Unclear whether the whole district or only Jhajha was covered."
  },
  {
   "id": "wb-sainthia-2025-03-14",
   "state": "West Bengal",
   "stateCode": "IN-WB",
   "districts": [
-   "Birbhum (Sainthia: Hatora, Mathpalsa, Harisara, Dariyapur and Fulur gram panchayats)"
+   "Birbhum (Sainthia municipality and Hatora, Mathpalsa, Harisara, Fariyapur and Fulur gram panchayats)"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2025-03-14",
   "startsAt": "2025-03-14",
   "endsAt": "2025-03-17T08:00",
   "issuingAuthority": "Principal Secretary, Home and Hill Affairs Department, Government of West Bengal",
-  "legalBasis": "Telecommunications Act, 2023",
-  "reasonStated": "Maintain public order and prevent incitement to offences after local violence.",
+  "legalBasis": "Telecommunications Act, 2023 (as reported by Pulse; order text not seen)",
+  "reasonStated": "Clash between two groups during Holi in Sainthia; maintain public order and stop rumour-mongering and incitement.",
   "renewalOf": null,
   "published": null,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in West Bengal, 14 March 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-west-bengal-india-14-march-2025/"
+   },
+   {
+    "title": "Scroll: Internet services suspended in Birbhum after clashes during Holi",
+    "url": "https://scroll.in/latest/1080321/west-bengal-internet-services-suspended-in-birbhum-after-clashes-during-holi-celebrations"
+   },
+   {
+    "title": "MediaNama: Internet shutdown in parts of West Bengal triggers political row",
+    "url": "https://www.medianama.com/2025/03/223-internet-shutdown-in-parts-of-west-bengal-triggers-political-row/"
+   },
+   {
+    "title": "internetshutdowns.in: Birbhum, March 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1428/west-bengal-2025/"
    }
   ],
-  "notes": "Mobile internet and voice-over-internet services. Reported as a four-day order ending 08:00 on 17 Mar. Pulse quotes the order text."
+  "notes": "Mobile internet and VoIP. Voice calls and SMS were explicitly not restricted. Pulse says mobile internet; Scroll and MediaNama say 'internet and VoIP'. The 08:00 end time is from Live Mint via Pulse and SFLC.in. SFLC.in's 08:00 start is doubtful because the clash was on the evening of 14 Mar, so only the start date is given. The order was quoted only in part, in a politician's social media post."
  },
  {
   "id": "jk-doda-2025-04-05",
@@ -3427,19 +3451,31 @@
   "scope": "mobile-data",
   "issuedAt": "2025-04-04",
   "startsAt": "2025-04-05T02:00",
-  "endsAt": "2025-04-05T23:59",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Protests triggered by a social media post.",
+  "endsAt": "2025-04-05T23:53",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data was likely to be misused by anti-national elements, risking public order and unrest. Reported trigger: protests over a social media post.",
   "renewalOf": null,
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-03(TSTS) of 2025 dated 07.04.2025",
+    "url": "https://home.jk.gov.in/pdf/03(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 5 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-5-april-2025/"
+   },
+   {
+    "title": "Hindustan Times: Social media post triggers protests, internet shut in Bhaderwah",
+    "url": "https://www.hindustantimes.com/india-news/social-media-post-triggers-protests-internet-shut-down-in-j-ks-bhaderwah-101743852379486.html"
+   },
+   {
+    "title": "internetshutdowns.in: Doda, 5 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1430/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-03(TSTS) of 2025, dated 4 Apr (as listed by Pulse). Order copies archived by SFLC.in."
+  "notes": "3G/4G/5G and public Wi-Fi suspended, 2G limited to under 100 kbps. IGP order No. 451(TSTS) of 2025 dated 4 Apr, confirmed by Home-03(TSTS) of 2025 (dated 7 Apr; the brief and Pulse say 4 Apr, but that is the IGP order's date). SFLC.in gives a 14:00 start; the order says 02:00."
  },
  {
   "id": "jk-bhaderwah-2025-04-06",
@@ -3450,20 +3486,28 @@
   ],
   "scope": "mobile-data",
   "issuedAt": "2025-04-05",
-  "startsAt": null,
+  "startsAt": "2025-04-06T00:01",
   "endsAt": "2025-04-06T20:00",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Continued tension after protests over a social media post.",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
   "renewalOf": "jk-doda-2025-04-05",
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-04(TSTS) of 2025 dated 07.04.2025",
+    "url": "https://home.jk.gov.in/pdf/04(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 5 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-5-april-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Doda, 6 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1436/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-04(TSTS) of 2025, dated 5 Apr; extended the suspension for Bhaderwah town only until 20:00 on 6 Apr. Start presumably on expiry of the previous order; not confirmed."
+  "notes": "Full mobile data cut (2G/3G/4G/5G and public Wi-Fi), narrowed to Bhaderwah town only. IGP order No. 462(TSTS) of 2025 dated 5 Apr, confirmed by Home-04(TSTS) of 2025 (7 Apr)."
  },
  {
   "id": "jk-kishtwar-2025-04-13",
@@ -3476,18 +3520,26 @@
   "issuedAt": "2025-04-13",
   "startsAt": "2025-04-13T16:00",
   "endsAt": "2025-04-14T23:59",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data was likely to be misused by anti-national elements, risking public order and unrest.",
   "renewalOf": null,
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-05(TSTS) of 2025 dated 15.04.2025",
+    "url": "https://home.jk.gov.in/pdf/05(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Kishtwar, 13 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1437/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-05(TSTS) of 2025. Covers 2G/3G/4G/5G mobile data and public Wi-Fi."
+  "notes": "2G/3G/4G/5G and public Wi-Fi on listed Airtel and Jio tower IDs in the Chatroo area. IGP order No. 484(TSTS) of 2025, confirmed by Home-05(TSTS) of 2025 (15 Apr). Pulse found no verified media report on the trigger."
  },
  {
   "id": "jk-kishtwar-2025-04-14",
@@ -3498,20 +3550,28 @@
   ],
   "scope": "mobile-data",
   "issuedAt": "2025-04-14",
-  "startsAt": "2025-04-15T00:00",
+  "startsAt": "2025-04-14T14:00",
   "endsAt": "2025-04-15T23:59",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data was likely to be misused by anti-national elements, risking public order and unrest.",
   "renewalOf": "jk-kishtwar-2025-04-13",
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-06(TSTS) of 2025 dated 15.04.2025",
+    "url": "https://home.jk.gov.in/pdf/06(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Kishtwar, 14 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1438/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-06(TSTS) of 2025 (extension). Start taken as expiry of the previous order."
+  "notes": "IGP order No. 493(TSTS) of 2025, confirmed by Home-06(TSTS) of 2025 (15 Apr). It overlaps and extends the 13 Apr order and lists more tower IDs."
  },
  {
   "id": "jk-kishtwar-2025-04-15",
@@ -3522,44 +3582,60 @@
   ],
   "scope": "mobile-data",
   "issuedAt": "2025-04-15",
-  "startsAt": "2025-04-16T00:00",
+  "startsAt": "2025-04-16T00:01",
   "endsAt": "2025-04-17T23:59",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Apprehended misuse of mobile data by anti-national elements that could deteriorate public order.",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data was likely to be misused by anti-national elements, risking public order and unrest.",
   "renewalOf": "jk-kishtwar-2025-04-14",
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-07(TSTS) of 2025 dated 16.04.2025",
+    "url": "https://home.jk.gov.in/pdf/07(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Kishtwar, 16 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1439/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-07(TSTS) of 2025 (extension). Start taken as expiry of the previous order."
+  "notes": "IGP order No. 500(TSTS) of 2025, confirmed by Home-07(TSTS) of 2025 (16 Apr). Lists more tower IDs again."
  },
  {
   "id": "jk-doda-2025-04-24",
   "state": "Jammu and Kashmir",
   "stateCode": "IN-JK",
   "districts": [
-   "Doda"
+   "Doda (Doda and Bhaderwah towns)"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
-  "startsAt": "2025-04-24",
-  "endsAt": "2025-04-25",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "Maintenance of public order after a militant attack elsewhere in the territory.",
+  "issuedAt": "2025-04-25",
+  "startsAt": "2025-04-24T23:15",
+  "endsAt": "2025-04-25T20:00",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
   "renewalOf": null,
   "published": true,
   "sources": [
    {
+    "title": "Govt Order No. Home-10(TSTS) of 2025 dated 26.04.2025",
+    "url": "https://home.jk.gov.in/pdf/10(TSTS)of2025.pdf"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 24 April 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-24-april-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Doda, 24 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1441/jammu-and-kashmir-2025/"
    }
   ],
-  "notes": "Government Order No. Home-10(TSTS) of 2025; Pulse hosts the order PDF and says orders were issued on 26 Apr (possibly the publication date). Exact times unclear."
+  "notes": "3G/4G/5G and public Wi-Fi suspended, 2G limited to under 100 kbps. IGP order No. 559(TSTS) of 2025 is dated 25 Apr, though the window starts at 23:15 on 24 Apr. Confirmed by Home-10(TSTS) of 2025 (26 Apr). SFLC.in gives a 23:45 start; the order says 23:15. Follows the 23 Apr Doda order after a gap of almost a day."
  },
  {
   "id": "pb-faridkot-2025-05-08",
@@ -3569,69 +3645,101 @@
    "Faridkot"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2025-05-08",
   "startsAt": "2025-05-08T22:00",
   "endsAt": "2025-05-09",
   "issuingAuthority": "Deputy Commissioner, Faridkot",
   "legalBasis": null,
-  "reasonStated": "Prevent the spread of rumours on social media amid India-Pakistan military tension.",
+  "reasonStated": "Stop rumours spreading on social media amid India-Pakistan military tensions.",
   "renewalOf": null,
   "published": false,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in Punjab, 8 May 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-punjab-india-8-may-2025/"
+   },
+   {
+    "title": "Jagbani: Internet shut down in Faridkot",
+    "url": "https://jagbani.punjabkesari.in/punjab/news/internet-shut-down-in-faridkot-1563779"
+   },
+   {
+    "title": "Dainik Bhaskar English: Internet services suspended in Faridkot since last night",
+    "url": "https://www.bhaskarenglish.in/local/punjab/news/internet-services-suspended-in-faridkot-since-last-night-134993147.html"
+   },
+   {
+    "title": "internetshutdowns.in: Faridkot, May 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1451/punjab-2025/"
    }
   ],
-  "notes": "Pulse: no official order made public. End reported as 9 May; exact time unconfirmed."
+  "notes": "Pulse, Jagbani and SFLC.in put the start at about 22:00; Dainik Bhaskar says around midnight. Restored on 9 May; the time is unclear. Pulse says 08:00 UTC (13:30 IST), SFLC.in says 18:00, and Jagbani expected the afternoon. Pulse says no order was made public. Context is the Operation Sindoor period. No other district orders from May 2025 were found, apart from the J&K ones."
  },
  {
   "id": "or-bhadrak-2025-06-12",
   "state": "Odisha",
-  "stateCode": "IN-OR",
+  "stateCode": "IN-OD",
   "districts": [
-   "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+   "Bhadrak (Bhadrak Municipality, Bhadrak, Tihidi and Dhamnagar blocks, Dhamnagar NAC)"
   ],
   "scope": "unknown",
   "issuedAt": null,
-  "startsAt": "2025-06-12",
-  "endsAt": null,
+  "startsAt": "2025-06-12T06:00",
+  "endsAt": "2025-06-13T06:00",
   "issuingAuthority": null,
   "legalBasis": null,
-  "reasonStated": "Local unrest after a group clash.",
+  "reasonStated": "Tension after a man died of injuries from a clash over cattle smuggling; maintain law and order.",
   "renewalOf": null,
   "published": null,
   "sources": [
    {
+    "title": "The Week (PTI): Tension in Bhadrak after man's death in clash, internet suspended",
+    "url": "https://www.theweek.in/wire-updates/national/2025/06/13/cal39-od-clash-2ndld-tension.html"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+   },
+   {
+    "title": "internetshutdowns.in: Bhadrak, June 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1446/odisha-2025/"
    }
   ],
-  "notes": "24-hour order, then a 12-hour extension ending 18:00 on 13 Jun. Start date inferred from that (36 hours before 18:00 on 13 Jun); exact start not confirmed."
+  "notes": "24 hours from 06:00 Thursday 12 Jun (PTI). Pulse gives 11 Jun 22:00 UTC (12 Jun 03:30 IST). SFLC.in gives 11 Jun 06:00 to 12 Jun 06:00, which looks a day early. PTI says it was announced by the Superintendent of Police, Bhadrak. Other reports say the Odisha government ordered it, so the issuer is left null. The death followed a 30 May clash in the Tihidi police station area."
  },
  {
   "id": "or-bhadrak-2025-06-13",
   "state": "Odisha",
-  "stateCode": "IN-OR",
+  "stateCode": "IN-OD",
   "districts": [
-   "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+   "Bhadrak (Bhadrak Municipality, Bhadrak, Tihidi and Dhamnagar blocks, Dhamnagar NAC)"
   ],
   "scope": "unknown",
-  "issuedAt": null,
-  "startsAt": null,
+  "issuedAt": "2025-06-13",
+  "startsAt": "2025-06-13T06:00",
   "endsAt": "2025-06-13T18:00",
   "issuingAuthority": null,
   "legalBasis": null,
-  "reasonStated": "Continuing local unrest after a group clash.",
+  "reasonStated": "Prevent misinformation and keep the peace after the clash over cattle smuggling.",
   "renewalOf": "or-bhadrak-2025-06-12",
   "published": null,
   "sources": [
    {
-    "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
-    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+    "title": "Ommcom News: Internet shutdown extended in Bhadrak for 12 hours",
+    "url": "https://ommcomnews.com/odisha-news/internet-shutdown-extended-in-bhadrak-for-12-hours-amid-communal-tensions/"
+   },
+   {
+    "title": "ETV Bharat: Internet suspension in Bhadrak extended on Friday",
+    "url": "https://www.etvbharat.com/en/!state/clash-in-odisha-internet-suspension-in-bhadrak-extended-on-friday-after-the-death-of-man-enn25061301759"
+   },
+   {
+    "title": "The Week (PTI): Internet suspension in Bhadrak extended till 6 pm",
+    "url": "https://www.theweek.in/wire-updates/national/2025/06/13/cal4-od-tension-internet.amp.html"
+   },
+   {
+    "title": "internetshutdowns.in: Bhadrak extension, June 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1447/odisha-2025/"
    }
   ],
-  "notes": "12-hour extension ending 18:00 on 13 Jun."
+  "notes": "12-hour extension to 18:00 on Friday 13 Jun. ETV and PTI attribute it to the Odisha government; the Collector confirmed it to PTI. Ommcom attributes the announcement to the SP's office. SFLC.in dates it 12 Jun 06:00-18:00, a day early."
  },
  {
   "id": "hr-bhiwani-charkhi-dadri-2025-08-19",
@@ -3642,46 +3750,61 @@
    "Charkhi Dadri"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2025-08-19",
   "startsAt": "2025-08-19T11:00",
   "endsAt": "2025-08-21T11:00",
-  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Haryana",
-  "legalBasis": "Rule 3, Telecommunications (Temporary Suspension of Services) Rules, 2024, under s.20 of the Telecommunications Act, 2023",
+  "issuingAuthority": "Additional Chief Secretary (Home), Department of Home Affairs, Government of Haryana",
+  "legalBasis": "Section 20 Telecommunications Act, 2023 read with Rule 3, Telecommunications (Temporary Suspension of Services) Rules, 2024",
   "reasonStated": "Risk of tension, protests, damage to property and disturbance of peace, and of inflammatory content and fake news spreading, after a teacher's death.",
   "renewalOf": null,
-  "published": null,
+  "published": true,
   "sources": [
+   {
+    "title": "Haryana Home Department order No. 2/1/2025-III(C) dated 19.08.2025 (via SFLC.in)",
+    "url": "https://internetshutdowns.in/media/Haryana_IST_05cc4205-7962-4165-a5a4-ec807b900959._3a30c8af-75e4-4696-96d7-a29cddb9da2d..pdf"
+   },
+   {
+    "title": "SFLC.in tracker entry 1454: Haryana 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1454/haryana-2025/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Haryana, August 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-august-2025/"
    }
   ],
-  "notes": "Mobile internet (2G to 5G) and SMS services suspended; voice calls not reported as affected."
+  "notes": "Mobile internet (2G-5G/CDMA/GPRS), bulk SMS (banking and recharge exempt) and dongle services; voice, individual SMS and broadband/leased lines exempt. Issued on requests from the CID and the Deputy Commissioners."
  },
  {
   "id": "hr-bhiwani-charkhi-dadri-2025-08-21",
   "state": "Haryana",
   "stateCode": "IN-HR",
   "districts": [
-   "Bhiwani",
-   "Charkhi Dadri"
+   "Bhiwani"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2025-08-21",
   "startsAt": "2025-08-21T11:00",
-  "endsAt": "2025-08-22",
-  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Haryana",
+  "endsAt": "2025-08-22T11:00",
+  "issuingAuthority": "Additional Chief Secretary (Home), Government of Haryana",
   "legalBasis": null,
   "reasonStated": "Continued risk of tension, protests and disturbance of peace.",
   "renewalOf": "hr-bhiwani-charkhi-dadri-2025-08-19",
   "published": null,
   "sources": [
    {
+    "title": "Careers360: Mobile internet suspension extended by a day in Bhiwani",
+    "url": "https://news.careers360.com/haryana-teacher-cremated-death-mobile-internet-suspension-extended-day-in-bhiwani-outrage/amp"
+   },
+   {
+    "title": "SFLC.in tracker entry 1455: Haryana 2025 (Bhiwani)",
+    "url": "https://internetshutdowns.in/india-shutdowns/1455/haryana-2025/"
+   },
+   {
     "title": "Internet Society Pulse: Internet suspended in Haryana, August 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-august-2025/"
    }
   ],
-  "notes": "Reported 24-hour extension; end time on 22 Aug not confirmed."
+  "notes": "24-hour extension (mobile internet, bulk SMS, dongles; voice exempt). Charkhi Dadri dropped per Careers360 and SFLC; one local outlet reported both districts. End computed as 24h from 11:00. Id kept from the earlier two-district record."
  },
  {
   "id": "as-baksa-2025-10-15",
@@ -3691,21 +3814,29 @@
    "Baksa"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2025-10-15",
   "startsAt": "2025-10-15",
   "endsAt": "2025-10-17",
   "issuingAuthority": "Additional Chief Secretary, Home and Political Department, Government of Assam",
-  "legalBasis": null,
+  "legalBasis": "Section 5(2) Indian Telegraph Act, 1885 read with Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017 (as printed)",
   "reasonStated": "Apprehended public unrest during the transfer of prisoners in a high-profile death case.",
   "renewalOf": null,
-  "published": null,
+  "published": true,
   "sources": [
+   {
+    "title": "Assam Home and Political Department Notification No. 551356/91 dated 15.10.2025 (via SFLC.in)",
+    "url": "https://internetshutdowns.in/media/Assam_IST_b54f51a6-b417-4f6a-917e-f469876c4ba5..pdf"
+   },
+   {
+    "title": "EastMojo: Internet shutdown imposed in Baksa following law and order situation",
+    "url": "https://eastmojo.com/news/2025/10/15/assam-internet-shutdown-imposed-in-baksa-following-law-order-situation/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Assam, October 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-assam-india-october-2025/"
    }
   ],
-  "notes": "Whole district. Order had no stated end; a restoration notification on 17 Oct said there was no further apprehension of unrest. Voice, fixed telephone and broadband unaffected."
+  "notes": "Mobile internet/data across the district, with immediate effect until further orders; voice and fixed broadband exempt. Restoration notification on 17 Oct. Start time conflicts (SFLC 18:00). The Telegraph Act citation is as printed although the 2024 Rules applied."
  },
  {
   "id": "tr-kamalpur-2025-10-23",
@@ -3715,52 +3846,68 @@
    "Dhalai (Kamalpur subdivision)"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
-  "startsAt": "2025-10-23",
-  "endsAt": null,
-  "issuingAuthority": "District Magistrate, Dhalai",
+  "issuedAt": "2025-10-23",
+  "startsAt": "2025-10-23T18:00",
+  "endsAt": "2025-10-24T18:00",
+  "issuingAuthority": null,
   "legalBasis": null,
   "reasonStated": "Curb rumours and mobilisation through social media after clashes during a strike.",
   "renewalOf": null,
-  "published": false,
+  "published": null,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in Tripura, October 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-tripura-india-october-2025/"
+   },
+   {
+    "title": "NE Now: Violence erupts in Tripura over strike, Section 163 imposed, internet suspended",
+    "url": "https://nenow.in/north-east-news/tripura/violence-erupts-in-tripura-over-strike-section-163-imposed-internet-suspended.html"
+   },
+   {
+    "title": "SFLC.in tracker entry 1466: Tripura 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1466/tripura-2025/"
    }
   ],
-  "notes": "24 hours from the evening of 23 Oct, alongside Section 163 prohibitory orders. Pulse: no official order made public."
+  "notes": "24 hours; times from SFLC. Reports say only 'authorities' suspended mobile internet; the District Magistrate issued the separate BNSS s.163 order, so the issuing authority is left null. Pulse: no order made public."
  },
  {
   "id": "or-malkangiri-2025-12-08",
   "state": "Odisha",
-  "stateCode": "IN-OR",
+  "stateCode": "IN-OD",
   "districts": [
    "Malkangiri"
   ],
   "scope": "all-internet",
-  "issuedAt": null,
+  "issuedAt": "2025-12-08",
   "startsAt": "2025-12-08T18:00",
   "endsAt": "2025-12-09T18:00",
   "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
-  "legalBasis": "Section 20, Telecommunications Act, 2023",
-  "reasonStated": "Prevent the spread of inflammatory and motivated messages amid local unrest.",
+  "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Law and order situation after a clash between two villages following a killing; stop false, provocative and inflammatory messages on social media.",
   "renewalOf": null,
-  "published": null,
+  "published": true,
   "sources": [
+   {
+    "title": "Odisha Home Department notification of 8 Dec 2025 (archived by InternetShutdowns.in)",
+    "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_ODI_081225_d1dd9e16-4944-4a4b-bb71-b2c620efe0ae._68926405-e3ae-4d04-bd48-e_tBKbDt4.pdf"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1467",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1467/odisha-2025/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Odisha, December 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-december-2025/"
    }
   ],
-  "notes": "Covers social media, mobile data, ISP internet and broadband dial-up. Pulse says it was extended six times until 12:00 on 15 Dec; the first extension (to 12:00 on 10 Dec) covered social media access. Extensions not yet entered as separate orders."
+  "notes": "Covers social media platforms, mobile internet/data, ISP internet, broadband dial-up and any other transmission mode; telecom kept for listed essential offices. Issued on the District Magistrate's request. Followed by six extensions (6 days 18 hours in total)."
  },
  {
   "id": "rj-hanumangarh-2025-12-16",
   "state": "Rajasthan",
   "stateCode": "IN-RJ",
   "districts": [
-   "Hanumangarh (district headquarters)"
+   "Hanumangarh"
   ],
   "scope": "mobile-data",
   "issuedAt": null,
@@ -3768,16 +3915,24 @@
   "endsAt": "2025-12-17T12:00",
   "issuingAuthority": null,
   "legalBasis": null,
-  "reasonStated": "Prevent rumours ahead of a farmers' gathering against an ethanol plant on 17 December.",
+  "reasonStated": "Precaution to prevent rumours ahead of a farmers' gathering on 17 Dec at the district headquarters grain market against an ethanol plant.",
   "renewalOf": null,
   "published": false,
   "sources": [
    {
-    "title": "Internet Society Pulse: Internet suspended in Rajasthan, Hanumangarh, December 2025",
+    "title": "Internet Society Pulse: Internet suspended in Hanumangarh, December 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-hanumangarh-india-december-2025/"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1477",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1477/rajasthan-2025/"
+   },
+   {
+    "title": "IANS report archived by InternetShutdowns.in",
+    "url": "https://alpha.internetshutdowns.in/media/Tibbi_IS_161225_5e91e837-62bc-4f26-b9e2-ad8c32e2b831._353cbe24-ac52-420c-95b6-d6c41fad136a..pdf"
    }
   ],
-  "notes": "25 hours from 11:00 on 16 Dec; end computed. Pulse: no official order made public."
+  "notes": "25 hours. IANS says the whole district, ordered by the Divisional Commissioner (probably Bikaner division, unconfirmed); Pulse says district headquarters."
  },
  {
   "id": "as-karbi-anglong-2025-12-23",
@@ -3792,17 +3947,25 @@
   "startsAt": "2025-12-23",
   "endsAt": "2025-12-28T08:00",
   "issuingAuthority": "Commissioner and Secretary, Home and Political Department, Government of Assam",
-  "legalBasis": "Indian Telegraph Act and related rules (as reported)",
-  "reasonStated": "Prevent rumours, inflammatory messages and misinformation on social media that could aggravate local unrest.",
+  "legalBasis": "Indian Telegraph Act, 1885, s.5(2) read with Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017",
+  "reasonStated": "Serious law and order situation in both districts; prevent inflammatory messages and rumours on social media and the internet.",
   "renewalOf": null,
-  "published": null,
+  "published": true,
   "sources": [
+   {
+    "title": "Government of Assam notification of 23 Dec 2025 (archived by InternetShutdowns.in)",
+    "url": "https://alpha.internetshutdowns.in/media/IS_Assam_231225_e776f7fb-8939-4c17-a9df-b824b9b421f3._ab94f796-1ada-49a9-8e4a-3c9044a4f3ab..pdf"
+   },
+   {
+    "title": "News Live: Mobile internet in Karbi Anglong, suspended since 23 Dec, restored",
+    "url": "https://newslivetv.com/assam-mobile-internet-services-suspended-in-karbi-anglong-since-dec-23-restored/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Assam, December 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-assam-india-december-2025/"
    }
   ],
-  "notes": "No set end in the order; restoration reported from 08:00 on 28 Dec. Voice and fixed broadband continued. The Telegraph Act citation may be misreported (replaced by the Telecommunications Act, 2023)."
+  "notes": "Mobile data on all providers, with immediate effect until further orders; voice and fixed broadband exempt. Signed about 15:03 on 23 Dec; SFLC gives 20:00 as the start. A restoration order lifted it at 08:00 on 28 Dec. Cites the 1885 Act and 2017 Rules although these had been replaced. Linked to violence over an eviction/land dispute."
  },
  {
   "id": "rj-chomu-2025-12-26",
@@ -3812,21 +3975,29 @@
    "Jaipur (Chomu town)"
   ],
   "scope": "all-internet",
-  "issuedAt": null,
-  "startsAt": "2025-12-26",
-  "endsAt": null,
+  "issuedAt": "2025-12-26",
+  "startsAt": "2025-12-26T07:00",
+  "endsAt": "2025-12-27T07:00",
   "issuingAuthority": "Divisional Commissioner, Jaipur",
   "legalBasis": null,
-  "reasonStated": "Prevent rumours and worsening of the situation after local unrest.",
+  "reasonStated": "Prevent rumours after stone-pelting on police during removal of railings near a religious place.",
   "renewalOf": null,
   "published": false,
   "sources": [
+   {
+    "title": "Times Now Hindi: Chomu clash, internet shut down",
+    "url": "https://www.timesnowhindi.com/cities/jaipur-news-chomu-clash-internet-shutdown-article-153350009"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1479",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1479/rajasthan-2025/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
    }
   ],
-  "notes": "24 hours, on the Commissioner of Police's request. Mobile and broadband. Exact start time unconfirmed."
+  "notes": "24 hours, on the Police Commissioner's letter. Scope from Pulse (mobile and broadband); some reports mention only social media."
  },
  {
   "id": "rj-chomu-2025-12-27",
@@ -3836,21 +4007,29 @@
    "Jaipur (Chomu town)"
   ],
   "scope": "all-internet",
-  "issuedAt": null,
-  "startsAt": "2025-12-27",
+  "issuedAt": "2025-12-27",
+  "startsAt": "2025-12-27T07:00",
   "endsAt": "2025-12-28T07:00",
   "issuingAuthority": "Divisional Commissioner, Jaipur",
   "legalBasis": null,
-  "reasonStated": "Continued risk of rumours after local unrest.",
+  "reasonStated": "Prevent spread of rumours and maintain law and order.",
   "renewalOf": "rj-chomu-2025-12-26",
   "published": false,
   "sources": [
+   {
+    "title": "Yes Punjab: 110 arrested for Chomu violence, internet shutdown extended",
+    "url": "https://yespunjab.com/rajasthan-110-arrested-for-chomu-violence-internet-shutdown-extended/"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1480",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1480/rajasthan-2025/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
    }
   ],
-  "notes": "Extension until 07:00 on 28 Dec."
+  "notes": "24-hour extension on a Police Commissioner report."
  },
  {
   "id": "tr-unakoti-2026-01-10",
@@ -3860,69 +4039,93 @@
    "Unakoti"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
-  "startsAt": "2026-01-10",
-  "endsAt": null,
+  "issuedAt": "2026-01-10",
+  "startsAt": "2026-01-10T18:00",
+  "endsAt": "2026-01-12T18:00",
   "issuingAuthority": "District Magistrate, Unakoti",
   "legalBasis": null,
-  "reasonStated": "Precaution after communal clashes in Kumarghat subdivision.",
+  "reasonStated": "Precaution against rumours and mobilisation after communal clashes and vandalism in Kumarghat subdivision.",
   "renewalOf": null,
   "published": false,
   "sources": [
+   {
+    "title": "EastMojo: Internet suspended in Tripura's Fatikroy over communal clash",
+    "url": "https://eastmojo.com/news/2026/01/11/internet-suspended-in-tripuras-fatikroy-over-communal-clash/"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1483",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1483/tripura-2026/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Tripura, January 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-tipura-india-january-2026/"
    }
   ],
-  "notes": "48 hours. Pulse: no official order made public; Pulse records the outage until 13 Jan."
+  "notes": "48 hours across the district; times from SFLC (Pulse gives 15:30 on 10 Jan to the evening of 13 Jan). No extension found. Pulse: no order made public."
  },
  {
   "id": "or-sundargarh-2026-01-15",
   "state": "Odisha",
-  "stateCode": "IN-OR",
+  "stateCode": "IN-OD",
   "districts": [
    "Sundargarh (Sundargarh town)"
   ],
   "scope": "unknown",
-  "issuedAt": null,
+  "issuedAt": "2026-01-15",
   "startsAt": "2026-01-15T18:00",
   "endsAt": "2026-01-16T18:00",
   "issuingAuthority": "Collector, Sundargarh",
   "legalBasis": null,
-  "reasonStated": "Local unrest after a group clash.",
+  "reasonStated": "Curb misinformation and inflammatory social media messages after a violent group clash in the town.",
   "renewalOf": null,
   "published": false,
   "sources": [
+   {
+    "title": "OdishaBytes: Internet services suspended, Section 163 clamped in Sundargarh after group clash",
+    "url": "https://odishabytes.com/internet-services-suspended-section-163-clamped-in-odishas-sundargarh-after-group-clash/"
+   },
+   {
+    "title": "Ommcom News: Internet restored, Section 163 lifted in Sundargarh town",
+    "url": "https://ommcomnews.com/odisha-news/internet-restored-section-163-lifted-in-sundargarh-town-after-peace-committee-meet/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Odisha, January 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-january-2026/"
    }
   ],
-  "notes": "24 hours from 18:00; restored on 16 Jan after a law-and-order review (possibly before the computed end). Services covered not stated."
+  "notes": "24 hours from 18:00; restored on 16 Jan (exact time not reported). Attributed to the Collector's office; an unconfirmed report says the Home Department issued it covering social media platforms."
  },
  {
   "id": "jk-kishtwar-2026-01-29",
   "state": "Jammu and Kashmir",
   "stateCode": "IN-JK",
   "districts": [
-   "Kishtwar (Singhpora, Chingam and Chatroo areas)"
+   "Kishtwar (Singhpora, Chingam and Chatroo, 6 km radius)"
   ],
   "scope": "mobile-data",
   "issuedAt": null,
-  "startsAt": "2026-01-29",
-  "endsAt": "2026-01-30",
-  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
-  "legalBasis": null,
-  "reasonStated": "In the interest of the sovereignty and integrity of India, amid local unrest.",
-  "renewalOf": null,
+  "startsAt": "2026-01-29T00:01",
+  "endsAt": "2026-01-30T23:59",
+  "issuingAuthority": "Principal Secretary, Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Prevent misuse of high-speed mobile data by anti-national elements during a counter-terror operation; risk to public order.",
+  "renewalOf": "jk-kishtwar-2026-01-23",
   "published": true,
   "sources": [
+   {
+    "title": "Kashmir Life: Mobile internet suspended in parts of Kishtwar",
+    "url": "https://kashmirlife.net/mobile-internet-suspended-in-parts-of-kishtwar-422893/"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1486",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1486/jammu-and-kashmir-2026/"
+   },
    {
     "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, January 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-january-2026/"
    }
   ],
-  "notes": "Order copy published by a news agency. Times not confirmed."
+  "notes": "2G-5G mobile data, on inputs from the IGP Jammu Zone. A news agency posted the order image. Renewal link to the 23 Jan suspension is as reported, not confirmed from order text."
  },
  {
   "id": "jk-doda-2026-07-17",
@@ -3937,40 +4140,64 @@
   "endsAt": "2026-07-21",
   "issuingAuthority": null,
   "legalBasis": null,
-  "reasonStated": "Protests over a fatal incident.",
+  "reasonStated": "Precaution to maintain law and order during protests after a civilian was killed in a firing incident during a police operation.",
   "renewalOf": null,
   "published": false,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in Doda, Jammu and Kashmir, 17 July 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-doda-jammu-and-kashmir-india-17-july-2026/"
+   },
+   {
+    "title": "Kashmir Life: Internet services suspended in Jammu and Kashmir district over security concerns",
+    "url": "https://kashmirlife.net/internet-services-suspended-in-jammu-kashmir-district-over-security-concerns-443465/"
+   },
+   {
+    "title": "ETV Bharat: Broadband and landline suspended in Doda as protests continue over a civilian death",
+    "url": "https://www.etvbharat.com/en/bharat/broadband-landline-services-suspended-in-j-and-ks-doda-as-protests-continue-over-civilian-death-enn26071803644"
+   },
+   {
+    "title": "Kashmir Life: 5G mobile internet restored across Doda",
+    "url": "https://kashmirlife.net/5g-mobile-internet-services-restored-across-doda-444285/"
    }
   ],
-  "notes": "Landline, mobile and broadband suspended across the district; services resumed on 21 Jul. No official order published. Issuing authority and any daily renewals unknown."
+  "notes": "Whole district, 'until further orders'. Mobile internet cut 17 Jul; broadband and landline cut 18 Jul, possibly under a separate order (scope reflects the landline cut). 2G partly restored first; full mobile service back on the night of 21 Jul. No published J&K Home Department order or daily extensions found."
  },
  {
   "id": "dl-central-2026-07-20",
   "state": "Delhi",
   "stateCode": "IN-DL",
   "districts": [
-   "New Delhi (parts of Central Delhi near Jantar Mantar and Parliament)"
+   "New Delhi (parts of Central Delhi around Jantar Mantar and Parliament)"
   ],
   "scope": "mobile-data",
-  "issuedAt": null,
+  "issuedAt": "2026-07-20",
   "startsAt": "2026-07-20",
   "endsAt": "2026-07-20",
-  "issuingAuthority": null,
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
   "legalBasis": null,
-  "reasonStated": "Not stated; imposed during a youth protest march to Parliament.",
+  "reasonStated": "Precaution during a youth march to Parliament over exam paper leaks on the first day of the Monsoon Session.",
   "renewalOf": null,
   "published": false,
   "sources": [
    {
     "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 20 July 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-20-july-2026/"
+   },
+   {
+    "title": "IFF: Condemns the internet shutdown in parts of Central Delhi; no suspension order made public",
+    "url": "https://internetfreedom.in/iff-condemns-the-internet-shutdown-in-parts-of-central-delhi-no-suspension-order-has-been-made-public/"
+   },
+   {
+    "title": "The Wire: Telecom companies confirm Delhi internet shutdown order, government yet to publish it",
+    "url": "https://m.thewire.in/article/government/telecom-companies-confirm-delhi-internet-shutdown-order-government-yet-to-publish-it/amp"
+   },
+   {
+    "title": "Daily Pioneer: Plea against internet shutdown around Jantar Mantar withdrawn from Delhi HC",
+    "url": "https://www.dailypioneer.com/news/plea-against-internet-shutdown-around-jantar-mantar-withdrawn-from-delhi-hc"
    }
   ],
-  "notes": "Directions to Airtel, Jio and Vi; reportedly confirmed by Delhi Police. No order made public (IFF statement). Pulse lists about eight hours; its attribution of the order is doubtful, so authority left null."
+  "notes": "Times disputed: Pulse gives 07:30-15:30 IST; The Wire reports blocking from about 10:00 and restoration around 18:00. MHA authorship from coverage of the SFLC.in PIL, which lists MHA orders of 17, 20, 22 and 23 July. Directions to Airtel, Jio and Vi; Delhi Police confirmed the suspension."
  },
  {
   "id": "pb-phagwara-2026-09-27",
@@ -3992,9 +4219,13 @@
    {
     "title": "Internet Society Pulse: Internet suspended around a university in Punjab, 28 September 2026",
     "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-lovely-professional-university-india-28-september-2026/"
+   },
+   {
+    "title": "The Wire: Internet suspended around Phagwara university after campus protests",
+    "url": "https://m.thewire.in/article/rights/lovely-professional-university-rape-allegation-inaction-protests-internet-suspended/amp"
    }
   ],
-  "notes": "Pulse: no public version of the order. Radius reported informally as about 3 km. Times unconfirmed."
+  "notes": "Pulse: no public version of the order. Pulse window converts to about 21:30 27 Sep to 19:30 28 Sep IST, but its time labels are unreliable, so dates only. Radius reported informally as about 3 km. No Punjab Home Department order found."
  },
  {
   "id": "dl-detention-centres-2026-10-10",
@@ -4185,18 +4416,22 @@
   "state": "Rajasthan",
   "stateCode": "IN-RJ",
   "districts": [
-   "Jaipur (Jaipur North and Jaipur East police districts)"
+   "Jaipur (Jaipur North and Jaipur East police districts, listed police station areas)"
   ],
   "scope": "mobile-data",
   "issuedAt": "2026-06-07",
   "startsAt": "2026-06-08T00:00",
-  "endsAt": null,
+  "endsAt": "2026-06-09T00:00",
   "issuingAuthority": "Divisional Commissioner, Jaipur",
-  "legalBasis": "Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017 (as reported)",
-  "reasonStated": "Prevent rumours and provocative content during an anti-encroachment demolition of religious structures in Jagatpura.",
+  "legalBasis": "Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017 (as cited)",
+  "reasonStated": "Prevent rumours and maintain order during a development authority's anti-encroachment drive involving religious structures in Jagatpura.",
   "renewalOf": null,
-  "published": null,
+  "published": true,
   "sources": [
+   {
+    "title": "MediaNama: Internet shutdown ordered in Jaipur amid anti-encroachment drive",
+    "url": "https://www.medianama.com/2026/06/223-internet-shutdown-jaipur-anti-encroachment-drive-public-order/"
+   },
    {
     "title": "India TV: Jaipur anti-encroachment drive, mobile internet and bulk SMS suspended",
     "url": "https://www.indiatvnews.com/rajasthan/jaipur-anti-encroachment-drive-mobile-internet-and-bulk-sms-services-suspended-for-48-hours-2026-06-07-1043983"
@@ -4206,6 +4441,1194 @@
     "url": "https://www.outlookindia.com/amp/story/national/jaipur-internet-shutdown-before-demolition-of-mosque-temples-in-jagatpura"
    }
   ],
-  "notes": "Mobile internet, social media, bulk SMS and MMS suspended; voice exempt. End disputed across reports (24 to 48 hours; midnight 8 Jun or midnight 9 Jun). The 2017 Rules citation may be misreported, since the 2024 Rules replaced them."
+  "notes": "Mobile internet (2G-5G), bulk SMS/MMS and named social media apps; voice exempt. About 16 named police station areas. MediaNama links the order. Reports disagree on duration (24 vs 48 hours). The cited 2017 Rules had been replaced by the 2024 Rules. SFLC entry 1501."
+ },
+ {
+  "id": "or-malkangiri-2025-12-09",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-12-09",
+  "startsAt": "2025-12-09T18:00",
+  "endsAt": "2025-12-10T12:00",
+  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+  "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Continuing tension in the district; extended on the District Magistrate's request.",
+  "renewalOf": "or-malkangiri-2025-12-08",
+  "published": true,
+  "sources": [
+   {
+    "title": "Odisha Home Department notification of 9 Dec 2025 (archived by InternetShutdowns.in)",
+    "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_Extended_101225_142e5a95-11ea-4fa0-ac24-91c99d35e809._bba1b7c5-9638-4ae3-9_b1g8nX6.pdf"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1468",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1468/odisha-2025/"
+   },
+   {
+    "title": "Pragativadi: Internet suspension in Malkangiri extended by 18 hours",
+    "url": "https://pragativadi.com/internet-suspension-in-malkangiri-extended-by-18-hours/"
+   }
+  ],
+  "notes": "First extension, 18 hours, other conditions unchanged. Exempts OSWAN, NIC Net, NKN, banking, railways and government services."
+ },
+ {
+  "id": "or-malkangiri-2025-12-10",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-12-10",
+  "startsAt": "2025-12-10T12:00",
+  "endsAt": "2025-12-11T12:00",
+  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+  "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Continuing tension after further developments in the killing case; extended on the District Magistrate's request.",
+  "renewalOf": "or-malkangiri-2025-12-09",
+  "published": true,
+  "sources": [
+   {
+    "title": "Odisha Home Department notification of 10 Dec 2025 (archived by InternetShutdowns.in)",
+    "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_Extended_111225_cca446fe-2dd9-4f4f-b04a-4aa97865c642._da2fe530-58aa-469a-a_zyBhRje.pdf"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1469",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1469/odisha-2025/"
+   },
+   {
+    "title": "Ommcom News: Internet ban extended in Malkangiri",
+    "url": "https://ommcomnews.com/odisha-news/internet-ban-extended-in-malkangiri-after-severed-head-recovery/"
+   }
+  ],
+  "notes": "Second extension, 24 hours, other conditions unchanged."
+ },
+ {
+  "id": "or-malkangiri-2025-12-11",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-12-11",
+  "startsAt": "2025-12-11T12:00",
+  "endsAt": "2025-12-12T00:00",
+  "issuingAuthority": "Home Department, Government of Odisha",
+  "legalBasis": null,
+  "reasonStated": "Prevent inflammatory messages and maintain public order amid continuing tension.",
+  "renewalOf": "or-malkangiri-2025-12-10",
+  "published": null,
+  "sources": [
+   {
+    "title": "InternetShutdowns.in tracker entry 1470",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1470/odisha-2025/"
+   },
+   {
+    "title": "Ommcom News: Internet ban extended in Malkangiri for another 12 hours",
+    "url": "https://ommcomnews.com/odisha-news/internet-ban-extended-in-malkangiri-for-another-12-hours-amidst-tensions/"
+   }
+  ],
+  "notes": "Third extension, 12 hours to midnight (SFLC tracker); one news report says '12 pm on December 12', which conflicts. Order text not seen."
+ },
+ {
+  "id": "or-malkangiri-2025-12-12",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-12-11",
+  "startsAt": "2025-12-12T00:00",
+  "endsAt": "2025-12-13T00:00",
+  "issuingAuthority": "Home Department, Government of Odisha",
+  "legalBasis": null,
+  "reasonStated": "Continuing tension in the affected village area; prevent rumours.",
+  "renewalOf": "or-malkangiri-2025-12-11",
+  "published": null,
+  "sources": [
+   {
+    "title": "InternetShutdowns.in tracker entry 1471",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1471/odisha-2025/"
+   },
+   {
+    "title": "Ommcom News: Internet restriction extended further in Malkangiri",
+    "url": "https://ommcomnews.com/odisha-news/internet-restriction-extended-further-in-malkangiri-malyabanta-mahotsav-postponed/"
+   }
+  ],
+  "notes": "Fourth extension, 24 hours. Covers mobile internet (2G-5G), dongle services and social media. Order text not seen."
+ },
+ {
+  "id": "or-malkangiri-2025-12-13",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": null,
+  "startsAt": "2025-12-13T00:00",
+  "endsAt": "2025-12-14T00:00",
+  "issuingAuthority": "Home Department, Government of Odisha",
+  "legalBasis": null,
+  "reasonStated": "Precaution to curb rumours, misinformation and mobilisation.",
+  "renewalOf": "or-malkangiri-2025-12-12",
+  "published": null,
+  "sources": [
+   {
+    "title": "InternetShutdowns.in tracker entry 1475",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1475/odisha-2025/"
+   },
+   {
+    "title": "Pragativadi: Internet shutdown extended for fifth time in Malkangiri",
+    "url": "https://pragativadi.com/internet-shutdown-extended-for-fifth-time-in-odishas-malkangiri-amid-ongoing-review/"
+   }
+  ],
+  "notes": "Fifth extension, 24 hours to midnight. Order text not seen."
+ },
+ {
+  "id": "or-malkangiri-2025-12-14",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Malkangiri"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-12-13",
+  "startsAt": "2025-12-14T00:00",
+  "endsAt": "2025-12-15T12:00",
+  "issuingAuthority": "Home Department, Government of Odisha",
+  "legalBasis": null,
+  "reasonStated": "Curfew and prohibitory orders lifted, but internet kept suspended to prevent rumours and maintain peace.",
+  "renewalOf": "or-malkangiri-2025-12-13",
+  "published": null,
+  "sources": [
+   {
+    "title": "InternetShutdowns.in tracker entry 1476",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1476/odisha-2025/"
+   },
+   {
+    "title": "Odisha TV: Curfew lifted but internet shutdown extended for another 36 hours",
+    "url": "https://odishatv.in/odisha/malkangiri-violence-curfew-lifted-but-internet-shutdown-extended-for-another-36-hours-10908122"
+   }
+  ],
+  "notes": "Sixth and final extension, 36 hours to noon on 15 Dec. Order text not seen."
+ },
+ {
+  "id": "rj-hanumangarh-tibbi-2025-12-09",
+  "state": "Rajasthan",
+  "stateCode": "IN-RJ",
+  "districts": [
+   "Hanumangarh (Tibbi area)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": null,
+  "startsAt": "2025-12-09",
+  "endsAt": "2025-12-13",
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Prevent rumours around a farmers' gathering and protests against an ethanol plant in Tibbi.",
+  "renewalOf": null,
+  "published": false,
+  "sources": [
+   {
+    "title": "Internet Society Pulse: Internet suspended in Hanumangarh, 8 December 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-hanumangarh-india-8-december-2025/"
+   },
+   {
+    "title": "Zee News Hindi: Internet services resume in Tibbi",
+    "url": "https://zeenews.india.com/hindi/india/rajasthan/hanumangargh/rajasthan-news-internet-services-resumes-in-tibbi-violence-in-kisan-andolan/1765630222774"
+   },
+   {
+    "title": "Assam Tribune: Internet remains suspended in Tibbi as ethanol factory protests escalate",
+    "url": "https://assamtribune.com/national/rajasthan-internet-remain-suspended-in-tibbi-as-ethanol-factory-protests-escalate-1600848"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1474",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1474/rajasthan-2025/"
+   }
+  ],
+  "notes": "Cut on the evening of 9 Dec and restored on 13 Dec after about four days. SFLC splits this into three entries (1472-1474), suggesting daily extension orders, but none was seen, so one record. Pulse: no order made public."
+ },
+ {
+  "id": "jk-kishtwar-2026-01-23",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kishtwar (Singhpora, Chingam and Chatroo, 6 km radius)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": null,
+  "startsAt": "2026-01-23",
+  "endsAt": null,
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer)",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Prevent misuse of high-speed mobile data during a counter-terror operation that could disturb public order.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "Outlook (PTI): Anti-terror operation intensified in Kishtwar as internet suspension extended",
+    "url": "https://www.outlookindia.com/amp/story/national/anti-terror-operation-intensified-in-kishtwar-as-internet-suspension-extended"
+   }
+  ],
+  "notes": "Reported as 'initially suspended on January 23' and later extended by a Home Department order. Start order and end not seen; unclear whether continuous until 29 Jan. Single source."
+ },
+ {
+  "id": "rj-hanumangarh-tibbi-2026-02-10",
+  "state": "Rajasthan",
+  "stateCode": "IN-RJ",
+  "districts": [
+   "Hanumangarh (Tibbi area)"
+  ],
+  "scope": "unknown",
+  "issuedAt": null,
+  "startsAt": "2026-02-10T18:00",
+  "endsAt": "2026-02-11T18:00",
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Expected farmers' protests against an ethanol factory, with a farmers' gathering at Talwara on 11 Feb.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "InternetShutdowns.in tracker entry 1489",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1489/rajasthan-2026/"
+   },
+   {
+    "title": "Dainik Bhaskar report archived by InternetShutdowns.in",
+    "url": "https://alpha.internetshutdowns.in/media/Tibbi_IS_110226_e9bc0e95-e244-404b-a7be-a1cdbf88810b._8b35673f-929c-4ed3-b01a-c21cb21a4cc0..pdf"
+   }
+  ],
+  "notes": "24 hours per the SFLC tracker. The archived file is a news printout reporting the fifth shutdown in about 2.5 months, with BNSS s.163 in force. Authority unconfirmed."
+ },
+ {
+  "id": "jk-kashmir-2026-03-01",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Srinagar",
+   "Budgam",
+   "Ganderbal",
+   "Anantnag",
+   "Kulgam",
+   "Pulwama",
+   "Shopian",
+   "Baramulla",
+   "Kupwara",
+   "Bandipora"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": null,
+  "startsAt": "2026-03-01T09:00",
+  "endsAt": "2026-03-04T20:00",
+  "issuingAuthority": "Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Apprehension that high-speed internet could disturb public order and security amid protests over a foreign leader's killing.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "Kashmir Life: 2G restrictions to continue across Kashmir Valley till March 4",
+    "url": "https://kashmirlife.net/2g-restrictions-to-continue-across-kashmir-valley-till-march-4-427198/"
+   },
+   {
+    "title": "Kashmir Despatch: Prepaid internet limited to 2G across the Valley",
+    "url": "https://kashmirdespatch.com/?p=157848"
+   },
+   {
+    "title": "InternetShutdowns.in tracker entry 1490",
+    "url": "https://alpha.internetshutdowns.in/india-shutdowns/1490/jammu-and-kashmir-2026/"
+   },
+   {
+    "title": "Internet Society Pulse: Internet throttled amid protests in Jammu and Kashmir",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-throttled-amid-protests-jammu-and-kashmir-india/"
+   }
+  ],
+  "notes": "Whole Kashmir Valley (ten districts). Prepaid mobile data throttled to 2G (max 128 kbps), a suspension of high-speed data rather than a full cut; prepaid voice/SMS also restricted, hence voice-sms-too. Directions by the IGP Kashmir Zone as authorised officer, confirmed by the Home Department. SFLC lists Srinagar only, 21:02 on 1 Mar to 20:00 on 6 Mar. Restrictions reportedly continued to 6 Mar; no extension order found."
+ },
+ {
+  "id": "jk-ramban-2026-04-13",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Ramban"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": null,
+  "startsAt": "2026-04-13",
+  "endsAt": "2026-04-14",
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Law and order concerns and rumours amid protests along the Ramban-Ramsu-Banihal axis.",
+  "renewalOf": null,
+  "published": false,
+  "sources": [
+   {
+    "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, 13 April 2026",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-13-april-2026/"
+   },
+   {
+    "title": "Deccan Chronicle: Tensions linger along J&K's Ramban-Ramsu-Banihal axis",
+    "url": "https://www.deccanchronicle.com/nation/tensions-linger-along-jks-rambanramsu-banihal-axis-after-alleged-vigilante-attack-1950378"
+   }
+  ],
+  "notes": "Uncertain: Pulse marks it unconfirmed with no official acknowledgement; Deccan Chronicle says mobile internet was temporarily suspended after protests on 13 Apr and restored on the afternoon of 14 Apr."
+ },
+ {
+  "id": "hr-faridabad-2026-05-30",
+  "state": "Haryana",
+  "stateCode": "IN-HR",
+  "districts": [
+   "Faridabad (1 km radius of a notified point in NIT Zone)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2026-05-29",
+  "startsAt": "2026-05-30T00:30",
+  "endsAt": "2026-05-30T22:00",
+  "issuingAuthority": "Additional Secretary (Home-1), Home Affairs Department, Government of Haryana",
+  "legalBasis": "Telecommunications Act, 2023, s.20 read with Rule 3 of the Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Preventive measure for a demolition drive: risk of tension, disturbance and property damage; stop misinformation and crowd mobilisation on social media.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "WebIndia123: Haryana suspends mobile internet in part of Faridabad ahead of demolition drive",
+    "url": "https://news.webindia123.com/news/Articles/India/20260530/4456271.html"
+   },
+   {
+    "title": "Kalinga TV: Mobile internet services suspended in Haryana ahead of demolition drive",
+    "url": "https://kalingatv.com/nation/mobile-internet-services-suspended-in-haryana-ahead-of-demolition-drive/"
+   }
+  ],
+  "notes": "Mobile internet (2G-5G), dongle services and bulk SMS; banking/recharge SMS and voice exempt. Area defined by coordinates 28.39448, 77.28622."
+ },
+ {
+  "id": "jk-baramulla-2025-07-08",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Baramulla"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-07-08",
+  "startsAt": "2025-07-08T10:00",
+  "endsAt": "2025-07-08T20:00",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Likelihood that high-speed internet would be misused, causing deterioration of public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-13(TSTS) of 2025 dated 09.07.2025",
+    "url": "https://home.jk.gov.in/pdf/13(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "Speed reduction, not a full cut: 3G/4G/5G reduced to 2G (max 128 kbps) district-wide. Authorised officer's order dated 08.07.2025, confirmed 09.07.2025. No triggering event named."
+ },
+ {
+  "id": "jk-kishtwar-2025-07-19",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kishtwar (Dachhan area)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-07-19",
+  "startsAt": "2025-07-19T19:00",
+  "endsAt": "2025-07-19T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Internet data services likely to be misused by anti-national elements or miscreants, risking public order and security.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-14(TSTS) of 2025 dated 21.07.2025",
+    "url": "https://home.jk.gov.in/pdf/14(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G and public Wi-Fi on listed tower IDs in the Dachhan area. Confirmed 21.07.2025. No triggering event named."
+ },
+ {
+  "id": "jk-budgam-2025-08-14",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Budgam (Ichgam area)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-08-14",
+  "startsAt": "2025-08-14T17:00",
+  "endsAt": "2025-08-16T17:00",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Likelihood that high-speed internet would be misused, causing deterioration of public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-15(TSTS) of 2025 dated 15.08.2025",
+    "url": "https://home.jk.gov.in/pdf/15(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "Speed reduction, not a full cut: 3G/4G/5G reduced to 2G (max 128 kbps) on listed cell IDs in the Ichgam area. Confirmed 15.08.2025. No triggering event named."
+ },
+ {
+  "id": "jk-doda-2025-09-10",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-10",
+  "startsAt": "2025-09-10T00:01",
+  "endsAt": "2025-09-10T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+  "renewalOf": "jk-2025-09-09",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-17(TSTS) of 2025 dated 10.09.2025",
+    "url": "https://home.jk.gov.in/pdf/17(TSTS)of2025.pdf"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+   }
+  ],
+  "notes": "2G-5G mobile data plus public and private Wi-Fi including fibre/broadband, district-wide. Protests after an MLA's detention."
+ },
+ {
+  "id": "jk-doda-gandoh-2025-09-10",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Gandoh tehsil, 15 km radius)"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": "2025-09-10",
+  "startsAt": "2025-09-10T00:01",
+  "endsAt": "2025-09-10T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data, Wi-Fi and voice calling/SMS likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-18(TSTS) of 2025 dated 10.09.2025",
+    "url": "https://home.jk.gov.in/pdf/18(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "Separate order from the district-wide data cut: within 15 km of coordinates in Gandoh tehsil, also cut voice calling and SMS in addition to 2G-5G data and Wi-Fi including fibre/broadband."
+ },
+ {
+  "id": "jk-kishtwar-2025-09-10",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kishtwar (5 km radius, Kishtwar town area)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-09-10",
+  "startsAt": "2025-09-10T10:00",
+  "endsAt": "2025-09-10T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-19(TSTS) of 2025 dated 10.09.2025",
+    "url": "https://home.jk.gov.in/pdf/19(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 5 km of coordinates 33.3186, 75.7625 (near Kishtwar town, by reading of the coordinates)."
+ },
+ {
+  "id": "jk-doda-2025-09-11",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-11",
+  "startsAt": "2025-09-11T00:01",
+  "endsAt": "2025-09-11T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+  "renewalOf": "jk-doda-2025-09-10",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-20(TSTS) of 2025 dated 11.09.2025",
+    "url": "https://home.jk.gov.in/pdf/20(TSTS)of2025.pdf"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+   }
+  ],
+  "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+ },
+ {
+  "id": "jk-doda-gandoh-2025-09-11",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Gandoh tehsil, 15 km radius)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-09-11",
+  "startsAt": "2025-09-11T00:01",
+  "endsAt": "2025-09-11T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-gandoh-2025-09-10",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-21(TSTS) of 2025 dated 11.09.2025",
+    "url": "https://home.jk.gov.in/pdf/21(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 15 km in Gandoh tehsil; voice and SMS no longer cut."
+ },
+ {
+  "id": "jk-kishtwar-2025-09-11",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kishtwar (5 km radius, Kishtwar town area)"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": "2025-09-11",
+  "startsAt": "2025-09-11T00:01",
+  "endsAt": "2025-09-11T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data, Wi-Fi and voice calling/SMS likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-kishtwar-2025-09-10",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-22(TSTS) of 2025 dated 11.09.2025",
+    "url": "https://home.jk.gov.in/pdf/22(TSTS)of2025.pdf"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+   }
+  ],
+  "notes": "2G-5G, public and private Wi-Fi including fibre/broadband, and voice calling/SMS within 5 km."
+ },
+ {
+  "id": "jk-doda-2025-09-12",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-12",
+  "startsAt": "2025-09-12T00:01",
+  "endsAt": "2025-09-12T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+  "renewalOf": "jk-doda-2025-09-11",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-23(TSTS) of 2025 dated 12.09.2025",
+    "url": "https://home.jk.gov.in/pdf/23(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+ },
+ {
+  "id": "jk-doda-gandoh-2025-09-12",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Gandoh tehsil, 15 km radius)"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": "2025-09-12",
+  "startsAt": "2025-09-12T00:01",
+  "endsAt": "2025-09-12T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data, Wi-Fi and voice calling likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-gandoh-2025-09-11",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-24(TSTS) of 2025 dated 12.09.2025",
+    "url": "https://home.jk.gov.in/pdf/24(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G, Wi-Fi including fibre/broadband, and voice calling (SMS not mentioned) within 15 km in Gandoh tehsil."
+ },
+ {
+  "id": "jk-kishtwar-2025-09-12",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kishtwar (5 km radius, Kishtwar town area)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-09-12",
+  "startsAt": "2025-09-12T00:01",
+  "endsAt": "2025-09-12T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-kishtwar-2025-09-11",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-25(TSTS) of 2025 dated 12.09.2025",
+    "url": "https://home.jk.gov.in/pdf/25(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 5 km. Last Kishtwar order in the series."
+ },
+ {
+  "id": "jk-doda-2025-09-13",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-13",
+  "startsAt": "2025-09-13T00:01",
+  "endsAt": "2025-09-13T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+  "renewalOf": "jk-doda-2025-09-12",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-26(TSTS) of 2025 dated 13.09.2025",
+    "url": "https://home.jk.gov.in/pdf/26(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+ },
+ {
+  "id": "jk-doda-2025-09-14",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-14",
+  "startsAt": "2025-09-14T00:01",
+  "endsAt": "2025-09-14T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-2025-09-13",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-27(TSTS) of 2025 dated 14.09.2025",
+    "url": "https://home.jk.gov.in/pdf/27(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G mobile data cut district-wide; FTTH/broadband restricted only in Gandoh and Thathri tehsils."
+ },
+ {
+  "id": "jk-doda-2025-09-15",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-15",
+  "startsAt": "2025-09-15T00:01",
+  "endsAt": "2025-09-15T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-2025-09-14",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-28(TSTS) of 2025 dated 15.09.2025",
+    "url": "https://home.jk.gov.in/pdf/28(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "2G-5G mobile data cut district-wide; FTTH/broadband restricted only in Gandoh and Thathri tehsils."
+ },
+ {
+  "id": "jk-doda-2025-09-16",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-16",
+  "startsAt": "2025-09-16T00:01",
+  "endsAt": "2025-09-16T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "High-speed mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-2025-09-15",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-29(TSTS) of 2025 dated 16.09.2025",
+    "url": "https://home.jk.gov.in/pdf/29(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "Eased: 3G/4G/5G suspended district-wide, 2G allowed at 100 kbps; FTTH/broadband suspended in Gandoh and Thathri tehsils."
+ },
+ {
+  "id": "jk-doda-2025-09-17",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-09-17",
+  "startsAt": "2025-09-17T00:01",
+  "endsAt": "2025-09-17T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "High-speed mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+  "renewalOf": "jk-doda-2025-09-16",
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-30(TSTS) of 2025 dated 17.09.2025",
+    "url": "https://home.jk.gov.in/pdf/30(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G suspended district-wide, 2G allowed at 100 kbps; FTTH/broadband suspended in Gandoh and Thathri tehsils. Last order in the Doda series."
+ },
+ {
+  "id": "hr-nuh-2025-07-13",
+  "state": "Haryana",
+  "stateCode": "IN-HR",
+  "districts": [
+   "Nuh"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-07-13",
+  "startsAt": "2025-07-13T21:00",
+  "endsAt": "2025-07-14T21:00",
+  "issuingAuthority": "Additional Chief Secretary (Home), Government of Haryana",
+  "legalBasis": null,
+  "reasonStated": "Precaution during a religious yatra: stop misinformation and rumours on social media and SMS and prevent mobilisation of crowds for arson or violence.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "The Tribune: Internet and bulk SMS services suspended for 24 hours in Nuh district",
+    "url": "https://www.tribuneindia.com/news/haryana/internet-and-bulk-sms-services-suspended-for-24-hours-in-nuh-district/"
+   },
+   {
+    "title": "The Week (PTI): Internet, SMS services suspended in Nuh ahead of yatra",
+    "url": "https://www.theweek.in/wire-updates/national/2025/07/13/des81-ncr-yatra-security.html"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Haryana, 13 July 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-13-july-2025/"
+   }
+  ],
+  "notes": "Mobile internet (2G-5G/CDMA/GPRS), bulk SMS (banking and recharge exempt) and dongle services. Voice, individual SMS and broadband/leased lines exempt. Linked to the Braj Mandal Jalabhishek Yatra."
+ },
+ {
+  "id": "br-katihar-2025-07-06",
+  "state": "Bihar",
+  "stateCode": "IN-BR",
+  "districts": [
+   "Katihar (Katihar town)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-07-06",
+  "startsAt": "2025-07-06T18:00",
+  "endsAt": "2025-07-07T18:00",
+  "issuingAuthority": "Home Department, Government of Bihar",
+  "legalBasis": null,
+  "reasonStated": "Clashes and stone-pelting during a Muharram procession; curb rumours.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "Patna Press: Internet shutdown in Katihar after Muharram procession clashes",
+    "url": "https://patnapress.com/katihar-muharram-violence-internet-shutdown/"
+   },
+   {
+    "title": "SFLC.in tracker entry 1452: Bihar 2025 (Katihar)",
+    "url": "https://internetshutdowns.in/india-shutdowns/1452/bihar-2025/"
+   },
+   {
+    "title": "Amar Ujala: Internet banned in Katihar after tension during Muharram",
+    "url": "https://www.amarujala.com/bihar/bihar-news-internet-banned-in-katihar-after-tension-in-muharram-darbhanga-asi-stabbed-nawada-electric-shok-2025-07-06"
+   }
+  ],
+  "notes": "Times and mobile-network scope from SFLC; Patna Press says internet and social media in Katihar city for 24 hours, confirmed by the state Home Department. Order text not seen."
+ },
+ {
+  "id": "la-leh-2025-09-26",
+  "state": "Ladakh",
+  "stateCode": "IN-LA",
+  "districts": [
+   "Leh"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-09-26",
+  "startsAt": "2025-09-26T18:00",
+  "endsAt": "2025-09-29T18:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement, amid curfew after the 24 Sep violence in Leh.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV dated 26.09.2025 (UT Ladakh Home Department)",
+    "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/09/202509272018515825.pdf"
+   }
+  ],
+  "notes": "2G-5G mobile data and public Wi-Fi across the district. Listed by Ladakh's Home Department under 27/09/2025 (upload date). Earlier cuts from 25 Sep are claimed but no order found."
+ },
+ {
+  "id": "la-leh-2025-10-03",
+  "state": "Ladakh",
+  "stateCode": "IN-LA",
+  "districts": [
+   "Leh"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-10-03",
+  "startsAt": "2025-10-03T18:00",
+  "endsAt": "2025-10-07T18:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement.",
+  "renewalOf": "la-leh-2025-09-29",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV dated 03.10.2025 (UT Ladakh Home Department)",
+    "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/10/202510062071230512.pdf"
+   }
+  ],
+  "notes": "2G-5G mobile data and public Wi-Fi across the district."
+ },
+ {
+  "id": "la-leh-2025-10-07",
+  "state": "Ladakh",
+  "stateCode": "IN-LA",
+  "districts": [
+   "Leh"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-10-07",
+  "startsAt": "2025-10-07T18:00",
+  "endsAt": "2025-10-09T18:00",
+  "issuingAuthority": "Ministry of Home Affairs, Government of India",
+  "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement.",
+  "renewalOf": "la-leh-2025-10-03",
+  "published": true,
+  "sources": [
+   {
+    "title": "MHA order No. 22016/12/2019-CIS-IV dated 07.10.2025 (UT Ladakh Home Department)",
+    "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/10/202510081774401160.pdf"
+   },
+   {
+    "title": "Scroll: Mobile internet services restored in Leh",
+    "url": "https://scroll.in/latest/1087516/ladakh-mobile-internet-services-restored-in-leh"
+   }
+  ],
+  "notes": "2G-5G mobile data and public Wi-Fi. Last order in the series; service restored 9 Oct."
+ },
+ {
+  "id": "or-cuttack-2025-10-06",
+  "state": "Odisha",
+  "stateCode": "IN-OD",
+  "districts": [
+   "Cuttack (Municipal Corporation, Development Authority area and 42 Mouza)"
+  ],
+  "scope": "all-internet",
+  "issuedAt": "2025-10-06",
+  "startsAt": "2025-10-06T19:00",
+  "endsAt": "2025-10-07T19:00",
+  "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+  "legalBasis": "Section 20(2)(b) and 20(4) Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+  "reasonStated": "Apprehension that anti-social elements would use the internet to spread rumours, incite disaffection and disturb communal harmony after a clash during a Durga Puja immersion procession.",
+  "renewalOf": "or-cuttack-2025-10-05",
+  "published": true,
+  "sources": [
+   {
+    "title": "Odisha Home Department Notification No. 41832 dated 06.10.2025 (via SFLC.in)",
+    "url": "https://internetshutdowns.in/media/Cuttack_071025_5536852f-ef40-45bd-bcab-6c46780ec460._b43c5287-8ed2-4985-8c9a-ec68b93eefd5..jpeg"
+   },
+   {
+    "title": "Internet Society Pulse: Internet suspended in Odisha, October 2025",
+    "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-october-2025/"
+   },
+   {
+    "title": "OdishaBytes: Curfew lifted in Cuttack city, internet shutdown continues",
+    "url": "https://odishabytes.com/curfew-lifted-in-cuttack-city-daily-life-gradually-returns-to-normal-internet-shutdown-continues/"
+   }
+  ],
+  "notes": "In continuation of Notification No. 41748 dated 05.10.2025, on the Collector's recommendation. Social media, mobile data, ISP internet and broadband dial-up; government networks, banking and railways exempt. No further extension found."
+ },
+ {
+  "id": "rj-hanumangarh-2025-11-18",
+  "state": "Rajasthan",
+  "stateCode": "IN-RJ",
+  "districts": [
+   "Hanumangarh (15 km radius around Rathikheda village)"
+  ],
+  "scope": "unknown",
+  "issuedAt": "2025-11-18",
+  "startsAt": "2025-11-18T20:00",
+  "endsAt": "2025-11-20T20:00",
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Farmers' protest against a proposed ethanol factory.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "SFLC.in tracker entry 1482: Rajasthan 2025 (Hanumangarh)",
+    "url": "https://internetshutdowns.in/india-shutdowns/1482/rajasthan-2025/"
+   },
+   {
+    "title": "Amar Ujala (archived by SFLC.in): Internet closed within 15 km radius over ethanol factory dispute in Hanumangarh",
+    "url": "https://internetshutdowns.in/media/Hanumangarh_IS_181125_87f4d306-9324-4439-9d17-4fd239c522ed._e5169d37-ae41-492a-9d51-21cc_HmH0hdG.pdf"
+   }
+  ],
+  "notes": "Times and 48h duration from SFLC. News report confirms internet suspended within 15 km including Rathikheda village. Order text not found."
+ },
+ {
+  "id": "jk-ganderbal-2025-01-13",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Ganderbal (Gund and Kangan areas)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-01-13",
+  "startsAt": "2025-01-13T06:00",
+  "endsAt": "2025-01-13T16:30",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data could be misused by anti-national elements to spread misinformation and inciting material, harming public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-01(TSTS) of 2025 dated 14.01.2025",
+    "url": "https://home.jk.gov.in/pdf/01(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Ganderbal, January 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1432/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "Throttling, not a full cut. 3G/4G/5G were suspended and only 2G (up to 128 kbps) allowed within a 20 km radius of a point in the Gund and Kangan areas. IGP order No. 137(TSTS) of 2025, confirmed after the fact by Home-01(TSTS) of 2025 (14 Jan)."
+ },
+ {
+  "id": "jk-kathua-2025-02-05",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kathua (Billawar, Malhar and Bani areas)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-02-05",
+  "startsAt": "2025-02-05T23:00",
+  "endsAt": "2025-02-06T23:00",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-02(TSTS) of 2025 dated 06.02.2025",
+    "url": "https://home.jk.gov.in/pdf/02(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Kathua, February 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1431/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "2G/3G/4G/5G and public Wi-Fi. IGP order No. 191(TSTS) of 2025, confirmed by Home-02(TSTS) of 2025 (6 Feb). SFLC.in marks the network as 'both' and describes it as precautionary to curb rumours. The order names only mobile data, and no news report on the trigger was found."
+ },
+ {
+  "id": "pb-shambhu-khanauri-2025-03-19",
+  "state": "Punjab",
+  "stateCode": "IN-PB",
+  "districts": [
+   "Patiala (Shambhu border area)",
+   "Sangrur (Khanauri border area)"
+  ],
+  "scope": "unknown",
+  "issuedAt": null,
+  "startsAt": "2025-03-19",
+  "endsAt": null,
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Police cleared the farmers' protest sites at the Shambhu and Khanauri borders after detaining protest leaders.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "National Herald (IANS): Internet shut down at Shambhu, Khanauri borders after detention of farmer leaders",
+    "url": "https://www.nationalheraldindia.com/amp/story/politics/internet-shut-down-at-shambhu-khanauri-borders-after-detention-of-farmer-leaders"
+   },
+   {
+    "title": "internetshutdowns.in: Sangrur and Patiala, March 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1429/punjab-2025/"
+   }
+  ],
+  "notes": "No order found, and no issuing authority or legal basis reported. SFLC.in lists a mobile shutdown in Sangrur and Patiala from 19 Mar 18:00 to 24 Mar 21:54. Its only source is the National Herald article, which gives no end date, so the end is left null. The 21:54 looks like the time SFLC.in captured the web page (20 Mar 21:55)."
+ },
+ {
+  "id": "wb-murshidabad-2025-04-14",
+  "state": "West Bengal",
+  "stateCode": "IN-WB",
+  "districts": [
+   "Murshidabad (parts, including Jangipur)",
+   "Malda (parts)",
+   "Birbhum (parts)"
+  ],
+  "scope": "unknown",
+  "issuedAt": null,
+  "startsAt": "2025-04-14",
+  "endsAt": "2025-04-15T22:00",
+  "issuingAuthority": "Government of West Bengal (state secretariat)",
+  "legalBasis": null,
+  "reasonStated": "Violence during protests against the Waqf (Amendment) Act; stop fake information spreading on social media.",
+  "renewalOf": "wb-jangipur-2025-04-08",
+  "published": null,
+  "sources": [
+   {
+    "title": "National Herald (IANS): Suspension of internet services extended to Malda and Birbhum",
+    "url": "https://www.nationalheraldindia.com/national/murshidabad-violence-suspension-of-internet-services-extended-to-bengals-malda-birbhum"
+   },
+   {
+    "title": "internetshutdowns.in: Birbhum, Murshidabad, Malda, 13 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1435/west-bengal-2025/"
+   },
+   {
+    "title": "The Mooknayak: Net services restored in several places in Murshidabad",
+    "url": "https://en.themooknayak.com/minority-news/murshidabad-violence-net-services-restored-in-several-places-prohibitory-orders-continue"
+   }
+  ],
+  "notes": "National Herald/IANS (14 Apr) and ABP Live (14 Apr, archived by SFLC.in) say the suspension was extended to Malda, Birbhum and more parts of Murshidabad until 22:00 on 15 Apr, on instructions from the state secretariat (Nabanna). The start date is when it was reported in force (Monday 14 Apr). SFLC.in gives 13 Apr 18:00 to 15 Apr 18:00, and also lists an 11-13 Apr extension (entry 1434) that cites the same 14 Apr article; no separate source was found for it. Mooknayak (16 Apr) says service was restored in most of Murshidabad but stayed suspended in Samserganj."
+ },
+ {
+  "id": "jk-doda-2025-04-23",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Doda and Bhaderwah towns)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-04-23",
+  "startsAt": "2025-04-23T01:00",
+  "endsAt": "2025-04-23T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-09(TSTS) of 2025 dated 24.04.2025",
+    "url": "https://home.jk.gov.in/pdf/09(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G and public Wi-Fi suspended, 2G limited to under 100 kbps. IGP order No. 546(TSTS) of 2025, confirmed by Home-09(TSTS) of 2025 (24 Apr). Imposed the day after the 22 Apr 2025 Pahalgam attack, though the order does not mention it. Runs alongside the Kishtwar order jk-2025-04-23 (Home-08). SFLC.in has no entry for it."
+ },
+ {
+  "id": "jk-budgam-2025-05-17",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Budgam (Bradipathri, Charar-e-Sharief area)"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": "2025-05-17",
+  "startsAt": "2025-05-17T21:00",
+  "endsAt": "2025-05-19T22:00",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile tower and data services were likely to be misused by anti-national elements, compromising security deployment and public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-11(TSTS) of 2025 dated 19.05.2025",
+    "url": "https://home.jk.gov.in/pdf/11(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Budgam, May 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1442/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "Three listed cell IDs were shut down entirely ('shut down mobile towers'), so voice and SMS were presumably cut too, but only on those cells. IGP order No. 1559(TSTS) of 2025, confirmed by Home-11(TSTS) of 2025 (19 May). The order's wording about security deployment suggests a security operation, but no news report was found."
+ },
+ {
+  "id": "jk-bhaderwah-2025-05-22",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Bhaderwah area, listed towers)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-05-22",
+  "startsAt": "2025-05-22T20:00",
+  "endsAt": "2025-05-27T20:00",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-12(TSTS) of 2025 dated 23.05.2025",
+    "url": "https://home.jk.gov.in/pdf/12(TSTS)of2025.pdf"
+   },
+   {
+    "title": "Kashmir Life: Mobile data suspended on 37 towers in Bhaderwah till May 27",
+    "url": "https://kashmirlife.net/mobile-data-suspended-on-37-towers-in-bhaderwah-till-may-27-391987/"
+   },
+   {
+    "title": "internetshutdowns.in: Doda, May 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1443/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "2G/3G/4G/5G and public Wi-Fi on 74 listed Jio and Airtel cell IDs. Press reports call it 37 towers. IGP order No. 675(TSTS) of 2025, confirmed by Home-12(TSTS) of 2025 (23 May). Five days, the longest J&K order in H1 2025."
  }
 ]

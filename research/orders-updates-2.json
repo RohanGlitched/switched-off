@@ -1,0 +1,102 @@
+[
+  {
+    "id": "dl-central-2026-07-20",
+    "state": "Delhi",
+    "stateCode": "IN-DL",
+    "districts": [
+      "New Delhi (parts of Central Delhi around Jantar Mantar and Parliament)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2026-07-20",
+    "startsAt": "2026-07-20",
+    "endsAt": "2026-07-20",
+    "issuingAuthority": "Ministry of Home Affairs, Government of India",
+    "legalBasis": null,
+    "reasonStated": "Precaution during a youth march to Parliament over exam paper leaks on the first day of the Monsoon Session.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in New Delhi NCT, 20 July 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-new-dehli-nct-india-20-july-2026/"
+      },
+      {
+        "title": "IFF: Condemns the internet shutdown in parts of Central Delhi; no suspension order made public",
+        "url": "https://internetfreedom.in/iff-condemns-the-internet-shutdown-in-parts-of-central-delhi-no-suspension-order-has-been-made-public/"
+      },
+      {
+        "title": "The Wire: Telecom companies confirm Delhi internet shutdown order, government yet to publish it",
+        "url": "https://m.thewire.in/article/government/telecom-companies-confirm-delhi-internet-shutdown-order-government-yet-to-publish-it/amp"
+      },
+      {
+        "title": "Daily Pioneer: Plea against internet shutdown around Jantar Mantar withdrawn from Delhi HC",
+        "url": "https://www.dailypioneer.com/news/plea-against-internet-shutdown-around-jantar-mantar-withdrawn-from-delhi-hc"
+      }
+    ],
+    "notes": "Times disputed: Pulse gives 07:30-15:30 IST; The Wire reports blocking from about 10:00 and restoration around 18:00. MHA authorship from coverage of the SFLC.in PIL, which lists MHA orders of 17, 20, 22 and 23 July. Directions to Airtel, Jio and Vi; Delhi Police confirmed the suspension."
+  },
+  {
+    "id": "jk-doda-2026-07-17",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": null,
+    "startsAt": "2026-07-17",
+    "endsAt": "2026-07-21",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Precaution to maintain law and order during protests after a civilian was killed in a firing incident during a police operation.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Doda, Jammu and Kashmir, 17 July 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-doda-jammu-and-kashmir-india-17-july-2026/"
+      },
+      {
+        "title": "Kashmir Life: Internet services suspended in Jammu and Kashmir district over security concerns",
+        "url": "https://kashmirlife.net/internet-services-suspended-in-jammu-kashmir-district-over-security-concerns-443465/"
+      },
+      {
+        "title": "ETV Bharat: Broadband and landline suspended in Doda as protests continue over a civilian death",
+        "url": "https://www.etvbharat.com/en/bharat/broadband-landline-services-suspended-in-j-and-ks-doda-as-protests-continue-over-civilian-death-enn26071803644"
+      },
+      {
+        "title": "Kashmir Life: 5G mobile internet restored across Doda",
+        "url": "https://kashmirlife.net/5g-mobile-internet-services-restored-across-doda-444285/"
+      }
+    ],
+    "notes": "Whole district, 'until further orders'. Mobile internet cut 17 Jul; broadband and landline cut 18 Jul, possibly under a separate order (scope reflects the landline cut). 2G partly restored first; full mobile service back on the night of 21 Jul. No published J&K Home Department order or daily extensions found."
+  },
+  {
+    "id": "pb-phagwara-2026-09-27",
+    "state": "Punjab",
+    "stateCode": "IN-PB",
+    "districts": [
+      "Kapurthala (Phagwara: in and around a private university campus)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-09-27",
+    "endsAt": "2026-09-28",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Maintain calm and prevent escalation during campus protests over an alleged sexual assault and alleged inaction by the university.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended around a university in Punjab, 28 September 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-lovely-professional-university-india-28-september-2026/"
+      },
+      {
+        "title": "The Wire: Internet suspended around Phagwara university after campus protests",
+        "url": "https://m.thewire.in/article/rights/lovely-professional-university-rape-allegation-inaction-protests-internet-suspended/amp"
+      }
+    ],
+    "notes": "Pulse: no public version of the order. Pulse window converts to about 21:30 27 Sep to 19:30 28 Sep IST, but its time labels are unreliable, so dates only. Radius reported informally as about 3 km. No Punjab Home Department order found."
+  }
+]

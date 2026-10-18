@@ -1,0 +1,622 @@
+[
+  {
+    "id": "jk-baramulla-2025-07-08",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Baramulla"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-07-08",
+    "startsAt": "2025-07-08T10:00",
+    "endsAt": "2025-07-08T20:00",
+    "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Likelihood that high-speed internet would be misused, causing deterioration of public order.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-13(TSTS) of 2025 dated 09.07.2025",
+        "url": "https://home.jk.gov.in/pdf/13(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "Speed reduction, not a full cut: 3G/4G/5G reduced to 2G (max 128 kbps) district-wide. Authorised officer's order dated 08.07.2025, confirmed 09.07.2025. No triggering event named."
+  },
+  {
+    "id": "jk-kishtwar-2025-07-19",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Dachhan area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-07-19",
+    "startsAt": "2025-07-19T19:00",
+    "endsAt": "2025-07-19T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Internet data services likely to be misused by anti-national elements or miscreants, risking public order and security.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-14(TSTS) of 2025 dated 21.07.2025",
+        "url": "https://home.jk.gov.in/pdf/14(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G and public Wi-Fi on listed tower IDs in the Dachhan area. Confirmed 21.07.2025. No triggering event named."
+  },
+  {
+    "id": "jk-budgam-2025-08-14",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Budgam (Ichgam area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-08-14",
+    "startsAt": "2025-08-14T17:00",
+    "endsAt": "2025-08-16T17:00",
+    "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Likelihood that high-speed internet would be misused, causing deterioration of public order.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-15(TSTS) of 2025 dated 15.08.2025",
+        "url": "https://home.jk.gov.in/pdf/15(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "Speed reduction, not a full cut: 3G/4G/5G reduced to 2G (max 128 kbps) on listed cell IDs in the Ichgam area. Confirmed 15.08.2025. No triggering event named."
+  },
+  {
+    "id": "jk-doda-2025-09-10",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-10",
+    "startsAt": "2025-09-10T00:01",
+    "endsAt": "2025-09-10T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+    "renewalOf": "jk-2025-09-09",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-17(TSTS) of 2025 dated 10.09.2025",
+        "url": "https://home.jk.gov.in/pdf/17(TSTS)of2025.pdf"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+      }
+    ],
+    "notes": "2G-5G mobile data plus public and private Wi-Fi including fibre/broadband, district-wide. Protests after an MLA's detention."
+  },
+  {
+    "id": "jk-doda-gandoh-2025-09-10",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda (Gandoh tehsil, 15 km radius)"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": "2025-09-10",
+    "startsAt": "2025-09-10T00:01",
+    "endsAt": "2025-09-10T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data, Wi-Fi and voice calling/SMS likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-18(TSTS) of 2025 dated 10.09.2025",
+        "url": "https://home.jk.gov.in/pdf/18(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "Separate order from the district-wide data cut: within 15 km of coordinates in Gandoh tehsil, also cut voice calling and SMS in addition to 2G-5G data and Wi-Fi including fibre/broadband."
+  },
+  {
+    "id": "jk-kishtwar-2025-09-10",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (5 km radius, Kishtwar town area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-09-10",
+    "startsAt": "2025-09-10T10:00",
+    "endsAt": "2025-09-10T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-19(TSTS) of 2025 dated 10.09.2025",
+        "url": "https://home.jk.gov.in/pdf/19(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 5 km of coordinates 33.3186, 75.7625 (near Kishtwar town, by reading of the coordinates)."
+  },
+  {
+    "id": "jk-doda-2025-09-11",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-11",
+    "startsAt": "2025-09-11T00:01",
+    "endsAt": "2025-09-11T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+    "renewalOf": "jk-doda-2025-09-10",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-20(TSTS) of 2025 dated 11.09.2025",
+        "url": "https://home.jk.gov.in/pdf/20(TSTS)of2025.pdf"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+      }
+    ],
+    "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+  },
+  {
+    "id": "jk-doda-gandoh-2025-09-11",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda (Gandoh tehsil, 15 km radius)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-09-11",
+    "startsAt": "2025-09-11T00:01",
+    "endsAt": "2025-09-11T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-gandoh-2025-09-10",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-21(TSTS) of 2025 dated 11.09.2025",
+        "url": "https://home.jk.gov.in/pdf/21(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 15 km in Gandoh tehsil; voice and SMS no longer cut."
+  },
+  {
+    "id": "jk-kishtwar-2025-09-11",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (5 km radius, Kishtwar town area)"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": "2025-09-11",
+    "startsAt": "2025-09-11T00:01",
+    "endsAt": "2025-09-11T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data, Wi-Fi and voice calling/SMS likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-kishtwar-2025-09-10",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-22(TSTS) of 2025 dated 11.09.2025",
+        "url": "https://home.jk.gov.in/pdf/22(TSTS)of2025.pdf"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, September 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-september-2025/"
+      }
+    ],
+    "notes": "2G-5G, public and private Wi-Fi including fibre/broadband, and voice calling/SMS within 5 km."
+  },
+  {
+    "id": "jk-doda-2025-09-12",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-12",
+    "startsAt": "2025-09-12T00:01",
+    "endsAt": "2025-09-12T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+    "renewalOf": "jk-doda-2025-09-11",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-23(TSTS) of 2025 dated 12.09.2025",
+        "url": "https://home.jk.gov.in/pdf/23(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+  },
+  {
+    "id": "jk-doda-gandoh-2025-09-12",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda (Gandoh tehsil, 15 km radius)"
+    ],
+    "scope": "voice-sms-too",
+    "issuedAt": "2025-09-12",
+    "startsAt": "2025-09-12T00:01",
+    "endsAt": "2025-09-12T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data, Wi-Fi and voice calling likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-gandoh-2025-09-11",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-24(TSTS) of 2025 dated 12.09.2025",
+        "url": "https://home.jk.gov.in/pdf/24(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G, Wi-Fi including fibre/broadband, and voice calling (SMS not mentioned) within 15 km in Gandoh tehsil."
+  },
+  {
+    "id": "jk-kishtwar-2025-09-12",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (5 km radius, Kishtwar town area)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-09-12",
+    "startsAt": "2025-09-12T00:01",
+    "endsAt": "2025-09-12T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and internet services likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-kishtwar-2025-09-11",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-25(TSTS) of 2025 dated 12.09.2025",
+        "url": "https://home.jk.gov.in/pdf/25(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "3G/4G/5G suspended and speed cut below 100 kbps within 5 km. Last Kishtwar order in the series."
+  },
+  {
+    "id": "jk-doda-2025-09-13",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-13",
+    "startsAt": "2025-09-13T00:01",
+    "endsAt": "2025-09-13T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and Wi-Fi including fibre/broadband likely to be misused by anti-national elements or miscreants; to maintain public order and prevent incitement.",
+    "renewalOf": "jk-doda-2025-09-12",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-26(TSTS) of 2025 dated 13.09.2025",
+        "url": "https://home.jk.gov.in/pdf/26(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G plus public and private Wi-Fi including fibre/broadband."
+  },
+  {
+    "id": "jk-doda-2025-09-14",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-14",
+    "startsAt": "2025-09-14T00:01",
+    "endsAt": "2025-09-14T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-2025-09-13",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-27(TSTS) of 2025 dated 14.09.2025",
+        "url": "https://home.jk.gov.in/pdf/27(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G mobile data cut district-wide; FTTH/broadband restricted only in Gandoh and Thathri tehsils."
+  },
+  {
+    "id": "jk-doda-2025-09-15",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-15",
+    "startsAt": "2025-09-15T00:01",
+    "endsAt": "2025-09-15T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "Mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-2025-09-14",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-28(TSTS) of 2025 dated 15.09.2025",
+        "url": "https://home.jk.gov.in/pdf/28(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "2G-5G mobile data cut district-wide; FTTH/broadband restricted only in Gandoh and Thathri tehsils."
+  },
+  {
+    "id": "jk-doda-2025-09-16",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-16",
+    "startsAt": "2025-09-16T00:01",
+    "endsAt": "2025-09-16T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "High-speed mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-2025-09-15",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-29(TSTS) of 2025 dated 16.09.2025",
+        "url": "https://home.jk.gov.in/pdf/29(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "Eased: 3G/4G/5G suspended district-wide, 2G allowed at 100 kbps; FTTH/broadband suspended in Gandoh and Thathri tehsils."
+  },
+  {
+    "id": "jk-doda-2025-09-17",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Doda"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-09-17",
+    "startsAt": "2025-09-17T00:01",
+    "endsAt": "2025-09-17T23:59",
+    "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+    "reasonStated": "High-speed mobile data and FTTH/broadband likely to be misused by anti-national elements or miscreants, risking public order.",
+    "renewalOf": "jk-doda-2025-09-16",
+    "published": true,
+    "sources": [
+      {
+        "title": "Govt Order No. Home-30(TSTS) of 2025 dated 17.09.2025",
+        "url": "https://home.jk.gov.in/pdf/30(TSTS)of2025.pdf"
+      }
+    ],
+    "notes": "3G/4G/5G suspended district-wide, 2G allowed at 100 kbps; FTTH/broadband suspended in Gandoh and Thathri tehsils. Last order in the Doda series."
+  },
+  {
+    "id": "hr-nuh-2025-07-13",
+    "state": "Haryana",
+    "stateCode": "IN-HR",
+    "districts": [
+      "Nuh"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-07-13",
+    "startsAt": "2025-07-13T21:00",
+    "endsAt": "2025-07-14T21:00",
+    "issuingAuthority": "Additional Chief Secretary (Home), Government of Haryana",
+    "legalBasis": null,
+    "reasonStated": "Precaution during a religious yatra: stop misinformation and rumours on social media and SMS and prevent mobilisation of crowds for arson or violence.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "The Tribune: Internet and bulk SMS services suspended for 24 hours in Nuh district",
+        "url": "https://www.tribuneindia.com/news/haryana/internet-and-bulk-sms-services-suspended-for-24-hours-in-nuh-district/"
+      },
+      {
+        "title": "The Week (PTI): Internet, SMS services suspended in Nuh ahead of yatra",
+        "url": "https://www.theweek.in/wire-updates/national/2025/07/13/des81-ncr-yatra-security.html"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Haryana, 13 July 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-haryana-india-13-july-2025/"
+      }
+    ],
+    "notes": "Mobile internet (2G-5G/CDMA/GPRS), bulk SMS (banking and recharge exempt) and dongle services. Voice, individual SMS and broadband/leased lines exempt. Linked to the Braj Mandal Jalabhishek Yatra."
+  },
+  {
+    "id": "br-katihar-2025-07-06",
+    "state": "Bihar",
+    "stateCode": "IN-BR",
+    "districts": [
+      "Katihar (Katihar town)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-07-06",
+    "startsAt": "2025-07-06T18:00",
+    "endsAt": "2025-07-07T18:00",
+    "issuingAuthority": "Home Department, Government of Bihar",
+    "legalBasis": null,
+    "reasonStated": "Clashes and stone-pelting during a Muharram procession; curb rumours.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Patna Press: Internet shutdown in Katihar after Muharram procession clashes",
+        "url": "https://patnapress.com/katihar-muharram-violence-internet-shutdown/"
+      },
+      {
+        "title": "SFLC.in tracker entry 1452: Bihar 2025 (Katihar)",
+        "url": "https://internetshutdowns.in/india-shutdowns/1452/bihar-2025/"
+      },
+      {
+        "title": "Amar Ujala: Internet banned in Katihar after tension during Muharram",
+        "url": "https://www.amarujala.com/bihar/bihar-news-internet-banned-in-katihar-after-tension-in-muharram-darbhanga-asi-stabbed-nawada-electric-shok-2025-07-06"
+      }
+    ],
+    "notes": "Times and mobile-network scope from SFLC; Patna Press says internet and social media in Katihar city for 24 hours, confirmed by the state Home Department. Order text not seen."
+  },
+  {
+    "id": "la-leh-2025-09-26",
+    "state": "Ladakh",
+    "stateCode": "IN-LA",
+    "districts": [
+      "Leh"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-09-26",
+    "startsAt": "2025-09-26T18:00",
+    "endsAt": "2025-09-29T18:00",
+    "issuingAuthority": "Ministry of Home Affairs, Government of India",
+    "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement, amid curfew after the 24 Sep violence in Leh.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "MHA order No. 22016/12/2019-CIS-IV dated 26.09.2025 (UT Ladakh Home Department)",
+        "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/09/202509272018515825.pdf"
+      }
+    ],
+    "notes": "2G-5G mobile data and public Wi-Fi across the district. Listed by Ladakh's Home Department under 27/09/2025 (upload date). Earlier cuts from 25 Sep are claimed but no order found."
+  },
+  {
+    "id": "la-leh-2025-10-03",
+    "state": "Ladakh",
+    "stateCode": "IN-LA",
+    "districts": [
+      "Leh"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-10-03",
+    "startsAt": "2025-10-03T18:00",
+    "endsAt": "2025-10-07T18:00",
+    "issuingAuthority": "Ministry of Home Affairs, Government of India",
+    "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement.",
+    "renewalOf": "la-leh-2025-09-29",
+    "published": true,
+    "sources": [
+      {
+        "title": "MHA order No. 22016/12/2019-CIS-IV dated 03.10.2025 (UT Ladakh Home Department)",
+        "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/10/202510062071230512.pdf"
+      }
+    ],
+    "notes": "2G-5G mobile data and public Wi-Fi across the district."
+  },
+  {
+    "id": "la-leh-2025-10-07",
+    "state": "Ladakh",
+    "stateCode": "IN-LA",
+    "districts": [
+      "Leh"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-10-07",
+    "startsAt": "2025-10-07T18:00",
+    "endsAt": "2025-10-09T18:00",
+    "issuingAuthority": "Ministry of Home Affairs, Government of India",
+    "legalBasis": "Section 20(2)(b) Telecommunications Act, 2023 read with Rule 2(1)(b) and Rule 3(1), Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Public safety, averting public emergency, defence and security of the State, public order and preventing incitement.",
+    "renewalOf": "la-leh-2025-10-03",
+    "published": true,
+    "sources": [
+      {
+        "title": "MHA order No. 22016/12/2019-CIS-IV dated 07.10.2025 (UT Ladakh Home Department)",
+        "url": "https://cdnbbsr.s3waas.gov.in/s395192c98732387165bf8e396c0f2dad2/uploads/2025/10/202510081774401160.pdf"
+      },
+      {
+        "title": "Scroll: Mobile internet services restored in Leh",
+        "url": "https://scroll.in/latest/1087516/ladakh-mobile-internet-services-restored-in-leh"
+      }
+    ],
+    "notes": "2G-5G mobile data and public Wi-Fi. Last order in the series; service restored 9 Oct."
+  },
+  {
+    "id": "or-cuttack-2025-10-06",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Cuttack (Municipal Corporation, Development Authority area and 42 Mouza)"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-10-06",
+    "startsAt": "2025-10-06T19:00",
+    "endsAt": "2025-10-07T19:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+    "legalBasis": "Section 20(2)(b) and 20(4) Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Apprehension that anti-social elements would use the internet to spread rumours, incite disaffection and disturb communal harmony after a clash during a Durga Puja immersion procession.",
+    "renewalOf": "or-cuttack-2025-10-05",
+    "published": true,
+    "sources": [
+      {
+        "title": "Odisha Home Department Notification No. 41832 dated 06.10.2025 (via SFLC.in)",
+        "url": "https://internetshutdowns.in/media/Cuttack_071025_5536852f-ef40-45bd-bcab-6c46780ec460._b43c5287-8ed2-4985-8c9a-ec68b93eefd5..jpeg"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, October 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-october-2025/"
+      },
+      {
+        "title": "OdishaBytes: Curfew lifted in Cuttack city, internet shutdown continues",
+        "url": "https://odishabytes.com/curfew-lifted-in-cuttack-city-daily-life-gradually-returns-to-normal-internet-shutdown-continues/"
+      }
+    ],
+    "notes": "In continuation of Notification No. 41748 dated 05.10.2025, on the Collector's recommendation. Social media, mobile data, ISP internet and broadband dial-up; government networks, banking and railways exempt. No further extension found."
+  },
+  {
+    "id": "rj-hanumangarh-2025-11-18",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Hanumangarh (15 km radius around Rathikheda village)"
+    ],
+    "scope": "unknown",
+    "issuedAt": "2025-11-18",
+    "startsAt": "2025-11-18T20:00",
+    "endsAt": "2025-11-20T20:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Farmers' protest against a proposed ethanol factory.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "SFLC.in tracker entry 1482: Rajasthan 2025 (Hanumangarh)",
+        "url": "https://internetshutdowns.in/india-shutdowns/1482/rajasthan-2025/"
+      },
+      {
+        "title": "Amar Ujala (archived by SFLC.in): Internet closed within 15 km radius over ethanol factory dispute in Hanumangarh",
+        "url": "https://internetshutdowns.in/media/Hanumangarh_IS_181125_87f4d306-9324-4439-9d17-4fd239c522ed._e5169d37-ae41-492a-9d51-21cc_HmH0hdG.pdf"
+      }
+    ],
+    "notes": "Times and 48h duration from SFLC. News report confirms internet suspended within 15 km including Rathikheda village. Order text not found."
+  }
+]

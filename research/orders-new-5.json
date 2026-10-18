@@ -1,0 +1,205 @@
+[
+ {
+  "id": "jk-ganderbal-2025-01-13",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Ganderbal (Gund and Kangan areas)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-01-13",
+  "startsAt": "2025-01-13T06:00",
+  "endsAt": "2025-01-13T16:30",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says high-speed mobile data could be misused by anti-national elements to spread misinformation and inciting material, harming public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-01(TSTS) of 2025 dated 14.01.2025",
+    "url": "https://home.jk.gov.in/pdf/01(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Ganderbal, January 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1432/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "Throttling, not a full cut. 3G/4G/5G were suspended and only 2G (up to 128 kbps) allowed within a 20 km radius of a point in the Gund and Kangan areas. IGP order No. 137(TSTS) of 2025, confirmed after the fact by Home-01(TSTS) of 2025 (14 Jan)."
+ },
+ {
+  "id": "jk-kathua-2025-02-05",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Kathua (Billawar, Malhar and Bani areas)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-02-05",
+  "startsAt": "2025-02-05T23:00",
+  "endsAt": "2025-02-06T23:00",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-02(TSTS) of 2025 dated 06.02.2025",
+    "url": "https://home.jk.gov.in/pdf/02(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Kathua, February 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1431/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "2G/3G/4G/5G and public Wi-Fi. IGP order No. 191(TSTS) of 2025, confirmed by Home-02(TSTS) of 2025 (6 Feb). SFLC.in marks the network as 'both' and describes it as precautionary to curb rumours. The order names only mobile data, and no news report on the trigger was found."
+ },
+ {
+  "id": "pb-shambhu-khanauri-2025-03-19",
+  "state": "Punjab",
+  "stateCode": "IN-PB",
+  "districts": [
+   "Patiala (Shambhu border area)",
+   "Sangrur (Khanauri border area)"
+  ],
+  "scope": "unknown",
+  "issuedAt": null,
+  "startsAt": "2025-03-19",
+  "endsAt": null,
+  "issuingAuthority": null,
+  "legalBasis": null,
+  "reasonStated": "Police cleared the farmers' protest sites at the Shambhu and Khanauri borders after detaining protest leaders.",
+  "renewalOf": null,
+  "published": null,
+  "sources": [
+   {
+    "title": "National Herald (IANS): Internet shut down at Shambhu, Khanauri borders after detention of farmer leaders",
+    "url": "https://www.nationalheraldindia.com/amp/story/politics/internet-shut-down-at-shambhu-khanauri-borders-after-detention-of-farmer-leaders"
+   },
+   {
+    "title": "internetshutdowns.in: Sangrur and Patiala, March 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1429/punjab-2025/"
+   }
+  ],
+  "notes": "No order found, and no issuing authority or legal basis reported. SFLC.in lists a mobile shutdown in Sangrur and Patiala from 19 Mar 18:00 to 24 Mar 21:54. Its only source is the National Herald article, which gives no end date, so the end is left null. The 21:54 looks like the time SFLC.in captured the web page (20 Mar 21:55)."
+ },
+ {
+  "id": "wb-murshidabad-2025-04-14",
+  "state": "West Bengal",
+  "stateCode": "IN-WB",
+  "districts": [
+   "Murshidabad (parts, including Jangipur)",
+   "Malda (parts)",
+   "Birbhum (parts)"
+  ],
+  "scope": "unknown",
+  "issuedAt": null,
+  "startsAt": "2025-04-14",
+  "endsAt": "2025-04-15T22:00",
+  "issuingAuthority": "Government of West Bengal (state secretariat)",
+  "legalBasis": null,
+  "reasonStated": "Violence during protests against the Waqf (Amendment) Act; stop fake information spreading on social media.",
+  "renewalOf": "wb-jangipur-2025-04-08",
+  "published": null,
+  "sources": [
+   {
+    "title": "National Herald (IANS): Suspension of internet services extended to Malda and Birbhum",
+    "url": "https://www.nationalheraldindia.com/national/murshidabad-violence-suspension-of-internet-services-extended-to-bengals-malda-birbhum"
+   },
+   {
+    "title": "internetshutdowns.in: Birbhum, Murshidabad, Malda, 13 April 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1435/west-bengal-2025/"
+   },
+   {
+    "title": "The Mooknayak: Net services restored in several places in Murshidabad",
+    "url": "https://en.themooknayak.com/minority-news/murshidabad-violence-net-services-restored-in-several-places-prohibitory-orders-continue"
+   }
+  ],
+  "notes": "National Herald/IANS (14 Apr) and ABP Live (14 Apr, archived by SFLC.in) say the suspension was extended to Malda, Birbhum and more parts of Murshidabad until 22:00 on 15 Apr, on instructions from the state secretariat (Nabanna). The start date is when it was reported in force (Monday 14 Apr). SFLC.in gives 13 Apr 18:00 to 15 Apr 18:00, and also lists an 11-13 Apr extension (entry 1434) that cites the same 14 Apr article; no separate source was found for it. Mooknayak (16 Apr) says service was restored in most of Murshidabad but stayed suspended in Samserganj."
+ },
+ {
+  "id": "jk-doda-2025-04-23",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Doda and Bhaderwah towns)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-04-23",
+  "startsAt": "2025-04-23T01:00",
+  "endsAt": "2025-04-23T23:59",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order and unrest.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-09(TSTS) of 2025 dated 24.04.2025",
+    "url": "https://home.jk.gov.in/pdf/09(TSTS)of2025.pdf"
+   }
+  ],
+  "notes": "3G/4G/5G and public Wi-Fi suspended, 2G limited to under 100 kbps. IGP order No. 546(TSTS) of 2025, confirmed by Home-09(TSTS) of 2025 (24 Apr). Imposed the day after the 22 Apr 2025 Pahalgam attack, though the order does not mention it. Runs alongside the Kishtwar order jk-2025-04-23 (Home-08). SFLC.in has no entry for it."
+ },
+ {
+  "id": "jk-budgam-2025-05-17",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Budgam (Bradipathri, Charar-e-Sharief area)"
+  ],
+  "scope": "voice-sms-too",
+  "issuedAt": "2025-05-17",
+  "startsAt": "2025-05-17T21:00",
+  "endsAt": "2025-05-19T22:00",
+  "issuingAuthority": "Inspector General of Police, Kashmir Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile tower and data services were likely to be misused by anti-national elements, compromising security deployment and public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-11(TSTS) of 2025 dated 19.05.2025",
+    "url": "https://home.jk.gov.in/pdf/11(TSTS)of2025.pdf"
+   },
+   {
+    "title": "internetshutdowns.in: Budgam, May 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1442/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "Three listed cell IDs were shut down entirely ('shut down mobile towers'), so voice and SMS were presumably cut too, but only on those cells. IGP order No. 1559(TSTS) of 2025, confirmed by Home-11(TSTS) of 2025 (19 May). The order's wording about security deployment suggests a security operation, but no news report was found."
+ },
+ {
+  "id": "jk-bhaderwah-2025-05-22",
+  "state": "Jammu and Kashmir",
+  "stateCode": "IN-JK",
+  "districts": [
+   "Doda (Bhaderwah area, listed towers)"
+  ],
+  "scope": "mobile-data",
+  "issuedAt": "2025-05-22",
+  "startsAt": "2025-05-22T20:00",
+  "endsAt": "2025-05-27T20:00",
+  "issuingAuthority": "Inspector General of Police, Jammu Zone (authorised officer); confirmed by Home Department, Government of Jammu and Kashmir",
+  "legalBasis": "Telecommunications (Temporary Suspension of Services) Rules, 2024, Rule 3(1), read with Section 20(2)(b) Telecommunications Act, 2023",
+  "reasonStated": "Order says mobile data and public Wi-Fi were likely to be misused by anti-national elements, risking public order.",
+  "renewalOf": null,
+  "published": true,
+  "sources": [
+   {
+    "title": "Govt Order No. Home-12(TSTS) of 2025 dated 23.05.2025",
+    "url": "https://home.jk.gov.in/pdf/12(TSTS)of2025.pdf"
+   },
+   {
+    "title": "Kashmir Life: Mobile data suspended on 37 towers in Bhaderwah till May 27",
+    "url": "https://kashmirlife.net/mobile-data-suspended-on-37-towers-in-bhaderwah-till-may-27-391987/"
+   },
+   {
+    "title": "internetshutdowns.in: Doda, May 2025",
+    "url": "https://internetshutdowns.in/india-shutdowns/1443/jammu-and-kashmir-2025/"
+   }
+  ],
+  "notes": "2G/3G/4G/5G and public Wi-Fi on 74 listed Jio and Airtel cell IDs. Press reports call it 37 towers. IGP order No. 675(TSTS) of 2025, confirmed by Home-12(TSTS) of 2025 (23 May). Five days, the longest J&K order in H1 2025."
+ }
+]

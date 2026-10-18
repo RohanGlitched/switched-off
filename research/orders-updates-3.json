@@ -1,0 +1,339 @@
+[
+  {
+    "id": "or-malkangiri-2025-12-08",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Malkangiri"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-08",
+    "startsAt": "2025-12-08T18:00",
+    "endsAt": "2025-12-09T18:00",
+    "issuingAuthority": "Additional Chief Secretary, Home Department, Government of Odisha",
+    "legalBasis": "Telecommunications Act, 2023, s.20 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Law and order situation after a clash between two villages following a killing; stop false, provocative and inflammatory messages on social media.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Odisha Home Department notification of 8 Dec 2025 (archived by InternetShutdowns.in)",
+        "url": "https://alpha.internetshutdowns.in/media/Malkangiri_IS_ODI_081225_d1dd9e16-4944-4a4b-bb71-b2c620efe0ae._68926405-e3ae-4d04-bd48-e_tBKbDt4.pdf"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1467",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1467/odisha-2025/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-december-2025/"
+      }
+    ],
+    "notes": "Covers social media platforms, mobile internet/data, ISP internet, broadband dial-up and any other transmission mode; telecom kept for listed essential offices. Issued on the District Magistrate's request. Followed by six extensions (6 days 18 hours in total)."
+  },
+  {
+    "id": "rj-hanumangarh-2025-12-16",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Hanumangarh"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2025-12-16T11:00",
+    "endsAt": "2025-12-17T12:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Precaution to prevent rumours ahead of a farmers' gathering on 17 Dec at the district headquarters grain market against an ethanol plant.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Hanumangarh, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-hanumangarh-india-december-2025/"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1477",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1477/rajasthan-2025/"
+      },
+      {
+        "title": "IANS report archived by InternetShutdowns.in",
+        "url": "https://alpha.internetshutdowns.in/media/Tibbi_IS_161225_5e91e837-62bc-4f26-b9e2-ad8c32e2b831._353cbe24-ac52-420c-95b6-d6c41fad136a..pdf"
+      }
+    ],
+    "notes": "25 hours. IANS says the whole district, ordered by the Divisional Commissioner (probably Bikaner division, unconfirmed); Pulse says district headquarters."
+  },
+  {
+    "id": "as-karbi-anglong-2025-12-23",
+    "state": "Assam",
+    "stateCode": "IN-AS",
+    "districts": [
+      "Karbi Anglong",
+      "West Karbi Anglong"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2025-12-23",
+    "startsAt": "2025-12-23",
+    "endsAt": "2025-12-28T08:00",
+    "issuingAuthority": "Commissioner and Secretary, Home and Political Department, Government of Assam",
+    "legalBasis": "Indian Telegraph Act, 1885, s.5(2) read with Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017",
+    "reasonStated": "Serious law and order situation in both districts; prevent inflammatory messages and rumours on social media and the internet.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "Government of Assam notification of 23 Dec 2025 (archived by InternetShutdowns.in)",
+        "url": "https://alpha.internetshutdowns.in/media/IS_Assam_231225_e776f7fb-8939-4c17-a9df-b824b9b421f3._ab94f796-1ada-49a9-8e4a-3c9044a4f3ab..pdf"
+      },
+      {
+        "title": "News Live: Mobile internet in Karbi Anglong, suspended since 23 Dec, restored",
+        "url": "https://newslivetv.com/assam-mobile-internet-services-suspended-in-karbi-anglong-since-dec-23-restored/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Assam, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-assam-india-december-2025/"
+      }
+    ],
+    "notes": "Mobile data on all providers, with immediate effect until further orders; voice and fixed broadband exempt. Signed about 15:03 on 23 Dec; SFLC gives 20:00 as the start. A restoration order lifted it at 08:00 on 28 Dec. Cites the 1885 Act and 2017 Rules although these had been replaced. Linked to violence over an eviction/land dispute."
+  },
+  {
+    "id": "rj-chomu-2025-12-26",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Jaipur (Chomu town)"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-26",
+    "startsAt": "2025-12-26T07:00",
+    "endsAt": "2025-12-27T07:00",
+    "issuingAuthority": "Divisional Commissioner, Jaipur",
+    "legalBasis": null,
+    "reasonStated": "Prevent rumours after stone-pelting on police during removal of railings near a religious place.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "Times Now Hindi: Chomu clash, internet shut down",
+        "url": "https://www.timesnowhindi.com/cities/jaipur-news-chomu-clash-internet-shutdown-article-153350009"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1479",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1479/rajasthan-2025/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
+      }
+    ],
+    "notes": "24 hours, on the Police Commissioner's letter. Scope from Pulse (mobile and broadband); some reports mention only social media."
+  },
+  {
+    "id": "rj-chomu-2025-12-27",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Jaipur (Chomu town)"
+    ],
+    "scope": "all-internet",
+    "issuedAt": "2025-12-27",
+    "startsAt": "2025-12-27T07:00",
+    "endsAt": "2025-12-28T07:00",
+    "issuingAuthority": "Divisional Commissioner, Jaipur",
+    "legalBasis": null,
+    "reasonStated": "Prevent spread of rumours and maintain law and order.",
+    "renewalOf": "rj-chomu-2025-12-26",
+    "published": false,
+    "sources": [
+      {
+        "title": "Yes Punjab: 110 arrested for Chomu violence, internet shutdown extended",
+        "url": "https://yespunjab.com/rajasthan-110-arrested-for-chomu-violence-internet-shutdown-extended/"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1480",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1480/rajasthan-2025/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Rajasthan, December 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-rajasthan-india-december-2025/"
+      }
+    ],
+    "notes": "24-hour extension on a Police Commissioner report."
+  },
+  {
+    "id": "tr-unakoti-2026-01-10",
+    "state": "Tripura",
+    "stateCode": "IN-TR",
+    "districts": [
+      "Unakoti"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2026-01-10",
+    "startsAt": "2026-01-10T18:00",
+    "endsAt": "2026-01-12T18:00",
+    "issuingAuthority": "District Magistrate, Unakoti",
+    "legalBasis": null,
+    "reasonStated": "Precaution against rumours and mobilisation after communal clashes and vandalism in Kumarghat subdivision.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "EastMojo: Internet suspended in Tripura's Fatikroy over communal clash",
+        "url": "https://eastmojo.com/news/2026/01/11/internet-suspended-in-tripuras-fatikroy-over-communal-clash/"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1483",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1483/tripura-2026/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Tripura, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-tipura-india-january-2026/"
+      }
+    ],
+    "notes": "48 hours across the district; times from SFLC (Pulse gives 15:30 on 10 Jan to the evening of 13 Jan). No extension found. Pulse: no order made public."
+  },
+  {
+    "id": "or-sundargarh-2026-01-15",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Sundargarh (Sundargarh town)"
+    ],
+    "scope": "unknown",
+    "issuedAt": "2026-01-15",
+    "startsAt": "2026-01-15T18:00",
+    "endsAt": "2026-01-16T18:00",
+    "issuingAuthority": "Collector, Sundargarh",
+    "legalBasis": null,
+    "reasonStated": "Curb misinformation and inflammatory social media messages after a violent group clash in the town.",
+    "renewalOf": null,
+    "published": false,
+    "sources": [
+      {
+        "title": "OdishaBytes: Internet services suspended, Section 163 clamped in Sundargarh after group clash",
+        "url": "https://odishabytes.com/internet-services-suspended-section-163-clamped-in-odishas-sundargarh-after-group-clash/"
+      },
+      {
+        "title": "Ommcom News: Internet restored, Section 163 lifted in Sundargarh town",
+        "url": "https://ommcomnews.com/odisha-news/internet-restored-section-163-lifted-in-sundargarh-town-after-peace-committee-meet/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-january-2026/"
+      }
+    ],
+    "notes": "24 hours from 18:00; restored on 16 Jan (exact time not reported). Attributed to the Collector's office; an unconfirmed report says the Home Department issued it covering social media platforms."
+  },
+  {
+    "id": "jk-kishtwar-2026-01-29",
+    "state": "Jammu and Kashmir",
+    "stateCode": "IN-JK",
+    "districts": [
+      "Kishtwar (Singhpora, Chingam and Chatroo, 6 km radius)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": null,
+    "startsAt": "2026-01-29T00:01",
+    "endsAt": "2026-01-30T23:59",
+    "issuingAuthority": "Principal Secretary, Home Department, Government of Jammu and Kashmir",
+    "legalBasis": "Telecommunications Act, 2023 read with Telecommunications (Temporary Suspension of Services) Rules, 2024",
+    "reasonStated": "Prevent misuse of high-speed mobile data by anti-national elements during a counter-terror operation; risk to public order.",
+    "renewalOf": "jk-kishtwar-2026-01-23",
+    "published": true,
+    "sources": [
+      {
+        "title": "Kashmir Life: Mobile internet suspended in parts of Kishtwar",
+        "url": "https://kashmirlife.net/mobile-internet-suspended-in-parts-of-kishtwar-422893/"
+      },
+      {
+        "title": "InternetShutdowns.in tracker entry 1486",
+        "url": "https://alpha.internetshutdowns.in/india-shutdowns/1486/jammu-and-kashmir-2026/"
+      },
+      {
+        "title": "Internet Society Pulse: Internet suspended in Jammu and Kashmir, January 2026",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-jammu-and-kashmir-india-january-2026/"
+      }
+    ],
+    "notes": "2G-5G mobile data, on inputs from the IGP Jammu Zone. A news agency posted the order image. Renewal link to the 23 Jan suspension is as reported, not confirmed from order text."
+  },
+  {
+    "id": "rj-jaipur-2026-06-08",
+    "state": "Rajasthan",
+    "stateCode": "IN-RJ",
+    "districts": [
+      "Jaipur (Jaipur North and Jaipur East police districts, listed police station areas)"
+    ],
+    "scope": "mobile-data",
+    "issuedAt": "2026-06-07",
+    "startsAt": "2026-06-08T00:00",
+    "endsAt": "2026-06-09T00:00",
+    "issuingAuthority": "Divisional Commissioner, Jaipur",
+    "legalBasis": "Temporary Suspension of Telecom Services (Public Emergency or Public Safety) Rules, 2017 (as cited)",
+    "reasonStated": "Prevent rumours and maintain order during a development authority's anti-encroachment drive involving religious structures in Jagatpura.",
+    "renewalOf": null,
+    "published": true,
+    "sources": [
+      {
+        "title": "MediaNama: Internet shutdown ordered in Jaipur amid anti-encroachment drive",
+        "url": "https://www.medianama.com/2026/06/223-internet-shutdown-jaipur-anti-encroachment-drive-public-order/"
+      },
+      {
+        "title": "India TV: Jaipur anti-encroachment drive, mobile internet and bulk SMS suspended",
+        "url": "https://www.indiatvnews.com/rajasthan/jaipur-anti-encroachment-drive-mobile-internet-and-bulk-sms-services-suspended-for-48-hours-2026-06-07-1043983"
+      },
+      {
+        "title": "Outlook: Jaipur internet shutdown before demolition in Jagatpura",
+        "url": "https://www.outlookindia.com/amp/story/national/jaipur-internet-shutdown-before-demolition-of-mosque-temples-in-jagatpura"
+      }
+    ],
+    "notes": "Mobile internet (2G-5G), bulk SMS/MMS and named social media apps; voice exempt. About 16 named police station areas. MediaNama links the order. Reports disagree on duration (24 vs 48 hours). The cited 2017 Rules had been replaced by the 2024 Rules. SFLC entry 1501."
+  },
+  {
+    "id": "or-bhadrak-2025-06-12",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": "2025-06-12",
+    "endsAt": null,
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Local unrest after a group clash.",
+    "renewalOf": null,
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+      }
+    ],
+    "notes": "24-hour order, then a 12-hour extension ending 18:00 on 13 Jun. Start date inferred from that (36 hours before 18:00 on 13 Jun); exact start not confirmed."
+  },
+  {
+    "id": "or-bhadrak-2025-06-13",
+    "state": "Odisha",
+    "stateCode": "IN-OD",
+    "districts": [
+      "Bhadrak (Bhadrak Municipality, Bhadrak block, Dhamnagar NAC, Dhamnagar block, Tihidi block)"
+    ],
+    "scope": "unknown",
+    "issuedAt": null,
+    "startsAt": null,
+    "endsAt": "2025-06-13T18:00",
+    "issuingAuthority": null,
+    "legalBasis": null,
+    "reasonStated": "Continuing local unrest after a group clash.",
+    "renewalOf": "or-bhadrak-2025-06-12",
+    "published": null,
+    "sources": [
+      {
+        "title": "Internet Society Pulse: Internet suspended in Odisha, 11 June 2025",
+        "url": "https://pulse.internetsociety.org/en/shutdowns/internet-suspended-in-odisha-india-11-june-2025/"
+      }
+    ],
+    "notes": "12-hour extension ending 18:00 on 13 Jun."
+  }
+]

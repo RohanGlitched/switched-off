@@ -23,6 +23,7 @@ budget, under 15 s); `npm run friction -- --write` adds the two write checks and
 
 | # | Item | Severity | Where | First hit | Status, 18 Oct check | Fix / workaround |
 |---|---|---|---|---|---|---|
+| [13](#13-page-two-fails-once-a-new-block-lands-because-next-doesnt-pin-the-block) | Page two of a query fails once a new block lands: `next()` doesn't carry the first page's block | High | SDK + node | 18 Oct | Hit live (archive passed 200 records) | Pin every page-through with `.atBlock(n)` |
 | [11](#11-a-429-with-a-long-retry-after-and-a-client-that-obeys-it-is-a-silent-hang) | A 429 with `retry-after: ~1000` plus viem's default retries is a silent hang | High | node + viem defaults | 11 Oct | STILL (`11-viem`, `11-logs`) | `retryCount: 0` and a timeout on every transport; one fallback path for every read |
 | [5](#5-the-anonymous-query-budget-is-undocumented-and-it-runs-out) | Keyless query budget is undocumented and runs out | High | node + docs | 11 Oct | STILL (`5`, `5-docs`) | Relay with a shared cache, fall back when the budget is spent; Arkiv: document size, window and cost |
 | [12](#12-a-keys-monthly-quota-runs-out-silently-and-its-refusal-is-not-json-rpc-shaped) | A key's monthly quota runs out silently; refusal not JSON-RPC shaped | High | node + Hub + docs | 12 Oct | Header STILL (`12-header`); docs CHANGED (`12-docs`: Hub Usage tab now documented) | Relay reshapes the refusal and goes keyless; Arkiv: JSON-RPC shaped errors, state the quota size |
@@ -244,6 +245,25 @@ for a 1-day and a 365-day create alike (`ok-pricing`). Not checked by machine: t
   is reached. We can't tell from outside whether that was there on 12 Oct and we missed it, or was added since; either way "the Hub
   does not show usage" and "the reset day is not written down" no longer stand as written. Still true: the quota's size is not on
   the page, keyless reads carry no quota header, and the refusal's shape is not checked by machine (it needs a spent key).
+
+## 13. Page two fails once a new block lands, because `next()` doesn't pin the block
+
+- **Expected:** `const page = await q.fetch(); while (page.hasNextPage()) page = await page.next()` walks every page of one
+  query, as the SDK's docs and its own `for await` iterator do.
+- **Actual:** on 18 Oct our archive passed 200 registrar records, so reading it took two pages, and page two failed:
+  `QueryError: Query rejected (cursor, -32005): Request exceeds defined limit.` with data
+  `cursor belongs to a different query, block or select — start a new page-through`. The node ties a cursor to the block the
+  first page was read at. `fetchPage` in `src/query/queryBuilder.ts` (0.8.1) sends the same request again with only the cursor
+  added, so when no `atBlock` was set and a block has landed since page one (every 2 s on Tiramisu), the node refuses it.
+  The `-32005` message ("exceeds defined limit") points at the wrong cause; only `data.message` says what happened.
+- **Repro:** any query with more than 200 matches and no `.atBlock(…)`: fetch page one, wait 3 s, call `next()`.
+- **Cost to us:** it broke the archive read on the live site and our snapshot script the moment 33 newer orders and 30
+  corrections were filed; we found it within minutes because the snapshot script threw.
+- **Fix (for us):** every page-through is pinned (`pinBlock` in `src/lib/arkiv.ts`): a recent block rounded down to a
+  20 s step, so visitors in the same 20 s still send identical requests and share the relay's cache, or the newest block for a
+  minute after this browser's own write (tested in `test/lifetimes.test.ts`).
+- **Fix (for Arkiv):** have `next()` carry the first page's `blockNumber` as `atBlock` when none was set (the `QueryResult`
+  already holds it), and give the node's refusal a message that names the stale cursor.
 
 ## What went smoothly (with the same rigour)
 
