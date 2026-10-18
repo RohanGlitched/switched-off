@@ -9,13 +9,14 @@ import { ReportCard, humanError, humanErrorEn } from './Entity'
 import { toast } from '../components/Toast'
 import type { Net, Report } from '../lib/arkiv'
 import { witnessName, account, forgetKey } from '../lib/wallet'
-import { tf, tp, tr, tx, useT } from '../lib/i18n'
+import { LANGS, dirOf, setLang, tf, tp, tr, tx, useLang, useT } from '../lib/i18n'
 
 import { personalData } from '../lib/pii'
 
 export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   const reg = useRegister(net)
   const t = useT()
+  const lang = useLang()
   const [geo, setGeo] = useState<Geo | null>(null)
   const pre = param('d')
   const [state, setState] = useState(pre ? pre.split('-')[0] : '')
@@ -77,7 +78,13 @@ export function ReportPage({ net = 'live' as Net }: { net?: Net }) {
   }
 
   return (
-    <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }}>
+    <section className="wrap" style={{ padding: '40px var(--gutter) 20px' }} dir={dirOf(lang)} lang={lang}>
+      {/* the people who need this form most read Urdu in Kashmir, Bengali and Assamese in the north-east, Punjabi, Odia */}
+      <nav className="langs" aria-label={t('Report in your language')}>
+        <span className="hint">{t('Report in your language')}</span>
+        {LANGS.map(([l, name]) => <button key={l} className="lang" lang={l} aria-pressed={lang === l} onClick={() => setLang(l)}>{name}</button>)}
+      </nav>
+      {lang !== 'en' && lang !== 'hi' && <p className="hint" style={{ marginTop: 0 }}>{t('Machine-drafted translation, not yet checked by a native speaker. Corrections are welcome on GitHub.')} {t('The report form is in your language; the rest of the site is in English or Hindi for now.')}</p>}
       <div className="grid2" style={{ alignItems: 'start' }}>
         <div style={{ display: 'grid', gap: 18, minWidth: 0 }}>
           <div className="section-head" style={{ marginBottom: 0 }}>

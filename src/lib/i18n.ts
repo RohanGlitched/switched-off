@@ -2,12 +2,19 @@
 // content of the register (an order's reason, authority, notes, source titles, place names as
 // stored) stays as published. Keys are the exact English strings; `{name}` marks a variable.
 import { createElement, Fragment, useSyncExternalStore, type ReactNode } from 'react'
+import { MORE, type MoreLang } from './i18n-more'
 
-export type Lang = 'en' | 'hi'
+export type Lang = 'en' | 'hi' | MoreLang
+/** Every language the report form speaks, in its own script. English and Hindi cover the whole site. */
+export const LANGS: [Lang, string][] = [['en', 'English'], ['hi', 'हिन्दी'], ['ur', 'اردو'], ['bn', 'বাংলা'], ['as', 'অসমীয়া'], ['pa', 'ਪੰਜਾਬੀ'], ['or', 'ଓଡ଼ିଆ']]
+const KNOWN_LANGS = new Set(LANGS.map(([l]) => l))
 const KEY = 'switched-off:lang'
 let lang: Lang = (() => {
   try {
-    return (localStorage.getItem(KEY) as Lang) || (navigator.language?.startsWith('hi') ? 'hi' : 'en')
+    const saved = localStorage.getItem(KEY) as Lang | null
+    if (saved && KNOWN_LANGS.has(saved)) return saved
+    const nav = (navigator.language ?? '').slice(0, 2) as Lang
+    return KNOWN_LANGS.has(nav) ? nav : 'en'
   } catch {
     return 'en'
   }
@@ -32,12 +39,16 @@ export const useLang = () => useSyncExternalStore((f) => (subs.add(f), () => sub
 /** The current language, read at call time (for plain functions such as the date formatters). */
 export const getLang = () => lang
 /** The locale for dates and numbers in the current language. */
-export const locale = () => (lang === 'hi' ? 'hi-IN' : 'en-IN')
+export const locale = () => (lang === 'en' ? 'en-IN' : `${lang}-IN`)
+/** Urdu is written right to left. */
+export const dirOf = (l: Lang) => (l === 'ur' ? 'rtl' : 'ltr')
 
 const missing = new Set<string>()
 /** Translate outside React (event handlers, toasts, formatters): the same dictionary as useT. */
 export function tr(s: string): string {
-  if (lang !== 'hi') return s
+  if (lang === 'en') return s
+  // the other languages cover the report form and the menu; the rest of the site stays in English
+  if (lang !== 'hi') return MORE[lang][s] ?? s
   const h = HI[s]
   if (h === undefined && import.meta.env.DEV && !missing.has(s)) {
     missing.add(s)

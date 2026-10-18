@@ -76,7 +76,7 @@ export function App() {
             {NAV.map(([to, label]) => <Link key={to} to={to}>{t(label)}</Link>)}
             <button className="lang mobile-only" style={{ textAlign: 'left', marginTop: 8 }} onClick={() => setMode(MODE === 'direct' ? 'relay' : 'direct')}>{MODE === 'direct' ? t('Reading Arkiv directly · switch to the relay') : t('Reading through the relay · read Arkiv directly')}</button>
           </nav>
-          <button className="lang" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')} aria-label={lang === 'hi' ? 'Switch to English' : 'हिंदी में देखें'} title={lang === 'hi' ? 'English' : 'हिंदी'}>{lang === 'hi' ? 'EN' : 'हिं'}</button>
+          <button className="lang" onClick={() => setLang(lang === 'en' ? 'hi' : 'en')} aria-label={lang === 'en' ? 'हिंदी में देखें' : 'Switch to English'} title={lang === 'en' ? 'हिंदी' : 'English'}>{lang === 'en' ? 'हिं' : 'EN'}</button>
           <button className="menu-btn" aria-expanded={open} aria-label={t('Menu')} onClick={() => setOpen(!open)}>{open ? t('Close') : t('Menu')}</button>
         </div>
       </header>
