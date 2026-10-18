@@ -43,6 +43,11 @@ The Union government later told the committee it is "not aware of the number of 
 There is still no official register. Volunteer trackers such as SFLC.in's do careful work, on one team's server. Sources:
 [`research/facts.md`](research/facts.md).
 
+**What is on the register (18 Oct 2026).** 187 orders: 10 from 2019, 8 from 2020, 12 from 2021, 5 from 2022, 30 from 2023, 22 from 2024,
+66 from 2025 and 34 from 2026 (SFLC's tracker counted 31 shutdowns in 2026 by mid-October; we count every renewal as its own order,
+because each is a separate decision with its own deadline). 72 cite the order itself, a government notice or an order PDF; the rest cite
+reporting that quotes one. Every one carries its sources, and anyone can file the ones we are missing on [/file](https://switched-off.vercel.app/file).
+
 | Who | Today | On Switched Off, from the first visit |
 |---|---|---|
 | People in a district that goes dark | Find out a shutdown is "official" from a forwarded photo of a letter, if at all | See whether an order exists, what it cuts, and the minute it lapses. With no order behind the outage, say "no internet here" in one tap; offline, the report waits on the phone and goes out late, marked late |
